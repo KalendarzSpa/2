@@ -402,22 +402,26 @@ function cancelReservation(reservation) {
         }
 
 
-     function loadReservations() {
+    function loadReservations() {
     var currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
 
-    db.collection("reservations")
-        .where("roomNumber", "==", roomNumber)
-        .where("date", ">=", currentDate.toISOString())
-        .get()
-        .then(function (querySnapshot) {
-            reservations = querySnapshot.docs.map(doc => doc.data());
-            updateReservationList();
-            generateCalendar();
-        })
-        .catch(function (error) {
-            console.error("Error getting reservations: ", error);
-        });
+    if (currentDate instanceof Date && !isNaN(currentDate)) {
+        db.collection("reservations")
+            .where("roomNumber", "==", roomNumber)
+            .where("date", ">=", currentDate)
+            .get()
+            .then(function (querySnapshot) {
+                reservations = querySnapshot.docs.map(doc => doc.data());
+                updateReservationList();
+                generateCalendar();
+            })
+            .catch(function (error) {
+                console.error("Error getting reservations: ", error);
+            });
+    } else {
+        console.error("Invalid currentDate:", currentDate);
+    }
 }
 
         function saveReservationToFirestore(reservation) {
