@@ -371,12 +371,14 @@ function generateReservationId() {
     });
 }
         function cancelReservation(reservation) {
-    var index = reservations.indexOf(reservation);
+    var reservationId = reservation.id;
+    var index = reservations.findIndex(r => r.id === reservationId);
+
     if (index !== -1) {
         reservations.splice(index, 1);
         updateReservationList();
         saveReservations();
-        deleteReservationFromFirestore(reservation.id); // Dodana linia do usunięcia rezerwacji z Firestore
+        deleteReservationFromFirestore(reservationId);
     }
 }
 
