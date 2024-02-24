@@ -110,7 +110,30 @@
 
     <div id="overlay"></div>
 
+    <!-- Dodaj te skrypty Firebase poniżej -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore.js"></script>
+
     <script>
+        // Zastąp te dane własnymi danymi z Firebase Console
+        var firebaseConfig = {
+            apiKey: 'YOUR_API_KEY',
+            authDomain: 'spaa-d7c47.firebaseapp.com',
+            projectId: 'spaa-d7c47',
+            storageBucket: 'spaa-d7c47.appspot.com',
+            messagingSenderId: '190657527854',
+        };
+
+        // Inicjalizacja Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Uzyskaj dostęp do Firestore
+        var db = firebase.firestore();
+
+        // ... (reszta kodu bez zmian)
+    </script>
+
+       <script>
         var currentLanguage = 'pl';
         var roomNumber;
         var userId;
