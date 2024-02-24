@@ -354,12 +354,17 @@ function generateReservationId() {
     reservationList.innerHTML = '';
 
     var myReservations = reservations.filter(function (reservation) {
-        return reservation.roomNumber === roomNumber; // Dodany warunek dla numeru pokoju
+        return reservation.roomNumber === roomNumber; // Added condition for roomNumber
     });
 
     myReservations.forEach(function (reservation) {
         var listItem = document.createElement('li');
-        listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+
+        // Check if date and timeSlotId are defined before using them
+        if (reservation.date && reservation.timeSlotId) {
+            listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+        }
+
         var cancelButton = document.createElement('span');
         cancelButton.className = 'cancel-button';
         cancelButton.textContent = `(${currentLanguage === 'pl' ? 'Anuluj' : (currentLanguage === 'de' ? 'Stornieren' : 'Cancel')})`;
