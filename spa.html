@@ -371,15 +371,25 @@ function generateReservationId() {
     });
 }
        function cancelReservation(reservation) {
-    var reservationId = reservation.id;
-    var index = reservations.findIndex(r => r.id === reservationId);
+            // Pobierz identyfikator rezerwacji
+            var reservationId = reservation.id;
 
-    if (index !== -1) {
-        reservations.splice(index, 1);
-        updateReservationList();
-        saveReservations();
-        deleteReservationFromFirestore(reservationId);
-    }
+            // Usuń rezerwację z bazy danych
+            db.collection("reservations").doc(reservationId).delete()
+                .then(function () {
+                    console.log("Reservation successfully deleted!");
+                    // Usuń rezerwację z listy i odśwież widok
+                    var index = reservations.indexOf(reservation);
+                    if (index !== -1) {
+                        reservations.splice(index, 1);
+                        generateCalendar();
+                        updateReservationList();
+                    }
+                })
+                .catch(function (error) {
+                    console.error("Error removing reservation: ", error);
+                });
+        }
 }
         function deleteReservationFromFirestore(reservationId) {
     db.collection("reservations").doc(reservationId).delete()
