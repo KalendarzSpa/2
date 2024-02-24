@@ -131,6 +131,20 @@ function submitRoomNumber() {
 
     <div id="overlay"></div>
 
+ <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    updateContent();
+
+    // Sprawdź, czy użytkownik wcześniej wprowadził numer pokoju
+    var savedRoomNumber = localStorage.getItem('roomNumber');
+    if (savedRoomNumber) {
+      document.getElementById('roomNumber').value = savedRoomNumber;
+      submitRoomNumber();
+    }
+  });
+ </script>
+    
+    
     <!-- Dodaj te skrypty Firebase poniżej -->
 
     <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-app.js"></script>
@@ -216,20 +230,31 @@ function submitRoomNumber() {
             loadReservations();
         }
 
-        function submitRoomNumber() {
-            var roomNumberInput = document.getElementById('roomNumber');
-            roomNumber = roomNumberInput.value;
+        <script>
+    function generateUserId(roomNumber) {
+        return '_' + roomNumber;  // Możesz dostosować sposób generowania identyfikatora
+    }
+function submitRoomNumber() {
+    var roomNumberInput = document.getElementById('roomNumber');
+    roomNumber = roomNumberInput.value;
 
-            if (roomNumber.trim() === "") {
-                alert('Wprowadź numer pokoju przed kontynuacją.');
-                return;
-            }
+    if (roomNumber.trim() === "") {
+        alert('Wprowadź numer pokoju przed kontynuacją.');
+        return;
+    }
 
-            userId = generateUserId();
-            document.getElementById('userSection').style.display = 'none';
-            generateCalendar();
-            loadReservations();
-        }
+    // Wygeneruj unikatowy identyfikator użytkownika na podstawie numeru pokoju
+    userId = generateUserId(roomNumber);
+
+    // Zapisz numer pokoju i identyfikator użytkownika w lokalnym składowaniu
+    localStorage.setItem('roomNumber', roomNumber);
+    localStorage.setItem('userId', userId);
+
+    document.getElementById('userSection').style.display = 'none';
+    generateCalendar();
+    loadReservations();
+}
+    </script>
 
         function generateUserId() {
             return '_' + Math.random().toString(36).substr(2, 9);
