@@ -206,10 +206,13 @@
 
     userId = roomNumber;
     document.getElementById('userSection').style.display = 'none';
-    generateCalendar();
-    loadReservations();
-}
 
+    loadReservations().then(function () {
+        generateCalendar();
+    }).catch(function (error) {
+        console.error("Error loading reservations:", error);
+    });
+}
         function generateUserId() {
             return '_' + Math.random().toString(36).substr(2, 9);
         }
@@ -393,16 +396,19 @@ function deleteReservationFromFirestore(reservationId) {
 
 
     function loadReservations() {
-    db.collection("reservations")
-        .get()
-        .then(function (querySnapshot) {
-            reservations = querySnapshot.docs.map(doc => doc.data());
-            updateReservationList();
-            generateCalendar(); // Przesunięcie generowania kalendarza po pobraniu danych
-        })
-        .catch(function (error) {
-            console.error("Error getting reservations: ", error);
-        });
+    return new Promise(function (resolve, reject) {
+        db.collection("reservations")
+            .get()
+            .then(function (querySnapshot) {
+                reservations = querySnapshot.docs.map(doc => doc.data());
+                updateReservationList();
+                resolve();
+            })
+            .catch(function (error) {
+                console.error("Error getting reservations: ", error);
+                reject(error);
+            });
+    });
 }
         
 
