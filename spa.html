@@ -1,8 +1,9 @@
-<!DOCTYPE html>
+       <!DOCTYPE html>
 <html lang="en">
 
 <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
 
+    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -73,7 +74,23 @@
         }
     </style>
 </head>
+<script>
+function submitRoomNumber() {
+    var roomNumberInput = document.getElementById('roomNumber');
+    roomNumber = roomNumberInput.value;
 
+    if (roomNumber.trim() === "") {
+        alert('Wprowadź numer pokoju przed kontynuacją.');
+        return;
+    }
+
+    userId = generateUserId();
+    document.getElementById('userSection').style.display = 'none';
+    generateCalendar();
+    loadReservations();
+}
+</script>
+    
 <body>
 
     <h2 id="calendarTitle">Kalendarz Rezerwacji Strefy Spa</h2>
@@ -114,37 +131,60 @@
 
     <div id="overlay"></div>
 
-    <!-- Dodaj te skrypty Firebase poniżej -->
-    <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-firestore.js"></script>
+ <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    updateContent();
 
+    // Sprawdź, czy użytkownik wcześniej wprowadził numer pokoju
+    var savedRoomNumber = localStorage.getItem('roomNumber');
+    if (savedRoomNumber) {
+      document.getElementById('roomNumber').value = savedRoomNumber;
+      submitRoomNumber();
+    }
+  });
+ </script>
+    
+    
+    <!-- Dodaj te skrypty Firebase poniżej -->
+
+    <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-firestore.js"></script>
+
+    
     <script>
-      var firebaseConfig = {  
-          
-       apiKey: "AIzaSyCz7gGBCSi9pXaDvbrBDELvZOIRWgAutjs",
+        document.addEventListener('DOMContentLoaded', function () {
+    updateContent();
+});
+
+        var firebaseConfig = {
+
+            apiKey: "AIzaSyCz7gGBCSi9pXaDvbrBDELvZOIRWgAutjs",
   authDomain: "strefaspa-7aaaa.firebaseapp.com",
   projectId: "strefaspa-7aaaa",
   storageBucket: "strefaspa-7aaaa.appspot.com",
   messagingSenderId: "899188726768",
-  appId: "1:899188726768:web:050468e5eb4f6880e0db35"
         };
 
-         firebase.initializeApp(firebaseConfig);
+        // Inicjalizacja Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Uzyskaj dostęp do Firestore
         var db = firebase.firestore();
 
         var currentLanguage = 'pl';
         var roomNumber;
         var userId;
         var reservations = [];
+        
         var selectedTimeSlot;
-    </script>
 
+        function changeLanguage() {
+            var languageSelect = document.getElementById('languageSelect');
+            currentLanguage = languageSelect.value;
+            updateContent();
+        }
 
-
-    
-    <script>
-        function updateContent() 
-        {
+        function updateContent() {
             var titleElement = document.getElementById('calendarTitle');
             var takenMessageElement = document.getElementById('takenMessage');
             var languageLabel = document.getElementById('languageLabel');
@@ -186,9 +226,14 @@
                 yesButton.textContent = 'Yes';
                 noButton.textContent = 'No';
             }
-        }
 
-        function submitRoomNumber() {
+            generateCalendar();
+            loadReservations();
+        }
+    function generateUserId(roomNumber) {
+        return '_' + roomNumber;  // Możesz dostosować sposób generowania identyfikatora
+    }
+function submitRoomNumber() {
     var roomNumberInput = document.getElementById('roomNumber');
     roomNumber = roomNumberInput.value;
 
@@ -197,25 +242,31 @@
         return;
     }
 
-    userId = generateUserId();
+    // Wygeneruj unikatowy identyfikator użytkownika na podstawie numeru pokoju
+    userId = generateUserId(roomNumber);
+
+    // Zapisz numer pokoju i identyfikator użytkownika w lokalnym składowaniu
+    localStorage.setItem('roomNumber', roomNumber);
+    localStorage.setItem('userId', userId);
+
     document.getElementById('userSection').style.display = 'none';
     generateCalendar();
     loadReservations();
 }
-                   
+    </script>
 
-        function generateUserId(roomNumber) {
-            return '_' + roomNumber;  // Możesz dostosować sposób generowania identyfikatora
+        function generateUserId() {
+            return '_' + Math.random().toString(36).substr(2, 9);
         }
 
-       function generateCalendar() {
-    var calendar = document.getElementById('calendar');
-    calendar.innerHTML = '';
-
-    today = new Date();  // Zmieniona na globalną zmienną
+        function generateCalendar() {
+            var calendar = document.getElementById('calendar');
+            calendar.innerHTML = '';
+            
+            today = new Date();  // Zmieniona na globalną zmienną
     today.setHours(0, 0, 0, 0);
 
-    for (var dayOffset = 0; dayOffset < 3; dayOffset++) {
+            for (var dayOffset = 0; dayOffset < 3; dayOffset++) {
         currentDate = new Date(today);
         currentDate.setDate(currentDate.getDate() + dayOffset);
 
@@ -230,6 +281,7 @@
         dayElement.onclick = function () {
             toggleDay(this);
         };
+               
 
         var timeSlotsContainer = document.createElement('div');
         timeSlotsContainer.className = 'time-slots-container';
@@ -268,8 +320,7 @@
         calendar.appendChild(dayElement);
     }
 }
-
-             function toggleDay(dayElement) {
+        function toggleDay(dayElement) {
             var timeSlotsContainer = dayElement.querySelector('.time-slots-container');
             if (timeSlotsContainer.style.display === 'block') {
                 timeSlotsContainer.style.display = 'none';
@@ -423,23 +474,7 @@ function closeConfirmationModal() {
                 overlay.style.display = 'none';
             }, 2000);
         }
-            
-
-        document.addEventListener('DOMContentLoaded', function () {
-            updateContent();
-
-            // Sprawdź, czy użytkownik wcześniej wprowadził numer pokoju
-            var savedRoomNumber = localStorage.getItem('roomNumber');
-            if (savedRoomNumber) {
-                document.getElementById('roomNumber').value = savedRoomNumber;
-                submitRoomNumber();
-            }
-        });
- 
-
-    generateCalendar(); // Dodaj to wywołanie tutaj
-});
-
+</script> 
 </body>
 
 </html>
