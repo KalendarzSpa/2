@@ -380,6 +380,7 @@ function generateReservationId() {
     var reservationId = reservation.id;
 
 console.log("Reservation ID to be deleted:", reservationId);
+           console.log("Reservation Name to be deleted:", reservationName);
            
     // Utwórz referencję do dokumentu w kolekcji "reservations"
     var reservationRef = db.collection("reservations").doc(reservationId);
