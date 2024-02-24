@@ -202,12 +202,13 @@
                 alert('Wprowadź numer pokoju przed kontynuacją.');
                 return;
             }
-
-            userId = generateUserId();
+            
+            userId = roomNumber;
             document.getElementById('userSection').style.display = 'none';
             generateCalendar();
             loadReservations();
         }
+
 
         function generateUserId() {
             return '_' + Math.random().toString(36).substr(2, 9);
@@ -307,7 +308,7 @@ function generateReservationId() {
             var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
             var reservation = {
                 id: generateReservationId(),
-                userId: userId,
+                userId: roomNumber, // Ustaw numer pokoju jako identyfikator
                 date: currentDate.toLocaleDateString(),
                 timeSlotId: timeSlotId,
                 roomNumber: roomNumber
@@ -318,6 +319,7 @@ function generateReservationId() {
             saveReservationToFirestore(reservation); // Zapisz rezerwację do Firestore
             closeConfirmationModal();
         }
+
 
         function generateTimeSlotId(date, hour) {
             return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + '-' + hour;
@@ -375,20 +377,20 @@ function generateReservationId() {
         function saveReservations() {
             localStorage.setItem('reservations', JSON.stringify(reservations));
         }
-            function loadReservations() {
-    db.collection("reservations").get()
-        .then(function (querySnapshot) {
-            reservations = [];
-            querySnapshot.forEach(function (doc) {
-                reservations.push(doc.data());
-            });
-            updateReservationList();
-            generateCalendar(); // Dodaj to wywołanie tutaj
-        })
-        .catch(function (error) {
-            console.error("Error getting reservations: ", error);
-        });
-}
+           function loadReservations() {
+            db.collection("reservations").where("roomNumber", "==", roomNumber).get()
+                .then(function (querySnapshot) {
+                    reservations = [];
+                    querySnapshot.forEach(function (doc) {
+                        reservations.push(doc.data());
+                    });
+                    updateReservationList();
+                    generateCalendar();
+                })
+                .catch(function (error) {
+                    console.error("Error getting reservations: ", error);
+                });
+        }
            
         
 
