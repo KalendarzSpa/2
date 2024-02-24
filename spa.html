@@ -301,31 +301,31 @@ function generateReservationId() {
     });
 }
        function confirmReservation() {
-        if (!selectedTimeSlot) {
-            console.error('Nie wybrano czasu rezerwacji.');
-            return;
-        }
-
-        selectedTimeSlot.classList.add('reserved');
-        selectedTimeSlot.style.backgroundColor = '#ff6666';
-
-        var currentDate = new Date();
-        var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
-        var reservation = {
-            id: generateReservationId(),
-            userId: userId, // Aktualizacja identyfikatora użytkownika
-            date: currentDate.toLocaleDateString(),
-            timeSlotId: timeSlotId,
-            roomNumber: roomNumber
-        };
-
-        reservations.push(reservation);
-        updateReservationList();
-        saveReservationToFirestore(reservation);
-        
-        // Zmodyfikowano zamykanie okna modal po dodaniu rezerwacji
-        closeConfirmationModal();
+    if (!selectedTimeSlot) {
+        console.error('Nie wybrano czasu rezerwacji.');
+        return;
     }
+
+    selectedTimeSlot.classList.add('reserved');
+    selectedTimeSlot.style.backgroundColor = '#ff6666';
+
+    var currentDate = new Date();
+    var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
+    var reservation = {
+        id: generateReservationId(),
+        userId: userId,
+        date: currentDate.toLocaleDateString(),
+        timeSlotId: timeSlotId,
+        roomNumber: roomNumber
+    };
+
+    reservations.push(reservation);
+    updateReservationList();
+    saveReservationToFirestore(reservation);
+    
+    // Zmodyfikowano zamykanie okna modal po dodaniu rezerwacji
+    closeConfirmationModal();
+}
 
 
 
@@ -343,12 +343,12 @@ function generateReservationId() {
             closeConfirmationModal();
         }
 
-        function closeConfirmationModal() {
-            var confirmationModal = document.getElementById('confirmationModal');
-            var overlay = document.getElementById('overlay');
-            confirmationModal.style.display = 'none';
-            overlay.style.display = 'none';
-        }
+       function closeConfirmationModal() {
+    var confirmationModal = document.getElementById('confirmationModal');
+    var overlay = document.getElementById('overlay');
+    confirmationModal.style.display = 'none';
+    overlay.style.display = 'none';
+}
 
         function updateReservationList() {
             var reservationList = document.getElementById('reservationList');
