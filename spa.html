@@ -390,7 +390,7 @@ function generateReservationId() {
                     console.error("Error removing reservation: ", error);
                 });
         }
-}
+
         function deleteReservationFromFirestore(reservationId) {
     db.collection("reservations").doc(reservationId).delete()
         .then(function () {
