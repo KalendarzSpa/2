@@ -376,33 +376,29 @@ function generateReservationId() {
     });
 }
        function cancelReservation(reservation) {
-    // Pobierz identyfikator rezerwacji
-    var reservationId = reservation.id;
+    // Pobierz identyfikator dokumentu Firestore
+    var reservationId = reservation.doc.id;
 
-           
-    // Utwórz referencję do dokumentu w kolekcji "reservations"
-    var reservationRef = db.collection("reservations").doc(reservationId);
+    // Usuń rezerwację z listy
+    var index = reservations.findIndex(r => r.doc.id === reservationId);
+    if (index !== -1) {
+        reservations.splice(index, 1);
+        updateReservationList();
+        saveReservations();
 
-            var reservationPath = reservationRef.path;
+        // Usuń rezerwację z Firestore
+        deleteReservationFromFirestore(reservationId);
+    }
+}
 
-    // Wyświetl identyfikator i ścieżkę dokumentu w konsoli
-    console.log("Reservation ID to be deleted:", reservationId);
-    console.log("Reservation Path to be deleted:", reservationPath);
-           
-    // Usuń dokument z Firestore
-    reservationRef.delete()
+function deleteReservationFromFirestore(reservationId) {
+    // Pobierz referencję do dokumentu w Firestore i usuń go
+    db.collection("reservations").doc(reservationId).delete()
         .then(function () {
-            console.log("Reservation successfully deleted!");
-            // Usunięcie rezerwacji z lokalnej listy
-            var index = reservations.indexOf(reservation);
-            if (index !== -1) {
-                reservations.splice(index, 1);
-                generateCalendar();
-                updateReservationList();
-            }
+            console.log("Reservation successfully deleted from Firestore!");
         })
         .catch(function (error) {
-            console.error("Error deleting reservation: ", error);
+            console.error("Error deleting reservation from Firestore: ", error);
         });
 }
 
