@@ -370,7 +370,7 @@ function generateReservationId() {
         reservationList.appendChild(listItem);
     });
 }
-        function cancelReservation(reservation) {
+       function cancelReservation(reservation) {
     var reservationId = reservation.id;
     var index = reservations.findIndex(r => r.id === reservationId);
 
@@ -381,11 +381,16 @@ function generateReservationId() {
         deleteReservationFromFirestore(reservationId);
     }
 }
-
-function deleteReservationFromFirestore(reservationId) {
+        function deleteReservationFromFirestore(reservationId) {
     db.collection("reservations").doc(reservationId).delete()
         .then(function () {
             console.log("Reservation successfully deleted from Firestore!");
+            // Aktualizacja lokalnej listy rezerwacji po usunięciu z Firestore
+            loadReservations().then(function () {
+                generateCalendar();
+            }).catch(function (error) {
+                console.error("Error loading reservations:", error);
+            });
         })
         .catch(function (error) {
             console.error("Error deleting reservation from Firestore: ", error);
