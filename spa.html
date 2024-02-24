@@ -315,20 +315,7 @@ function confirmReservation() {
         timeSlotId: timeSlotId,
         roomNumber: roomNumber
     };
-   
-// Sprawdź, czy wszystkie pola rezerwacji są zdefiniowane
-if (reservation.userId && reservation.date && reservation.timeSlotId && reservation.roomNumber) {
-    // Dokładamy te pola do dokumentu w Firestore
-    db.collection("reservations").doc("someDocId").set(reservation)
-        .then(function () {
-            console.log("Reservation added successfully");
-        })
-        .catch(function (error) {
-            console.error("Error adding reservation: ", error);
-        });
-} else {
-    console.error("Some reservation fields are undefined");
-}
+
 
     reservations.push(reservation);
     updateReservationList();
