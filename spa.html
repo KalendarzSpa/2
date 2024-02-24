@@ -379,6 +379,8 @@ function generateReservationId() {
     // Pobierz identyfikator dokumentu Firestore
     var reservationId = reservation.doc.id;
 
+            console.log("Reservation to be deleted:", reservation);
+           
     // Usuń rezerwację z listy
     var index = reservations.findIndex(r => r.doc.id === reservationId);
     if (index !== -1) {
