@@ -377,20 +377,19 @@ function generateReservationId() {
         function saveReservations() {
             localStorage.setItem('reservations', JSON.stringify(reservations));
         }
-         function loadReservations() {
+        function loadReservations() {
     db.collection("reservations").where("roomNumber", "==", roomNumber)
         .get()
         .then(function (querySnapshot) {
-            reservations = [];
-            querySnapshot.forEach(function (doc) {
-                reservations.push(doc.data());
-            });
+            reservations = querySnapshot.docs.map(doc => doc.data());
             updateReservationList();
             generateCalendar();
         })
         .catch(function (error) {
             console.error("Error getting reservations: ", error);
         });
+}
+
            
         
 
