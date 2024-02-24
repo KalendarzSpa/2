@@ -348,27 +348,32 @@ function generateReservationId() {
 }
 
         function updateReservationList() {
-            var reservationList = document.getElementById('reservationList');
-            reservationList.innerHTML = '';
+    var reservationList = document.getElementById('reservationList');
+    reservationList.innerHTML = '';
 
-            var myReservations = reservations.filter(function (reservation) {
-                return reservation.userId === userId;
-            });
+    var allReservationList = document.getElementById('allReservationList');
+    allReservationList.innerHTML = '';
 
-            myReservations.forEach(function (reservation) {
-                var listItem = document.createElement('li');
-                listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
-                var cancelButton = document.createElement('span');
-                cancelButton.className = 'cancel-button';
-                cancelButton.textContent = `(${currentLanguage === 'pl' ? 'Anuluj' : (currentLanguage === 'de' ? 'Stornieren' : 'Cancel')})`;
-                cancelButton.onclick = function () {
-                    cancelReservation(reservation);
-                };
-                listItem.appendChild(cancelButton);
-                reservationList.appendChild(listItem);
-            });
+    reservations.forEach(function (reservation) {
+        var listItem = document.createElement('li');
+        listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+
+        if (reservation.userId === userId) {
+            // Rezerwacje użytkownika
+            var cancelButton = document.createElement('span');
+            cancelButton.className = 'cancel-button';
+            cancelButton.textContent = `(${currentLanguage === 'pl' ? 'Anuluj' : (currentLanguage === 'de' ? 'Stornieren' : 'Cancel')})`;
+            cancelButton.onclick = function () {
+                cancelReservation(reservation);
+            };
+            listItem.appendChild(cancelButton);
+            reservationList.appendChild(listItem);
         }
 
+        // Wszystkie rezerwacje
+        allReservationList.appendChild(listItem);
+    });
+}
         function cancelReservation(reservation) {
             var index = reservations.indexOf(reservation);
             if (index !== -1) {
@@ -385,16 +390,17 @@ function generateReservationId() {
 
 
         function loadReservations() {
-        db.collection("reservations").where("roomNumber", "==", roomNumber)
-            .get()
-            .then(function (querySnapshot) {
-                reservations = querySnapshot.docs.map(doc => doc.data());
-                updateReservationList();
-                generateCalendar();
-            })
-            .catch(function (error) {
-                console.error("Error getting reservations: ", error);
-            });
+    db.collection("reservations")
+        .get()
+        .then(function (querySnapshot) {
+            reservations = querySnapshot.docs.map(doc => doc.data());
+            updateReservationList();
+            generateCalendar();
+        })
+        .catch(function (error) {
+            console.error("Error getting reservations: ", error);
+        });
+}
     }
         
 
