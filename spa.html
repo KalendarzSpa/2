@@ -403,7 +403,12 @@ function cancelReservation(reservation) {
 
 
      function loadReservations() {
+    var currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
     db.collection("reservations")
+        .where("roomNumber", "==", roomNumber)
+        .where("date", ">=", currentDate.toISOString())
         .get()
         .then(function (querySnapshot) {
             reservations = querySnapshot.docs.map(doc => doc.data());
@@ -414,7 +419,6 @@ function cancelReservation(reservation) {
             console.error("Error getting reservations: ", error);
         });
 }
-        
 
         function saveReservationToFirestore(reservation) {
             // Zapisywanie rezerwacji do Firestore
