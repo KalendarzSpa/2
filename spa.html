@@ -362,21 +362,22 @@
         function saveReservations() {
             localStorage.setItem('reservations', JSON.stringify(reservations));
         }
-
-        function loadReservations() {
-            // Pobieranie rezerwacji z Firestore
-            db.collection("reservations").get()
-                .then(function (querySnapshot) {
-                    reservations = [];
-                    querySnapshot.forEach(function (doc) {
-                        reservations.push(doc.data());
-                    });
-                    updateReservationList();
-                })
-                .catch(function (error) {
-                    console.error("Error getting reservations: ", error);
-                });
-        }
+            function loadReservations() {
+    db.collection("reservations").get()
+        .then(function (querySnapshot) {
+            reservations = [];
+            querySnapshot.forEach(function (doc) {
+                reservations.push(doc.data());
+            });
+            updateReservationList();
+            generateCalendar(); // Dodaj to wywołanie tutaj
+        })
+        .catch(function (error) {
+            console.error("Error getting reservations: ", error);
+        });
+}
+           
+        
 
         function saveReservationToFirestore(reservation) {
             // Zapisywanie rezerwacji do Firestore
