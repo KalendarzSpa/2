@@ -113,6 +113,7 @@
     <script>
         var currentLanguage = 'pl';
         var roomNumber;
+        var userId;
         var reservations = [];
         var selectedTimeSlot;
 
@@ -138,7 +139,7 @@
                 takenMessageElement.textContent = 'Podana godzina jest już zajęta.';
                 languageLabel.textContent = 'Wybierz język:';
                 roomNumberLabel.textContent = 'Wprowadź numer pokoju:';
-                reservationTitle.textContent = 'Rezerwacje:';
+                reservationTitle.textContent = 'Moje Rezerwacje:';
                 confirmationMessage.textContent = 'Czy potwierdzasz rezerwację?';
                 submitButton.textContent = 'Zatwierdź';
                 yesButton.textContent = '(Tak)';
@@ -148,7 +149,7 @@
                 takenMessageElement.textContent = 'Die angegebene Zeit ist bereits belegt.';
                 languageLabel.textContent = 'Sprache wählen:';
                 roomNumberLabel.textContent = 'Geben Sie die Raumnummer ein:';
-                reservationTitle.textContent = 'Reservierungen:';
+                reservationTitle.textContent = 'Meine Reservierungen:';
                 confirmationMessage.textContent = 'Bestätigen Sie die Reservierung?';
                 submitButton.textContent = 'Bestätigen';
                 yesButton.textContent = '(Ja)';
@@ -158,7 +159,7 @@
                 takenMessageElement.textContent = 'The specified time is already taken.';
                 languageLabel.textContent = 'Choose language:';
                 roomNumberLabel.textContent = 'Enter room number:';
-                reservationTitle.textContent = 'Reservations:';
+                reservationTitle.textContent = 'My Reservations:';
                 confirmationMessage.textContent = 'Do you confirm the reservation?';
                 submitButton.textContent = 'Confirm';
                 yesButton.textContent = '(Yes)';
@@ -178,9 +179,14 @@
                 return;
             }
 
+            userId = generateUserId();
             document.getElementById('userSection').style.display = 'none';
             generateCalendar();
             loadReservations();
+        }
+
+        function generateUserId() {
+            return '_' + Math.random().toString(36).substr(2, 9);
         }
 
         function generateCalendar() {
@@ -205,9 +211,17 @@
                 timeSlotsContainer.className = 'time-slots-container';
 
                 for (var i = 8; i <= 21; i++) {
+                    var timeSlotId = generateTimeSlotId(currentDate, i);
+                    var isReserved = isTimeSlotReserved(timeSlotId);
                     var timeSlot = document.createElement('div');
                     timeSlot.className = 'time-slot';
                     timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
+                    timeSlot.dataset.timeSlotId = timeSlotId;
+
+                    if (isReserved) {
+                        timeSlot.classList.add('reserved');
+                        timeSlot.style.backgroundColor = '#ff6666';
+                    }
 
                     timeSlot.addEventListener('click', function () {
                         selectedTimeSlot = this;
@@ -247,17 +261,29 @@
             selectedTimeSlot.style.backgroundColor = '#ff6666';
 
             var currentDate = new Date();
+            var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
             var reservation = {
+                id: generateReservationId(),
+                userId: userId,
                 date: currentDate.toLocaleDateString(),
-                time: selectedTimeSlot.textContent,
+                timeSlotId: timeSlotId,
                 roomNumber: roomNumber
             };
 
             reservations.push(reservation);
             updateReservationList();
             saveReservations();
-
             closeConfirmationModal();
+        }
+
+        function generateTimeSlotId(date, hour) {
+            return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + '-' + hour;
+        }
+
+        function isTimeSlotReserved(timeSlotId) {
+            return reservations.some(function (reservation) {
+                return reservation.timeSlotId === timeSlotId;
+            });
         }
 
         function cancelConfirmation() {
@@ -275,9 +301,13 @@
             var reservationList = document.getElementById('reservationList');
             reservationList.innerHTML = '';
 
-            reservations.forEach(function (reservation) {
+            var myReservations = reservations.filter(function (reservation) {
+                return reservation.userId === userId;
+            });
+
+            myReservations.forEach(function (reservation) {
                 var listItem = document.createElement('li');
-                listItem.textContent = `${reservation.date}, ${reservation.time} - Room ${reservation.roomNumber} `;
+                listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
                 var cancelButton = document.createElement('span');
                 cancelButton.className = 'cancel-button';
                 cancelButton.textContent = `(${currentLanguage === 'pl' ? 'Anuluj' : (currentLanguage === 'de' ? 'Stornieren' : 'Cancel')})`;
@@ -293,8 +323,8 @@
             var index = reservations.indexOf(reservation);
             if (index !== -1) {
                 reservations.splice(index, 1);
-                generateCalendar(); // Refresh the calendar after cancellation
-                updateReservationList(); // Refresh the reservation list
+                generateCalendar();
+                updateReservationList();
                 saveReservations();
             }
         }
