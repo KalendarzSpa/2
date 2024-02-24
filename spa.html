@@ -300,11 +300,7 @@ function generateReservationId() {
     });
 }
       function confirmReservation() {
-    if (!selectedTimeSlot) {
-        console.error('Nie wybrano czasu rezerwacji.');
-        return;
-    }
-
+    console.log("Confirming Reservation:", selectedTimeSlot.dataset.timeSlotId);
     selectedTimeSlot.classList.add('reserved');
     selectedTimeSlot.style.backgroundColor = '#ff6666';
 
@@ -312,17 +308,19 @@ function generateReservationId() {
     var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
     var reservation = {
         id: generateReservationId(),
-        userId: userId,
+        userId: roomNumber,
         date: currentDate.toLocaleDateString(),
         timeSlotId: timeSlotId,
         roomNumber: roomNumber
     };
 
-    reservations.push(reservation);
+    console.log("New Reservation:", reservation);
+    reservations = [...reservations, reservation];
+    console.log("Updated Reservations:", reservations);
+    
     updateReservationList();
     saveReservationToFirestore(reservation);
 
-    // Zmodyfikowano zamykanie okna modal po dodaniu rezerwacji
     closeConfirmationModal();
 }
 
