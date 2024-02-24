@@ -1,4 +1,4 @@
-       <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
@@ -74,23 +74,7 @@
         }
     </style>
 </head>
-<script>
-function submitRoomNumber() {
-    var roomNumberInput = document.getElementById('roomNumber');
-    roomNumber = roomNumberInput.value;
 
-    if (roomNumber.trim() === "") {
-        alert('Wprowadź numer pokoju przed kontynuacją.');
-        return;
-    }
-
-    userId = generateUserId();
-    document.getElementById('userSection').style.display = 'none';
-    generateCalendar();
-    loadReservations();
-}
-</script>
-    
 <body>
 
     <h2 id="calendarTitle">Kalendarz Rezerwacji Strefy Spa</h2>
@@ -131,38 +115,18 @@ function submitRoomNumber() {
 
     <div id="overlay"></div>
 
- <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    updateContent();
-
-    // Sprawdź, czy użytkownik wcześniej wprowadził numer pokoju
-    var savedRoomNumber = localStorage.getItem('roomNumber');
-    if (savedRoomNumber) {
-      document.getElementById('roomNumber').value = savedRoomNumber;
-      submitRoomNumber();
-    }
-  });
- </script>
-    
-    
     <!-- Dodaj te skrypty Firebase poniżej -->
 
     <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-firestore.js"></script>
 
-    
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-    updateContent();
-});
-
         var firebaseConfig = {
-
-            apiKey: "AIzaSyCz7gGBCSi9pXaDvbrBDELvZOIRWgAutjs",
-  authDomain: "strefaspa-7aaaa.firebaseapp.com",
-  projectId: "strefaspa-7aaaa",
-  storageBucket: "strefaspa-7aaaa.appspot.com",
-  messagingSenderId: "899188726768",
+            apiKey: 'AIzaSyBoOqCBtzfMrXnKo7J93mdJ2yawJ4CqwxM',
+            authDomain: 'spaa-d7c47.firebaseapp.com',
+            projectId: 'spaa-d7c47',
+            storageBucket: 'spaa-d7c47.appspot.com',
+            messagingSenderId: '190657527854',
         };
 
         // Inicjalizacja Firebase
@@ -230,30 +194,21 @@ function submitRoomNumber() {
             generateCalendar();
             loadReservations();
         }
-    function generateUserId(roomNumber) {
-        return '_' + roomNumber;  // Możesz dostosować sposób generowania identyfikatora
-    }
-function submitRoomNumber() {
-    var roomNumberInput = document.getElementById('roomNumber');
-    roomNumber = roomNumberInput.value;
 
-    if (roomNumber.trim() === "") {
-        alert('Wprowadź numer pokoju przed kontynuacją.');
-        return;
-    }
+        function submitRoomNumber() {
+            var roomNumberInput = document.getElementById('roomNumber');
+            roomNumber = roomNumberInput.value;
 
-    // Wygeneruj unikatowy identyfikator użytkownika na podstawie numeru pokoju
-    userId = generateUserId(roomNumber);
+            if (roomNumber.trim() === "") {
+                alert('Wprowadź numer pokoju przed kontynuacją.');
+                return;
+            }
 
-    // Zapisz numer pokoju i identyfikator użytkownika w lokalnym składowaniu
-    localStorage.setItem('roomNumber', roomNumber);
-    localStorage.setItem('userId', userId);
-
-    document.getElementById('userSection').style.display = 'none';
-    generateCalendar();
-    loadReservations();
-}
-    </script>
+            userId = generateUserId();
+            document.getElementById('userSection').style.display = 'none';
+            generateCalendar();
+            loadReservations();
+        }
 
         function generateUserId() {
             return '_' + Math.random().toString(36).substr(2, 9);
@@ -262,6 +217,9 @@ function submitRoomNumber() {
         function generateCalendar() {
             var calendar = document.getElementById('calendar');
             calendar.innerHTML = '';
+
+  
+            
             
             today = new Date();  // Zmieniona na globalną zmienną
     today.setHours(0, 0, 0, 0);
@@ -386,16 +344,17 @@ if (reservation.userId && reservation.date && reservation.timeSlotId && reservat
             });
         }
 
-            function cancelConfirmation() {
-    closeConfirmationModal();
-}
+        function cancelConfirmation() {
+            closeConfirmationModal();
+        
 
-function closeConfirmationModal() {
-    var confirmationModal = document.getElementById('confirmationModal');
-    var overlay = document.getElementById('overlay');
-    confirmationModal.style.display = 'none';
-    overlay.style.display = 'none';
-}
+        function closeConfirmationModal() {
+            var confirmationModal = document.getElementById('confirmationModal');
+            var overlay = document.getElementById('overlay');
+            confirmationModal.style.display = 'none';
+            overlay.style.display = 'none';
+        }
+
         function updateReservationList() {
             var reservationList = document.getElementById('reservationList');
             reservationList.innerHTML = '';
@@ -474,9 +433,8 @@ function closeConfirmationModal() {
                 overlay.style.display = 'none';
             }, 2000);
         }
-</script> 
+    </script>
+}
 </body>
 
 </html>
-
-            
