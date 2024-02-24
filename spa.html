@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalendarz Rezerwacji Strefy Spa</title>
+    <style>
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .day {
+            border: 1px solid #ccc;
+            padding: 10px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .time-slot {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        .reserved {
+            background-color: #ffcccc;
+        }
+
+        .taken {
+            background-color: #ff9999;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            z-index: 1000;
+        }
+
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+
+    <h2 id="calendarTitle">Kalendarz Rezerwacji Strefy Spa</h2>
+
+    <div>
+        <label for="languageSelect">Wybierz język:</label>
+        <select id="languageSelect" onchange="changeLanguage()">
+            <option value="pl">Polski</option>
+            <option value="de">Deutsch</option>
+            <option value="en">English</option>
+        </select>
+    </div>
+
+    <div style="margin-top: 20px;">
+        <div class="calendar" id="calendar">
+            <!-- Time slots will be generated here -->
+        </div>
+    </div>
+
+    <div class="modal" id="takenModal">
+        <span id="takenMessage"></span>
+    </div>
+
+    <div id="overlay"></div>
+
+    <script>
+        var currentLanguage = 'pl';
+
+        function changeLanguage() {
+            var languageSelect = document.getElementById('languageSelect');
+            currentLanguage = languageSelect.value;
+            updateContent();
+        }
+
+        function updateContent() {
+            var titleElement = document.getElementById('calendarTitle');
+            var takenMessageElement = document.getElementById('takenMessage');
+
+            if (currentLanguage === 'pl') {
+                titleElement.textContent = 'Kalendarz Rezerwacji Strefy Spa';
+                takenMessageElement.textContent = 'Podana godzina jest już zajęta.';
+            } else if (currentLanguage === 'de') {
+                titleElement.textContent = 'Reservierungskalender für den Spa-Bereich';
+                takenMessageElement.textContent = 'Die angegebene Zeit ist bereits belegt.';
+            } else if (currentLanguage === 'en') {
+                titleElement.textContent = 'Reservation Calendar for the Spa Area';
+                takenMessageElement.textContent = 'The specified time is already taken.';
+            }
+
+            generateCalendar();
+        }
+
+        function generateCalendar() {
+            var calendar = document.getElementById('calendar');
+            calendar.innerHTML = '';
+
+            var today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            for (var dayOffset = 0; dayOffset < 3; dayOffset++) {
+                var currentDate = new Date(today);
+                currentDate.setDate(currentDate.getDate() + dayOffset);
+
+                var dayColumn = document.createElement('div');
+                dayColumn.className = 'day';
+                dayColumn.textContent = currentDate.toLocaleDateString(currentLanguage, { weekday: 'long', day: 'numeric', month: 'numeric', year: 'numeric' });
+
+                for (var i = 8; i <= 21; i++) {
+                    var timeSlot = document.createElement('div');
+                    timeSlot.className = 'time-slot';
+                    timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
+
+                    timeSlot.addEventListener('click', function () {
+                        if (!this.classList.contains('reserved') && !this.classList.contains('taken')) {
+                            var roomNumber = prompt(currentLanguage === 'pl' ? 'Podaj numer pokoju:' :
+                                                     currentLanguage === 'de' ? 'Geben Sie die Raumnummer ein:' : 'Enter room number:');
+
+                            if (roomNumber !== null && roomNumber !== '') {
+                                this.classList.add('reserved');
+                                this.style.backgroundColor = '#ff6666';
+                            }
+                        } else {
+                            this.classList.add('taken');
+                            openTakenModal();
+                        }
+                    });
+
+                    dayColumn.appendChild(timeSlot);
+                }
+
+                calendar.appendChild(dayColumn);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            updateContent();
+        });
+
+        function openTakenModal() {
+            var modal = document.getElementById('takenModal');
+            var overlay = document.getElementById('overlay');
+            modal.style.display = 'block';
+            overlay.style.display = 'block';
+
+            setTimeout(function() {
+                modal.style.display = 'none';
+                overlay.style.display = 'none';
+            }, 2000);
+        }
+    </script>
+
+</body>
+</html>
+
+
