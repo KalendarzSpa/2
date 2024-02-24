@@ -300,25 +300,27 @@ function generateReservationId() {
         return v.toString(16);
     });
 }
-        function confirmReservation() {
-            selectedTimeSlot.classList.add('reserved');
-            selectedTimeSlot.style.backgroundColor = '#ff6666';
+       function confirmReservation() {
+    selectedTimeSlot.classList.add('reserved');
+    selectedTimeSlot.style.backgroundColor = '#ff6666';
 
-            var currentDate = new Date();
-            var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
-            var reservation = {
-                id: generateReservationId(),
-                userId: roomNumber, // Ustaw numer pokoju jako identyfikator
-                date: currentDate.toLocaleDateString(),
-                timeSlotId: timeSlotId,
-                roomNumber: roomNumber
-            };
+    var currentDate = new Date();
+    var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
+    var reservation = {
+        id: generateReservationId(),
+        userId: roomNumber,
+        date: currentDate.toLocaleDateString(),
+        timeSlotId: timeSlotId,
+        roomNumber: roomNumber
+    };
 
-            reservations.push(reservation);
-            updateReservationList();
-            saveReservationToFirestore(reservation); // Zapisz rezerwację do Firestore
-            closeConfirmationModal();
-        }
+    reservations.push(reservation);
+    updateReservationList();
+    saveReservationToFirestore(reservation);
+    
+    // Zmodyfikowano zamykanie okna modal po dodaniu rezerwacji
+    closeConfirmationModal();
+}
 
 
         function generateTimeSlotId(date, hour) {
