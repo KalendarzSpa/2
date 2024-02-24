@@ -3,13 +3,12 @@
 
 <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
 
-    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kalendarz Rezerwacji Strefy Spa</title>
     <style>
-        body {
+       body {
             font-family: Arial, sans-serif;
         }
 
@@ -79,15 +78,6 @@
 
     <h2 id="calendarTitle">Kalendarz Rezerwacji Strefy Spa</h2>
 
-    <div>
-        <label for="languageSelect" id="languageLabel">Wybierz język:</label>
-        <select id="languageSelect" onchange="changeLanguage()">
-            <option value="pl">Polski</option>
-            <option value="de">Deutsch</option>
-            <option value="en">English</option>
-        </select>
-    </div>
-
     <div style="margin-top: 20px;" id="userSection">
         <label for="roomNumber" id="roomNumberLabel">Wprowadź numer pokoju:</label>
         <input type="text" id="roomNumber">
@@ -115,10 +105,8 @@
 
     <div id="overlay"></div>
 
-    <!-- Dodaj te skrypty Firebase poniżej -->
-
     <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-firestore.js"></script>
 
     <script>
         var firebaseConfig = {
