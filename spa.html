@@ -379,12 +379,15 @@ function generateReservationId() {
     // Pobierz identyfikator rezerwacji
     var reservationId = reservation.id;
 
-console.log("Reservation ID to be deleted:", reservationId);
-           console.log("Reservation Name to be deleted:", reservationName);
            
     // Utwórz referencję do dokumentu w kolekcji "reservations"
     var reservationRef = db.collection("reservations").doc(reservationId);
 
+            var reservationPath = reservationRef.path;
+
+    // Wyświetl identyfikator i ścieżkę dokumentu w konsoli
+    console.log("Reservation ID to be deleted:", reservationId);
+    console.log("Reservation Path to be deleted:", reservationPath);
            
     // Usuń dokument z Firestore
     reservationRef.delete()
