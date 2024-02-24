@@ -130,7 +130,50 @@ function submitRoomNumber() {
     </div>
 
     <div id="overlay"></div>
+ function updateContent() {
+            var titleElement = document.getElementById('calendarTitle');
+            var takenMessageElement = document.getElementById('takenMessage');
+            var languageLabel = document.getElementById('languageLabel');
+            var roomNumberLabel = document.getElementById('roomNumberLabel');
+            var reservationTitle = document.getElementById('reservationTitle');
+            var confirmationMessage = document.getElementById('confirmationMessage');
+            var submitButton = document.getElementById('submitButton');
+            var yesButton = document.getElementById('yesButton');
+            var noButton = document.getElementById('noButton');
 
+            if (currentLanguage === 'pl') {
+                titleElement.textContent = 'Kalendarz Rezerwacji Strefy Spa';
+                takenMessageElement.textContent = 'Podana godzina jest już zajęta.';
+                languageLabel.textContent = 'Wybierz język:';
+                roomNumberLabel.textContent = 'Wprowadź numer pokoju:';
+                reservationTitle.textContent = 'Moje Rezerwacje:';
+                confirmationMessage.textContent = 'Czy potwierdzasz rezerwację?';
+                submitButton.textContent = 'Zatwierdź';
+                yesButton.textContent = 'Tak';
+                noButton.textContent = 'Nie';
+            } else if (currentLanguage === 'de') {
+                titleElement.textContent = 'Reservierungskalender für den Spa-Bereich';
+                takenMessageElement.textContent = 'Die angegebene Zeit ist bereits belegt.';
+                languageLabel.textContent = 'Sprache wählen:';
+                roomNumberLabel.textContent = 'Geben Sie die Raumnummer ein:';
+                reservationTitle.textContent = 'Meine Reservierungen:';
+                confirmationMessage.textContent = 'Bestätigen Sie die Reservierung?';
+                submitButton.textContent = 'Bestätigen';
+                yesButton.textContent = 'Ja';
+                noButton.textContent = 'Nein';
+            } else if (currentLanguage === 'en') {
+                titleElement.textContent = 'Reservation Calendar for the Spa Area';
+                takenMessageElement.textContent = 'The specified time is already taken.';
+                languageLabel.textContent = 'Choose language:';
+                roomNumberLabel.textContent = 'Enter room number:';
+                reservationTitle.textContent = 'My Reservations:';
+                confirmationMessage.textContent = 'Do you confirm the reservation?';
+                submitButton.textContent = 'Confirm';
+                yesButton.textContent = 'Yes';
+                noButton.textContent = 'No';
+            }
+
+    
  <script>
   document.addEventListener('DOMContentLoaded', function () {
     updateContent();
@@ -183,49 +226,6 @@ function submitRoomNumber() {
             currentLanguage = languageSelect.value;
             updateContent();
         }
-
-        function updateContent() {
-            var titleElement = document.getElementById('calendarTitle');
-            var takenMessageElement = document.getElementById('takenMessage');
-            var languageLabel = document.getElementById('languageLabel');
-            var roomNumberLabel = document.getElementById('roomNumberLabel');
-            var reservationTitle = document.getElementById('reservationTitle');
-            var confirmationMessage = document.getElementById('confirmationMessage');
-            var submitButton = document.getElementById('submitButton');
-            var yesButton = document.getElementById('yesButton');
-            var noButton = document.getElementById('noButton');
-
-            if (currentLanguage === 'pl') {
-                titleElement.textContent = 'Kalendarz Rezerwacji Strefy Spa';
-                takenMessageElement.textContent = 'Podana godzina jest już zajęta.';
-                languageLabel.textContent = 'Wybierz język:';
-                roomNumberLabel.textContent = 'Wprowadź numer pokoju:';
-                reservationTitle.textContent = 'Moje Rezerwacje:';
-                confirmationMessage.textContent = 'Czy potwierdzasz rezerwację?';
-                submitButton.textContent = 'Zatwierdź';
-                yesButton.textContent = 'Tak';
-                noButton.textContent = 'Nie';
-            } else if (currentLanguage === 'de') {
-                titleElement.textContent = 'Reservierungskalender für den Spa-Bereich';
-                takenMessageElement.textContent = 'Die angegebene Zeit ist bereits belegt.';
-                languageLabel.textContent = 'Sprache wählen:';
-                roomNumberLabel.textContent = 'Geben Sie die Raumnummer ein:';
-                reservationTitle.textContent = 'Meine Reservierungen:';
-                confirmationMessage.textContent = 'Bestätigen Sie die Reservierung?';
-                submitButton.textContent = 'Bestätigen';
-                yesButton.textContent = 'Ja';
-                noButton.textContent = 'Nein';
-            } else if (currentLanguage === 'en') {
-                titleElement.textContent = 'Reservation Calendar for the Spa Area';
-                takenMessageElement.textContent = 'The specified time is already taken.';
-                languageLabel.textContent = 'Choose language:';
-                roomNumberLabel.textContent = 'Enter room number:';
-                reservationTitle.textContent = 'My Reservations:';
-                confirmationMessage.textContent = 'Do you confirm the reservation?';
-                submitButton.textContent = 'Confirm';
-                yesButton.textContent = 'Yes';
-                noButton.textContent = 'No';
-            }
 
             generateCalendar();
             loadReservations();
