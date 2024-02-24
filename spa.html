@@ -345,17 +345,12 @@ function generateReservationId() {
     overlay.style.display = 'none';
 }
 
-        function updateReservationList() {
+      function updateReservationList() {
     var reservationList = document.getElementById('reservationList');
-    if (!reservationList) {
-        console.error("Reservation list element not found.");
-        return;
-    }
-
     reservationList.innerHTML = '';
 
     var myReservations = reservations.filter(function (reservation) {
-        return reservation.userId === userId;
+        return reservation.roomNumber === roomNumber; // Dodany warunek dla numeru pokoju
     });
 
     myReservations.forEach(function (reservation) {
