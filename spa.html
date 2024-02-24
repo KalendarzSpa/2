@@ -94,7 +94,7 @@
     </div>
 
     <div class="reservation-section" id="reservationSection">
-        <h3 id="reservationTitle">Twoje rezerwacje:</h3>
+        <h3 id="reservationTitle">Rezerwacje:</h3>
         <ul id="reservationList"></ul>
     </div>
 
@@ -138,7 +138,7 @@
                 takenMessageElement.textContent = 'Podana godzina jest już zajęta.';
                 languageLabel.textContent = 'Wybierz język:';
                 roomNumberLabel.textContent = 'Wprowadź numer pokoju:';
-                reservationTitle.textContent = 'Twoje rezerwacje:';
+                reservationTitle.textContent = 'Rezerwacje:';
                 confirmationMessage.textContent = 'Czy potwierdzasz rezerwację?';
                 submitButton.textContent = 'Zatwierdź';
                 yesButton.textContent = '(Tak)';
@@ -148,7 +148,7 @@
                 takenMessageElement.textContent = 'Die angegebene Zeit ist bereits belegt.';
                 languageLabel.textContent = 'Sprache wählen:';
                 roomNumberLabel.textContent = 'Geben Sie die Raumnummer ein:';
-                reservationTitle.textContent = 'Ihre Reservierungen:';
+                reservationTitle.textContent = 'Reservierungen:';
                 confirmationMessage.textContent = 'Bestätigen Sie die Reservierung?';
                 submitButton.textContent = 'Bestätigen';
                 yesButton.textContent = '(Ja)';
@@ -158,7 +158,7 @@
                 takenMessageElement.textContent = 'The specified time is already taken.';
                 languageLabel.textContent = 'Choose language:';
                 roomNumberLabel.textContent = 'Enter room number:';
-                reservationTitle.textContent = 'Your reservations:';
+                reservationTitle.textContent = 'Reservations:';
                 confirmationMessage.textContent = 'Do you confirm the reservation?';
                 submitButton.textContent = 'Confirm';
                 yesButton.textContent = '(Yes)';
@@ -172,8 +172,14 @@
         function submitRoomNumber() {
             var roomNumberInput = document.getElementById('roomNumber');
             roomNumber = roomNumberInput.value;
-            generateCalendar();
+
+            if (roomNumber.trim() === "") {
+                alert('Wprowadź numer pokoju przed kontynuacją.');
+                return;
+            }
+
             document.getElementById('userSection').style.display = 'none';
+            generateCalendar();
             loadReservations();
         }
 
