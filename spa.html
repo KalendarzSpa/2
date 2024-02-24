@@ -376,39 +376,29 @@ function generateReservationId() {
     });
 }
        function cancelReservation(reservation) {
-            // Pobierz identyfikator rezerwacji
-            var reservationId = reservation.id;
+    // Pobierz identyfikator rezerwacji
+    var reservationId = reservation.id;
 
-            // Usuń rezerwację z bazy danych
-            db.collection("reservations").doc(reservationId).delete()
-                .then(function () {
-                    console.log("Reservation successfully deleted!");
-                    // Usuń rezerwację z listy i odśwież widok
-                    var index = reservations.indexOf(reservation);
-                    if (index !== -1) {
-                        reservations.splice(index, 1);
-                        generateCalendar();
-                        updateReservationList();
-                    }
-                })
-                .catch(function (error) {
-                    console.error("Error removing reservation: ", error);
-                });
-        }
+console.log("Reservation ID to be deleted:", reservationId);
+           
+    // Utwórz referencję do dokumentu w kolekcji "reservations"
+    var reservationRef = db.collection("reservations").doc(reservationId);
 
-        function deleteReservationFromFirestore(reservationId) {
-    db.collection("reservations").doc(reservationId).delete()
+           
+    // Usuń dokument z Firestore
+    reservationRef.delete()
         .then(function () {
-            console.log("Reservation successfully deleted from Firestore!");
-            // Aktualizacja lokalnej listy rezerwacji po usunięciu z Firestore
-            loadReservations().then(function () {
+            console.log("Reservation successfully deleted!");
+            // Usunięcie rezerwacji z lokalnej listy
+            var index = reservations.indexOf(reservation);
+            if (index !== -1) {
+                reservations.splice(index, 1);
                 generateCalendar();
-            }).catch(function (error) {
-                console.error("Error loading reservations:", error);
-            });
+                updateReservationList();
+            }
         })
         .catch(function (error) {
-            console.error("Error deleting reservation from Firestore: ", error);
+            console.error("Error deleting reservation: ", error);
         });
 }
 
