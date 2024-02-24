@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -70,6 +71,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <h2 id="calendarTitle">Kalendarz Rezerwacji Strefy Spa</h2>
@@ -115,7 +117,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore.js"></script>
 
     <script>
-        // Zastąp te dane własnymi danymi z Firebase Console
         var firebaseConfig = {
             apiKey: 'AIzaSyBoOqCBtzfMrXnKo7J93mdJ2yawJ4CqwxM',
             authDomain: 'spaa-d7c47.firebaseapp.com',
@@ -130,10 +131,6 @@
         // Uzyskaj dostęp do Firestore
         var db = firebase.firestore();
 
-        // ... (reszta kodu bez zmian)
-    </script>
-
-       <script>
         var currentLanguage = 'pl';
         var roomNumber;
         var userId;
@@ -225,8 +222,13 @@
 
                 var dayElement = document.createElement('div');
                 dayElement.className = 'day';
-                dayElement.textContent = currentDate.toLocaleDateString(currentLanguage, { weekday: 'long', day: 'numeric', month: 'numeric', year: 'numeric' });
-                dayElement.onclick = function() {
+                dayElement.textContent = currentDate.toLocaleDateString(currentLanguage, {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'numeric',
+                    year: 'numeric'
+                });
+                dayElement.onclick = function () {
                     toggleDay(this);
                 };
 
@@ -236,14 +238,19 @@
                 for (var i = 8; i <= 21; i++) {
                     var timeSlotId = generateTimeSlotId(currentDate, i);
                     var isReserved = isTimeSlotReserved(timeSlotId);
+                    var isCurrentUserReservation = isReserved && reservations.find(r => r.userId === userId && r.timeSlotId === timeSlotId);
+
                     var timeSlot = document.createElement('div');
                     timeSlot.className = 'time-slot';
                     timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
                     timeSlot.dataset.timeSlotId = timeSlotId;
 
-                    if (isReserved) {
+                    if (isCurrentUserReservation) {
                         timeSlot.classList.add('reserved');
-                        timeSlot.style.backgroundColor = '#ff6666';
+                        timeSlot.style.backgroundColor = '#00ff00'; // Zielony dla bieżącego użytkownika
+                    } else if (isReserved) {
+                        timeSlot.classList.add('reserved');
+                        timeSlot.style.backgroundColor = '#ff6666'; // Kolor dla innych użytkowników
                     }
 
                     timeSlot.addEventListener('click', function () {
@@ -295,7 +302,7 @@
 
             reservations.push(reservation);
             updateReservationList();
-            saveReservations();
+            saveReservationToFirestore(reservation); // Zapisz rezerwację do Firestore
             closeConfirmationModal();
         }
 
@@ -357,11 +364,29 @@
         }
 
         function loadReservations() {
-            var storedReservations = localStorage.getItem('reservations');
-            if (storedReservations) {
-                reservations = JSON.parse(storedReservations);
-                updateReservationList();
-            }
+            // Pobieranie rezerwacji z Firestore
+            db.collection("reservations").get()
+                .then(function (querySnapshot) {
+                    reservations = [];
+                    querySnapshot.forEach(function (doc) {
+                        reservations.push(doc.data());
+                    });
+                    updateReservationList();
+                })
+                .catch(function (error) {
+                    console.error("Error getting reservations: ", error);
+                });
+        }
+
+        function saveReservationToFirestore(reservation) {
+            // Zapisywanie rezerwacji do Firestore
+            db.collection("reservations").add(reservation)
+                .then(function (docRef) {
+                    console.log("Reservation added with ID: ", docRef.id);
+                })
+                .catch(function (error) {
+                    console.error("Error adding reservation: ", error);
+                });
         }
 
         document.addEventListener('DOMContentLoaded', function () {
@@ -374,7 +399,7 @@
             modal.style.display = 'block';
             overlay.style.display = 'block';
 
-            setTimeout(function() {
+            setTimeout(function () {
                 modal.style.display = 'none';
                 overlay.style.display = 'none';
             }, 2000);
@@ -382,4 +407,5 @@
     </script>
 
 </body>
+
 </html>
