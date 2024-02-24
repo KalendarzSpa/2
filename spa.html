@@ -117,7 +117,7 @@
     <script>
         // Zastąp te dane własnymi danymi z Firebase Console
         var firebaseConfig = {
-            apiKey: 'YOUR_API_KEY',
+            apiKey: 'AIzaSyBoOqCBtzfMrXnKo7J93mdJ2yawJ4CqwxM',
             authDomain: 'spaa-d7c47.firebaseapp.com',
             projectId: 'spaa-d7c47',
             storageBucket: 'spaa-d7c47.appspot.com',
@@ -165,8 +165,8 @@
                 reservationTitle.textContent = 'Moje Rezerwacje:';
                 confirmationMessage.textContent = 'Czy potwierdzasz rezerwację?';
                 submitButton.textContent = 'Zatwierdź';
-                yesButton.textContent = '(Tak)';
-                noButton.textContent = '(Nie)';
+                yesButton.textContent = 'Tak';
+                noButton.textContent = 'Nie';
             } else if (currentLanguage === 'de') {
                 titleElement.textContent = 'Reservierungskalender für den Spa-Bereich';
                 takenMessageElement.textContent = 'Die angegebene Zeit ist bereits belegt.';
@@ -175,8 +175,8 @@
                 reservationTitle.textContent = 'Meine Reservierungen:';
                 confirmationMessage.textContent = 'Bestätigen Sie die Reservierung?';
                 submitButton.textContent = 'Bestätigen';
-                yesButton.textContent = '(Ja)';
-                noButton.textContent = '(Nein)';
+                yesButton.textContent = 'Ja';
+                noButton.textContent = 'Nein';
             } else if (currentLanguage === 'en') {
                 titleElement.textContent = 'Reservation Calendar for the Spa Area';
                 takenMessageElement.textContent = 'The specified time is already taken.';
@@ -185,8 +185,8 @@
                 reservationTitle.textContent = 'My Reservations:';
                 confirmationMessage.textContent = 'Do you confirm the reservation?';
                 submitButton.textContent = 'Confirm';
-                yesButton.textContent = '(Yes)';
-                noButton.textContent = '(No)';
+                yesButton.textContent = 'Yes';
+                noButton.textContent = 'No';
             }
 
             generateCalendar();
