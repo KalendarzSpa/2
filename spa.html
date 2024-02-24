@@ -382,7 +382,7 @@ function generateReservationId() {
             var index = reservations.indexOf(reservation);
             if (index !== -1) {
                 reservations.splice(index, 1);
-                updateCalendar();
+                generateCalendar();
                 updateReservationList();
                 saveReservations();
 
