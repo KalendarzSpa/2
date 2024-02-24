@@ -367,16 +367,38 @@ function generateReservationId() {
         reservationList.appendChild(listItem);
     });
 }
-        function cancelReservation(reservation) {
-            var index = reservations.indexOf(reservation);
-            if (index !== -1) {
-                reservations.splice(index, 1);
-                generateCalendar();
-                updateReservationList();
-                saveReservations();
+        function cancelConfirmation() {
+            // Dodaj kod do pytania "Czy na pewno chcesz anulować rezerwację?" w odpowiednim języku
+            var cancelConfirmation = confirm(currentLanguage === 'pl' ? 'Czy na pewno chcesz anulować rezerwację?' : (currentLanguage === 'de' ? 'Möchten Sie die Reservierung wirklich stornieren?' : 'Are you sure you want to cancel the reservation?'));
+
+            if (cancelConfirmation) {
+                // Dodaj kod do usunięcia rezerwacji
+                cancelReservation();
             }
         }
 
+        function cancelReservation() {
+            // Usuń rezerwację z listy
+            var index = reservations.indexOf(selectedReservation);
+            if (index !== -1) {
+                reservations.splice(index, 1);
+                updateCalendar();
+                updateReservationList();
+                saveReservations();
+
+                // Usuń rezerwację z Firestore
+                db.collection("reservations").doc(selectedReservation.id).delete()
+                    .then(function () {
+                        console.log("Reservation successfully deleted!");
+                    })
+                    .catch(function (error) {
+                        console.error("Error deleting reservation: ", error);
+                    });
+
+                // Zaktualizuj kalendarz po odrezerwowaniu
+                generateCalendar();
+            }
+        }
         function saveReservations() {
             localStorage.setItem('reservations', JSON.stringify(reservations));
         }
