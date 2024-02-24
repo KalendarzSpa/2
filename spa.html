@@ -316,7 +316,18 @@ function confirmReservation() {
         roomNumber: roomNumber
     };
 
-
+if (reservation.userId && reservation.date && reservation.timeSlotId && reservation.roomNumber) {
+    // Dokładamy te pola do dokumentu w Firestore
+    db.collection("reservations").add(reservation)
+        .then(function (docRef) {
+            console.log("Reservation added with ID: ", docRef.id);
+        })
+        .catch(function (error) {
+            console.error("Error adding reservation: ", error);
+        });
+} else {
+    console.error("Some reservation fields are undefined");
+}
     reservations.push(reservation);
     updateReservationList();
     saveReservations();
