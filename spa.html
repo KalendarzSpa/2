@@ -347,29 +347,28 @@ function generateReservationId() {
 
         function updateReservationList() {
     var reservationList = document.getElementById('reservationList');
+    if (!reservationList) {
+        console.error("Reservation list element not found.");
+        return;
+    }
+
     reservationList.innerHTML = '';
 
-    var allReservationList = document.getElementById('allReservationList');
-    allReservationList.innerHTML = '';
+    var myReservations = reservations.filter(function (reservation) {
+        return reservation.userId === userId;
+    });
 
-    reservations.forEach(function (reservation) {
+    myReservations.forEach(function (reservation) {
         var listItem = document.createElement('li');
         listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
-
-        if (reservation.userId === userId) {
-            // Rezerwacje użytkownika
-            var cancelButton = document.createElement('span');
-            cancelButton.className = 'cancel-button';
-            cancelButton.textContent = `(${currentLanguage === 'pl' ? 'Anuluj' : (currentLanguage === 'de' ? 'Stornieren' : 'Cancel')})`;
-            cancelButton.onclick = function () {
-                cancelReservation(reservation);
-            };
-            listItem.appendChild(cancelButton);
-            reservationList.appendChild(listItem);
-        }
-
-        // Wszystkie rezerwacje
-        allReservationList.appendChild(listItem);
+        var cancelButton = document.createElement('span');
+        cancelButton.className = 'cancel-button';
+        cancelButton.textContent = `(${currentLanguage === 'pl' ? 'Anuluj' : (currentLanguage === 'de' ? 'Stornieren' : 'Cancel')})`;
+        cancelButton.onclick = function () {
+            cancelReservation(reservation);
+        };
+        listItem.appendChild(cancelButton);
+        reservationList.appendChild(listItem);
     });
 }
         function cancelReservation(reservation) {
@@ -387,12 +386,11 @@ function generateReservationId() {
         }
 
 
-      function loadReservations() {
+     function loadReservations() {
     db.collection("reservations")
         .get()
         .then(function (querySnapshot) {
             reservations = querySnapshot.docs.map(doc => doc.data());
-            console.log("All Reservations:", reservations); // Dodaj ten log
             updateReservationList();
             generateCalendar();
         })
