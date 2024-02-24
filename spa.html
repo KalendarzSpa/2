@@ -390,7 +390,7 @@ if (reservation.userId && reservation.date && reservation.timeSlotId && reservat
         function saveReservations() {
             localStorage.setItem('reservations', JSON.stringify(reservations));
         }
-            function loadReservations() {
+           function loadReservations() {
     db.collection("reservations").get()
         .then(function (querySnapshot) {
             reservations = [];
@@ -398,12 +398,11 @@ if (reservation.userId && reservation.date && reservation.timeSlotId && reservat
                 reservations.push(doc.data());
             });
             updateReservationList();
-            generateCalendar(); // Dodaj to wywołanie tutaj
+            generateCalendar(); // Dodaj to wywołanie tutaj, po zakończeniu ładowania rezerwacji
         })
         .catch(function (error) {
             console.error("Error getting reservations: ", error);
         });
-}
            
         
 
