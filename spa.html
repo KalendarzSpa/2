@@ -222,9 +222,6 @@
         function generateCalendar() {
             var calendar = document.getElementById('calendar');
             calendar.innerHTML = '';
-
-  
-            
             
             today = new Date();  // Zmieniona na globalną zmienną
     today.setHours(0, 0, 0, 0);
@@ -349,17 +346,16 @@ if (reservation.userId && reservation.date && reservation.timeSlotId && reservat
             });
         }
 
-        function cancelConfirmation() {
-            closeConfirmationModal();
-        
+            function cancelConfirmation() {
+    closeConfirmationModal();
+}
 
-        function closeConfirmationModal() {
-            var confirmationModal = document.getElementById('confirmationModal');
-            var overlay = document.getElementById('overlay');
-            confirmationModal.style.display = 'none';
-            overlay.style.display = 'none';
-        }
-
+function closeConfirmationModal() {
+    var confirmationModal = document.getElementById('confirmationModal');
+    var overlay = document.getElementById('overlay');
+    confirmationModal.style.display = 'none';
+    overlay.style.display = 'none';
+}
         function updateReservationList() {
             var reservationList = document.getElementById('reservationList');
             reservationList.innerHTML = '';
@@ -439,7 +435,6 @@ if (reservation.userId && reservation.date && reservation.timeSlotId && reservat
             }, 2000);
         }
 </script> 
-
 </body>
 
 </html>
