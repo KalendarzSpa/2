@@ -194,21 +194,20 @@
             loadReservations();
         }
 
-        function submitRoomNumber() {
-        var roomNumberInput = document.getElementById('roomNumber');
-        roomNumber = roomNumberInput.value;
+       function submitRoomNumber() {
+    var roomNumberInput = document.getElementById('roomNumber');
+    roomNumber = roomNumberInput.value;
 
-        if (roomNumber.trim() === "") {
-            alert('Wprowadź numer pokoju przed kontynuacją.');
-            return;
-        }
-
-        userId = generateUserId(); // Aktualizacja identyfikatora użytkownika
-        document.getElementById('userSection').style.display = 'none';
-        generateCalendar();
-        loadReservations();
+    if (roomNumber.trim() === "") {
+        alert('Wprowadź numer pokoju przed kontynuacją.');
+        return;
     }
 
+    userId = roomNumber;
+    document.getElementById('userSection').style.display = 'none';
+    generateCalendar();
+    loadReservations();
+}
 
         function generateUserId() {
             return '_' + Math.random().toString(36).substr(2, 9);
@@ -300,7 +299,7 @@ function generateReservationId() {
         return v.toString(16);
     });
 }
-       function confirmReservation() {
+      function confirmReservation() {
     if (!selectedTimeSlot) {
         console.error('Nie wybrano czasu rezerwacji.');
         return;
@@ -322,12 +321,10 @@ function generateReservationId() {
     reservations.push(reservation);
     updateReservationList();
     saveReservationToFirestore(reservation);
-    
+
     // Zmodyfikowano zamykanie okna modal po dodaniu rezerwacji
     closeConfirmationModal();
 }
-
-
 
         function generateTimeSlotId(date, hour) {
             return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + '-' + hour;
