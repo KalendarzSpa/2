@@ -314,7 +314,8 @@ function confirmReservation() {
         date: currentDate.toLocaleDateString(),
         timeSlotId: timeSlotId,
         roomNumber: roomNumber
-    }
+    };
+   
 // Sprawdź, czy wszystkie pola rezerwacji są zdefiniowane
 if (reservation.userId && reservation.date && reservation.timeSlotId && reservation.roomNumber) {
     // Dokładamy te pola do dokumentu w Firestore
@@ -328,8 +329,6 @@ if (reservation.userId && reservation.date && reservation.timeSlotId && reservat
 } else {
     console.error("Some reservation fields are undefined");
 }
-        
-    };
 
     reservations.push(reservation);
     updateReservationList();
