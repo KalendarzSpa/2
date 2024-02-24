@@ -90,7 +90,7 @@
     </div>
 
     <div style="margin-top: 20px;" id="userSection">
-        <label for="roomNumber" id="roomNumberLabel">Wprowadź kod pokoju:</label>
+        <label for="roomNumber" id="roomNumberLabel">Wprowadź numer pokoju:</label>
         <input type="text" id="roomNumber">
         <button onclick="submitRoomNumber()" id="submitButton">Zatwierdź</button>
     </div>
@@ -367,23 +367,7 @@ function generateReservationId() {
         reservationList.appendChild(listItem);
     });
 }
-       function cancelReservation() {
-            // Dodaj kod do pytania "Czy na pewno chcesz anulować rezerwację?" w odpowiednim języku
-            var cancelConfirmation = confirm(currentLanguage === 'pl' ? 'Czy na pewno chcesz anulować rezerwację?' : (currentLanguage === 'de' ? 'Möchten Sie die Reservierung wirklich stornieren?' : 'Are you sure you want to cancel the reservation?'));
-
-            if (cancelReservation) {
-                // Dodaj kod do usunięcia rezerwacji
-                cancelReservation(selectedReservation);
-            }
-        }
-
-function cancelReservation(reservation) {
-    // Usuń rezerwację z Firestore
-    db.collection("reservations").doc(reservation.id).delete()
-        .then(function () {
-            console.log("Reservation successfully deleted!");
-
-            // Usuń rezerwację z listy
+        function cancelReservation(reservation) {
             var index = reservations.indexOf(reservation);
             if (index !== -1) {
                 reservations.splice(index, 1);
@@ -391,38 +375,26 @@ function cancelReservation(reservation) {
                 updateReservationList();
                 saveReservations();
             }
-        })
-        .catch(function (error) {
-            console.error("Error deleting reservation: ", error);
-        });
-}
-        
+        }
+
         function saveReservations() {
             localStorage.setItem('reservations', JSON.stringify(reservations));
         }
 
 
-    function loadReservations() {
-    var currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-
-    if (currentDate instanceof Date && !isNaN(currentDate)) {
-        db.collection("reservations")
-            .where("roomNumber", "==", roomNumber)
-            .where("date", ">=", currentDate)
-            .get()
-            .then(function (querySnapshot) {
-                reservations = querySnapshot.docs.map(doc => doc.data());
-                updateReservationList();
-                generateCalendar();
-            })
-            .catch(function (error) {
-                console.error("Error getting reservations: ", error);
-            });
-    } else {
-        console.error("Invalid currentDate:", currentDate);
-    }
+     function loadReservations() {
+    db.collection("reservations")
+        .get()
+        .then(function (querySnapshot) {
+            reservations = querySnapshot.docs.map(doc => doc.data());
+            updateReservationList();
+            generateCalendar();
+        })
+        .catch(function (error) {
+            console.error("Error getting reservations: ", error);
+        });
 }
+        
 
         function saveReservationToFirestore(reservation) {
             // Zapisywanie rezerwacji do Firestore
