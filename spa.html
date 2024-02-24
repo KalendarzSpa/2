@@ -166,6 +166,7 @@
             }
 
             generateCalendar();
+            loadReservations();
         }
 
         function submitRoomNumber() {
@@ -173,6 +174,7 @@
             roomNumber = roomNumberInput.value;
             generateCalendar();
             document.getElementById('userSection').style.display = 'none';
+            loadReservations();
         }
 
         function generateCalendar() {
@@ -247,6 +249,7 @@
 
             reservations.push(reservation);
             updateReservationList();
+            saveReservations();
 
             closeConfirmationModal();
         }
@@ -286,6 +289,19 @@
                 reservations.splice(index, 1);
                 generateCalendar(); // Refresh the calendar after cancellation
                 updateReservationList(); // Refresh the reservation list
+                saveReservations();
+            }
+        }
+
+        function saveReservations() {
+            localStorage.setItem('reservations', JSON.stringify(reservations));
+        }
+
+        function loadReservations() {
+            var storedReservations = localStorage.getItem('reservations');
+            if (storedReservations) {
+                reservations = JSON.parse(storedReservations);
+                updateReservationList();
             }
         }
 
@@ -308,4 +324,3 @@
 
 </body>
 </html>
-
