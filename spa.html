@@ -3,12 +3,13 @@
 
 <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
 
+    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kalendarz Rezerwacji Strefy Spa</title>
     <style>
-       body {
+        body {
             font-family: Arial, sans-serif;
         }
 
@@ -78,6 +79,15 @@
 
     <h2 id="calendarTitle">Kalendarz Rezerwacji Strefy Spa</h2>
 
+    <div>
+        <label for="languageSelect" id="languageLabel">Wybierz język:</label>
+        <select id="languageSelect" onchange="changeLanguage()">
+            <option value="pl">Polski</option>
+            <option value="de">Deutsch</option>
+            <option value="en">English</option>
+        </select>
+    </div>
+
     <div style="margin-top: 20px;" id="userSection">
         <label for="roomNumber" id="roomNumberLabel">Wprowadź numer pokoju:</label>
         <input type="text" id="roomNumber">
@@ -105,17 +115,18 @@
 
     <div id="overlay"></div>
 
+    <!-- Dodaj te skrypty Firebase poniżej -->
+
     <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-firestore.js"></script>
 
     <script>
         var firebaseConfig = {
-            apiKey: "AIzaSyCz7gGBCSi9pXaDvbrBDELvZOIRWgAutjs",
-            authDomain: "strefaspa-7aaaa.firebaseapp.com",
-            projectId: "strefaspa-7aaaa",
-            storageBucket: "strefaspa-7aaaa.appspot.com",
-            messagingSenderId: "899188726768",
- 
+            apiKey: 'AIzaSyBoOqCBtzfMrXnKo7J93mdJ2yawJ4CqwxM',
+            authDomain: 'spaa-d7c47.firebaseapp.com',
+            projectId: 'spaa-d7c47',
+            storageBucket: 'spaa-d7c47.appspot.com',
+            messagingSenderId: '190657527854',
         };
 
         // Inicjalizacja Firebase
@@ -128,7 +139,6 @@
         var roomNumber;
         var userId;
         var reservations = [];
-        
         var selectedTimeSlot;
 
         function changeLanguage() {
@@ -282,46 +292,32 @@
             confirmationModal.style.display = 'block';
             overlay.style.display = 'block';
         }
-
-        function generateReservationId() {
+function generateReservationId() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var r = (Math.random() * 16) | 0,
             v = c === 'x' ? r : (r & 0x3) | 0x8;
         return v.toString(16);
     });
 }
+        function confirmReservation() {
+            selectedTimeSlot.classList.add('reserved');
+            selectedTimeSlot.style.backgroundColor = '#ff6666';
 
-function confirmReservation() {
-    selectedTimeSlot.classList.add('reserved');
-    selectedTimeSlot.style.backgroundColor = '#ff6666';
+            var currentDate = new Date();
+            var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
+            var reservation = {
+                id: generateReservationId(),
+                userId: userId,
+                date: currentDate.toLocaleDateString(),
+                timeSlotId: timeSlotId,
+                roomNumber: roomNumber
+            };
 
-    var currentDate = new Date();
-    var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
-    var reservation = {
-        id: generateReservationId(),
-        userId: userId,
-        date: currentDate.toLocaleDateString(),
-        timeSlotId: timeSlotId,
-        roomNumber: roomNumber
-    };
-
-if (reservation.userId && reservation.date && reservation.timeSlotId && reservation.roomNumber) {
-    // Dokładamy te pola do dokumentu w Firestore
-    db.collection("reservations").add(reservation)
-        .then(function (docRef) {
-            console.log("Reservation added with ID: ", docRef.id);
-        })
-        .catch(function (error) {
-            console.error("Error adding reservation: ", error);
-        });
-} else {
-    console.error("Some reservation fields are undefined");
-}
-    reservations.push(reservation);
-    updateReservationList();
-    saveReservations();
-    closeConfirmationModal();
-}
+            reservations.push(reservation);
+            updateReservationList();
+            saveReservationToFirestore(reservation); // Zapisz rezerwację do Firestore
+            closeConfirmationModal();
+        }
 
         function generateTimeSlotId(date, hour) {
             return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + '-' + hour;
@@ -335,7 +331,7 @@ if (reservation.userId && reservation.date && reservation.timeSlotId && reservat
 
         function cancelConfirmation() {
             closeConfirmationModal();
-        
+        }
 
         function closeConfirmationModal() {
             var confirmationModal = document.getElementById('confirmationModal');
@@ -379,7 +375,7 @@ if (reservation.userId && reservation.date && reservation.timeSlotId && reservat
         function saveReservations() {
             localStorage.setItem('reservations', JSON.stringify(reservations));
         }
-           function loadReservations() {
+            function loadReservations() {
     db.collection("reservations").get()
         .then(function (querySnapshot) {
             reservations = [];
@@ -387,11 +383,12 @@ if (reservation.userId && reservation.date && reservation.timeSlotId && reservat
                 reservations.push(doc.data());
             });
             updateReservationList();
-            generateCalendar(); // Dodaj to wywołanie tutaj, po zakończeniu ładowania rezerwacji
+            generateCalendar(); // Dodaj to wywołanie tutaj
         })
         .catch(function (error) {
             console.error("Error getting reservations: ", error);
         });
+}
            
         
 
