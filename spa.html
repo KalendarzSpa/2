@@ -389,11 +389,12 @@ function generateReservationId() {
         }
 
 
-        function loadReservations() {
+      function loadReservations() {
     db.collection("reservations")
         .get()
         .then(function (querySnapshot) {
             reservations = querySnapshot.docs.map(doc => doc.data());
+            console.log("All Reservations:", reservations); // Dodaj ten log
             updateReservationList();
             generateCalendar();
         })
@@ -401,7 +402,6 @@ function generateReservationId() {
             console.error("Error getting reservations: ", error);
         });
 }
-    }
         
 
         function saveReservationToFirestore(reservation) {
