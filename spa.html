@@ -392,13 +392,13 @@ function deleteReservationFromFirestore(reservationId) {
         }
 
 
-     function loadReservations() {
+    function loadReservations() {
     db.collection("reservations")
         .get()
         .then(function (querySnapshot) {
             reservations = querySnapshot.docs.map(doc => doc.data());
             updateReservationList();
-            generateCalendar();
+            generateCalendar(); // Przesunięcie generowania kalendarza po pobraniu danych
         })
         .catch(function (error) {
             console.error("Error getting reservations: ", error);
