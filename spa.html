@@ -386,35 +386,37 @@ function generateReservationId() {
 }
 
 function cancelReservation(reservation) {
-    // Pobierz identyfikator dokumentu Firestore
-    var reservationId = reservation.doc.id;
+            var reservationId = reservation.id;
 
-    // Usuń rezerwację z listy
-    var index = reservations.findIndex(r => r.doc.id === reservationId);
-    if (index !== -1) {
-        reservations.splice(index, 1);
-        updateReservationList();
-        saveReservations();
+            var index = reservations.findIndex(r => r.id === reservationId);
+            if (index !== -1) {
+                reservations.splice(index, 1);
+                updateReservationList();
+                saveReservations();
 
-        // Usuń rezerwację z Firestore
-        deleteReservationFromFirestore(reservationId);
-    }
-}
+                deleteReservationFromFirestore(reservationId);
+            }
+        }
 
-function deleteReservationFromFirestore(reservationId) {
-    // Pobierz referencję do dokumentu w Firestore i usuń go
-    db.collection("reservations").doc(reservationId).delete()
-        .then(function () {
-            console.log("Reservation successfully deleted from Firestore!");
-        })
-        .catch(function (error) {
-            console.error("Error deleting reservation from Firestore: ", error);
-        });
-}
-
-        function saveReservations() {
-    localStorage.setItem('reservations', JSON.stringify(reservations));
-}
+        // Funkcja pomocnicza do usuwania rezerwacji z Firestore
+        function deleteReservationFromFirestore(reservationId) {
+            db.collection("reservations").doc(reservationId).delete()
+                .then(function () {
+                    console.log("Reservation successfully deleted from Firestore!");
+                })
+                .catch(function (error) {
+                    console.error("Error deleting reservation from Firestore: ", error);
+                });
+        }
+          function saveReservationToFirestore(reservation) {
+            db.collection("reservations").doc(reservation.id).set(reservation)
+                .then(function () {
+                    console.log("Reservation successfully saved to Firestore!");
+                })
+                .catch(function (error) {
+                    console.error("Error saving reservation to Firestore: ", error);
+                });
+        }
 
 function loadReservations() {
     return new Promise(function (resolve, reject) {
