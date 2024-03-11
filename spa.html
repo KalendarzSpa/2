@@ -201,20 +201,22 @@
         }
 function submitRoomNumber() {
     var roomNumberInput = document.getElementById('roomNumber');
-    roomNumber = roomNumberInput.value;
+    var roomNumber = roomNumberInput.value;
 
     if (roomNumber.trim() === "") {
         alert('Wprowadź numer pokoju przed kontynuacją.');
         return;
     }
 
-    userId = roomNumber;
-    document.getElementById('userSection').style.display = 'none';
-    
-    // Pokaż sekcję rezerwacji po wprowadzeniu numeru pokoju
-    document.getElementById('reservationSection').classList.remove('hidden');
+    // Zapisz numer pokoju w lokalnej zmiennej
+    currentRoomNumber = roomNumber;
 
+    // Ukryj sekcję wprowadzania numeru pokoju
+    document.getElementById('userSection').style.display = 'none';
+
+    // Załaduj rezerwacje dla danego numeru pokoju
     loadReservations().then(function () {
+        // Generuj kalendarz po załadowaniu rezerwacji
         generateCalendar();
     }).catch(function (error) {
         console.error("Error loading reservations:", error);
@@ -383,7 +385,7 @@ function generateReservationId() {
     });
 }
 
-        function cancelReservation(reservation) {
+function cancelReservation(reservation) {
     // Pobierz identyfikator dokumentu Firestore
     var reservationId = reservation.doc.id;
 
@@ -411,17 +413,25 @@ function deleteReservationFromFirestore(reservationId) {
 }
 
         function saveReservations() {
-            localStorage.setItem('reservations', JSON.stringify(reservations));
-        }
+    localStorage.setItem('reservations', JSON.stringify(reservations));
+}
 
 function loadReservations() {
     return new Promise(function (resolve, reject) {
         db.collection("reservations")
+            .where("roomNumber", "==", currentRoomNumber) // Dodaj warunek dla numeru pokoju
             .onSnapshot(function (querySnapshot) {
-                var currentDate = new Date();
+                reservations = [];
 
-                reservations = querySnapshot.docs.map(doc => ({ doc: doc, ...doc.data() }))
-                    .filter(reservation => new Date(reservation.date) >= currentDate);
+                querySnapshot.forEach(function (doc) {
+                    var reservation = doc.data();
+                    reservation.doc = doc;
+
+                    // Sprawdź, czy rezerwacja jest przyszła
+                    if (new Date(reservation.date) >= currentDate) {
+                        reservations.push(reservation);
+                    }
+                });
 
                 updateReservationList();
                 resolve();
