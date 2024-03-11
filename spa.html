@@ -380,31 +380,30 @@ function cancelReservation(reservation) {
                 });
         }
 
-        function loadReservations() {
-            return new Promise(function (resolve, reject) {
-                db.collection("reservations")
-                    .where("roomNumber", "==", currentRoomNumber)
-                    .onSnapshot(function (querySnapshot) {
-                        reservations = [];
+       function loadReservations() {
+    return new Promise(function (resolve, reject) {
+        db.collection("reservations")
+            .where("roomNumber", "==", currentRoomNumber)
+            .onSnapshot(function (querySnapshot) {
+                reservations = [];
 
-                        querySnapshot.forEach(function (doc) {
-                            var reservation = doc.data();
-                            reservation.id = doc.id;
+                querySnapshot.forEach(function (doc) {
+                    var reservation = doc.data();
+                    reservation.id = doc.id;
 
-                            if (new Date(reservation.date) >= currentDate) {
-                                reservations.push(reservation);
-                            }
-                        });
+                    if (new Date(reservation.date) >= currentDate) {
+                        reservations.push(reservation);
+                    }
+                });
 
-                        updateReservationList();
-                        resolve();
-                    }, function (error) {
-                        console.error("Error getting reservations: ", error);
-                        reject(error);
-                    });
+                updateReservationList();
+                resolve();
+            }, function (error) {
+                console.error("Error getting reservations: ", error);
+                reject(error);
             });
-        }
-
+    });
+}
         function updateReservationList() {
             var reservationList = document.getElementById('reservationList');
             reservationList.innerHTML = '';
