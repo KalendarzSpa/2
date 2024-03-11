@@ -222,15 +222,18 @@
             return '_' + Math.random().toString(36).substr(2, 9);
         }
 
-       function generateCalendar() {
-    var calendar = document.getElementById('calendar');
-    calendar.innerHTML = '';
+        function generateCalendar() {
+            var calendar = document.getElementById('calendar');
+            calendar.innerHTML = '';
 
-    var today = new Date();
+  
+            
+            
+            today = new Date();  // Zmieniona na globalną zmienną
     today.setHours(0, 0, 0, 0);
 
-    for (var dayOffset = 0; dayOffset < 2; dayOffset++) {
-        var currentDate = new Date(today);
+            for (var dayOffset = 0; dayOffset < 2; dayOffset++) {
+        currentDate = new Date(today);
         currentDate.setDate(currentDate.getDate() + dayOffset);
 
         var dayElement = document.createElement('div');
@@ -241,6 +244,10 @@
             month: 'numeric',
             year: 'numeric'
         });
+        dayElement.onclick = function () {
+            toggleDay(this);
+        };
+               
 
         var timeSlotsContainer = document.createElement('div');
         timeSlotsContainer.className = 'time-slots-container';
@@ -257,66 +264,28 @@
 
             if (isCurrentUserReservation) {
                 timeSlot.classList.add('reserved');
-                timeSlot.style.backgroundColor = '#00ff00';
+                timeSlot.style.backgroundColor = '#00ff00'; // Zielony dla bieżącego użytkownika
             } else if (isReserved) {
                 timeSlot.classList.add('reserved');
-                timeSlot.style.backgroundColor = '#ff6666';
-            } else {
-                timeSlot.classList.add('available');  // Nowa klasa dla dostępnych bloków
-                timeSlot.onclick = function () {
-                    selectedTimeSlot = this;
-                    if (!selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken')) {
-                        openConfirmationModal(selectedTimeSlot.dataset.timeSlotId);
-                    } else {
-                        showTakenMessage();
-                    }
-                };
+                timeSlot.style.backgroundColor = '#ff6666'; // Kolor dla innych użytkowników
             }
+
+            timeSlot.addEventListener('click', function () {
+                selectedTimeSlot = this;
+                if (!selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken')) {
+                    openConfirmationModal();
+                } else {
+                    openTakenModal();
+                }
+            });
 
             timeSlotsContainer.appendChild(timeSlot);
         }
 
         dayElement.appendChild(timeSlotsContainer);
         calendar.appendChild(dayElement);
-
-        dayElement.onclick = function () {
-            toggleDay(this);
-        };
     }
 }
-
-function toggleDay(dayElement) {
-    var timeSlotsContainer = dayElement.querySelector('.time-slots-container');
-    if (timeSlotsContainer.style.display === 'block') {
-        timeSlotsContainer.style.display = 'none';
-    } else {
-        timeSlotsContainer.style.display = 'block';
-    }
-}
-
-
-        function showTakenMessage() {
-    var takenModal = document.getElementById('takenModal');
-    var overlay = document.getElementById('overlay');
-    var takenMessageElement = document.getElementById('takenMessage');
-
-    if (currentLanguage === 'pl') {
-        takenMessageElement.textContent = 'Ten blok jest już zajęty.';
-    } else if (currentLanguage === 'de') {
-        takenMessageElement.textContent = 'Dieser Block ist bereits belegt.';
-    } else if (currentLanguage === 'en') {
-        takenMessageElement.textContent = 'This block is already taken.';
-    }
-
-    takenModal.style.display = 'block';
-    overlay.style.display = 'block';
-
-    setTimeout(function () {
-        takenModal.style.display = 'none';
-        overlay.style.display = 'none';
-    }, 2000);
-}
-
         function toggleDay(dayElement) {
             var timeSlotsContainer = dayElement.querySelector('.time-slots-container');
             if (timeSlotsContainer.style.display === 'block') {
