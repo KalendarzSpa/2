@@ -170,23 +170,23 @@
         }
 
         function confirmReservation() {
-            var currentDate = new Date();
-            var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
-            
-            var reservation = {
-                id: generateReservationId(),
-                userId: currentRoomNumber,
-                date: currentDate.toLocaleDateString(),
-                timeSlotId: timeSlotId,
-                roomNumber: currentRoomNumber
-            };
+    var currentDate = new Date();
+    var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
+    
+    var reservation = {
+        id: generateReservationId(),
+        userId: currentRoomNumber, // Tutaj powinno być poprawnie ustawione currentRoomNumber
+        date: currentDate.toLocaleDateString(),
+        timeSlotId: timeSlotId,
+        roomNumber: currentRoomNumber
+    };
 
-            reservations.push(reservation);
-            updateReservationList();
-            saveReservationToFirestore(reservation);
-            
-            closeConfirmationModal();
-        }
+    reservations.push(reservation);
+    updateReservationList();
+    saveReservationToFirestore(reservation);
+    
+    closeConfirmationModal();
+}
 
         function saveReservationToFirestore(reservation) {
             db.collection("reservations").add(reservation)
