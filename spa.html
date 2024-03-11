@@ -398,7 +398,6 @@ function cancelReservation(reservation) {
             }
         }
 
-        // Funkcja pomocnicza do usuwania rezerwacji z Firestore
         function deleteReservationFromFirestore(reservationId) {
             db.collection("reservations").doc(reservationId).delete()
                 .then(function () {
@@ -419,31 +418,29 @@ function cancelReservation(reservation) {
         }
 
 function loadReservations() {
-    return new Promise(function (resolve, reject) {
-        db.collection("reservations")
-            .where("roomNumber", "==", currentRoomNumber) // Dodaj warunek dla numeru pokoju
-            .onSnapshot(function (querySnapshot) {
-                reservations = [];
+            return new Promise(function (resolve, reject) {
+                db.collection("reservations")
+                    .where("roomNumber", "==", currentRoomNumber)
+                    .onSnapshot(function (querySnapshot) {
+                        reservations = [];
 
-                querySnapshot.forEach(function (doc) {
-                    var reservation = doc.data();
-                    reservation.doc = doc;
+                        querySnapshot.forEach(function (doc) {
+                            var reservation = doc.data();
+                            reservation.id = doc.id;
 
-                    // Sprawdź, czy rezerwacja jest przyszła
-                    if (new Date(reservation.date) >= currentDate) {
-                        reservations.push(reservation);
-                    }
-                });
+                            if (new Date(reservation.date) >= currentDate) {
+                                reservations.push(reservation);
+                            }
+                        });
 
-                updateReservationList();
-                resolve();
-            }, function (error) {
-                console.error("Error getting reservations: ", error);
-                reject(error);
+                        updateReservationList();
+                        resolve();
+                    }, function (error) {
+                        console.error("Error getting reservations: ", error);
+                        reject(error);
+                    });
             });
-    });
-}
-
+        }
 
         function openTakenModal() {
             var modal = document.getElementById('takenModal');
