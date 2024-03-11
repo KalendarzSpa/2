@@ -414,38 +414,24 @@ function deleteReservationFromFirestore(reservationId) {
             localStorage.setItem('reservations', JSON.stringify(reservations));
         }
 
-
-  function loadReservations() {
+function loadReservations() {
     return new Promise(function (resolve, reject) {
         db.collection("reservations")
-            .get()
-            .then(function (querySnapshot) {
-                reservations = querySnapshot.docs.map(doc => ({ doc: doc, ...doc.data() }));
+            .onSnapshot(function (querySnapshot) {
+                var currentDate = new Date();
+
+                reservations = querySnapshot.docs.map(doc => ({ doc: doc, ...doc.data() }))
+                    .filter(reservation => new Date(reservation.date) >= currentDate);
+
                 updateReservationList();
                 resolve();
-            })
-            .catch(function (error) {
+            }, function (error) {
                 console.error("Error getting reservations: ", error);
                 reject(error);
             });
     });
 }
-        
 
-        function saveReservationToFirestore(reservation) {
-            // Zapisywanie rezerwacji do Firestore
-            db.collection("reservations").add(reservation)
-                .then(function (docRef) {
-                    console.log("Reservation added with ID: ", docRef.id);
-                })
-                .catch(function (error) {
-                    console.error("Error adding reservation: ", error);
-                });
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            updateContent();
-        });
 
         function openTakenModal() {
             var modal = document.getElementById('takenModal');
