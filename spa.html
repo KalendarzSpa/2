@@ -307,30 +307,6 @@ function generateReservationId() {
         return v.toString(16);
     });
 }
-      function confirmReservation() {
-    console.log("Confirming Reservation:", selectedTimeSlot.dataset.timeSlotId);
-    selectedTimeSlot.classList.add('reserved');
-    selectedTimeSlot.style.backgroundColor = '#ff6666';
-
-    var currentDate = new Date();
-    var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
-    var reservation = {
-        id: generateReservationId(),
-        userId: roomNumber,
-        date: currentDate.toLocaleDateString(),
-        timeSlotId: timeSlotId,
-        roomNumber: roomNumber
-    };
-
-    console.log("New Reservation:", reservation);
-    reservations = [...reservations, reservation];
-    console.log("Updated Reservations:", reservations);
-    
-    updateReservationList();
-    saveReservationToFirestore(reservation);
-
-    closeConfirmationModal();
-}
 
         function generateTimeSlotId(date, hour) {
             return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + '-' + hour;
@@ -402,40 +378,67 @@ function cancelReservation(reservation) {
                     console.error("Error deleting reservation from Firestore: ", error);
                 });
         }
-          function saveReservationToFirestore(reservation) {
-            db.collection("reservations").doc(reservation.id).set(reservation)
-                .then(function () {
-                    console.log("Reservation successfully saved to Firestore!");
-                })
-                .catch(function (error) {
-                    console.error("Error saving reservation to Firestore: ", error);
-                });
-        }
+        
+function confirmReservation() {
+    console.log("Confirming Reservation:", selectedTimeSlot.dataset.timeSlotId);
+    selectedTimeSlot.classList.add('reserved');
+    selectedTimeSlot.style.backgroundColor = '#ff6666';
+
+    var currentDate = new Date();
+    var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
+    var reservation = {
+        id: generateReservationId(),
+        userId: roomNumber,  // Poprawione przypisanie numeru pokoju
+        date: currentDate.toLocaleDateString(),
+        timeSlotId: timeSlotId,
+        roomNumber: roomNumber  // Poprawione przypisanie numeru pokoju
+    };
+
+    console.log("New Reservation:", reservation);
+    reservations = [...reservations, reservation];
+    console.log("Updated Reservations:", reservations);
+
+    updateReservationList();
+    saveReservationToFirestore(reservation);
+
+    closeConfirmationModal();
+}
+
+function saveReservationToFirestore(reservation) {
+    db.collection("reservations").add(reservation)  // Zamiast "doc" używamy "add"
+        .then(function (docRef) {
+            console.log("Reservation successfully saved to Firestore with ID:", docRef.id);
+        })
+        .catch(function (error) {
+            console.error("Error saving reservation to Firestore: ", error);
+        });
+}
 
 function loadReservations() {
-            return new Promise(function (resolve, reject) {
-                db.collection("reservations")
-                    .where("roomNumber", "==", currentRoomNumber)
-                    .onSnapshot(function (querySnapshot) {
-                        reservations = [];
+    return new Promise(function (resolve, reject) {
+        db.collection("reservations")
+            .where("roomNumber", "==", currentRoomNumber)
+            .onSnapshot(function (querySnapshot) {
+                reservations = [];
 
-                        querySnapshot.forEach(function (doc) {
-                            var reservation = doc.data();
-                            reservation.id = doc.id;
+                querySnapshot.forEach(function (doc) {
+                    var reservation = doc.data();
+                    reservation.id = doc.id;
 
-                            if (new Date(reservation.date) >= currentDate) {
-                                reservations.push(reservation);
-                            }
-                        });
+                    if (new Date(reservation.date) >= currentDate) {
+                        reservations.push(reservation);
+                    }
+                });
 
-                        updateReservationList();
-                        resolve();
-                    }, function (error) {
-                        console.error("Error getting reservations: ", error);
-                        reject(error);
-                    });
+                updateReservationList();
+                resolve();
+            }, function (error) {
+                console.error("Error getting reservations: ", error);
+                reject(error);
             });
-        }
+    });
+}
+
 
         function openTakenModal() {
             var modal = document.getElementById('takenModal');
