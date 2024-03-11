@@ -95,6 +95,11 @@
         <button onclick="submitRoomNumber()" id="submitButton">Zatwierdź</button>
     </div>
 
+    <div class="reservation-section hidden" id="reservationSection">
+    <h3 id="reservationTitle">Rezerwacje:</h3>
+    <ul id="reservationList"></ul>
+</div>
+
     <div class="calendar" id="calendar">
         <!-- Days will be generated here -->
     </div>
@@ -194,8 +199,7 @@
             generateCalendar();
             loadReservations();
         }
-
-       function submitRoomNumber() {
+function submitRoomNumber() {
     var roomNumberInput = document.getElementById('roomNumber');
     roomNumber = roomNumberInput.value;
 
@@ -206,6 +210,9 @@
 
     userId = roomNumber;
     document.getElementById('userSection').style.display = 'none';
+    
+    // Pokaż sekcję rezerwacji po wprowadzeniu numeru pokoju
+    document.getElementById('reservationSection').classList.remove('hidden');
 
     loadReservations().then(function () {
         generateCalendar();
@@ -375,12 +382,11 @@ function generateReservationId() {
         reservationList.appendChild(listItem);
     });
 }
-       function cancelReservation(reservation) {
+
+        function cancelReservation(reservation) {
     // Pobierz identyfikator dokumentu Firestore
     var reservationId = reservation.doc.id;
 
-            console.log("Reservation to be deleted:", reservation);
-           
     // Usuń rezerwację z listy
     var index = reservations.findIndex(r => r.doc.id === reservationId);
     if (index !== -1) {
@@ -409,12 +415,12 @@ function deleteReservationFromFirestore(reservationId) {
         }
 
 
-    function loadReservations() {
+  function loadReservations() {
     return new Promise(function (resolve, reject) {
         db.collection("reservations")
             .get()
             .then(function (querySnapshot) {
-                reservations = querySnapshot.docs.map(doc => doc.data());
+                reservations = querySnapshot.docs.map(doc => ({ doc: doc, ...doc.data() }));
                 updateReservationList();
                 resolve();
             })
