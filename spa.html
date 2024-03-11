@@ -165,104 +165,6 @@
             });
         }
 
-        function generateCalendar() {
-            // Reszta kodu do generowania kalendarza pozostała bez zmian
-        }
-
-        function confirmReservation() {
-    var currentDate = new Date();
-    var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
-    
-    var reservation = {
-        id: generateReservationId(),
-        userId: currentRoomNumber, // Tutaj powinno być poprawnie ustawione currentRoomNumber
-        date: currentDate.toLocaleDateString(),
-        timeSlotId: timeSlotId,
-        roomNumber: currentRoomNumber
-    };
-
-    reservations.push(reservation);
-    updateReservationList();
-    saveReservationToFirestore(reservation);
-    
-    closeConfirmationModal();
-}
-
-        function saveReservationToFirestore(reservation) {
-            db.collection("reservations").add(reservation)
-                .then(function (docRef) {
-                    console.log("Reservation successfully saved to Firestore with ID:", docRef.id);
-                })
-                .catch(function (error) {
-                    console.error("Error saving reservation to Firestore: ", error);
-                });
-        }
-
-        function loadReservations() {
-            return new Promise(function (resolve, reject) {
-                db.collection("reservations")
-                    .where("roomNumber", "==", currentRoomNumber)
-                    .onSnapshot(function (querySnapshot) {
-                        reservations = [];
-
-                        querySnapshot.forEach(function (doc) {
-                            var reservation = doc.data();
-                            reservation.id = doc.id;
-
-                            if (new Date(reservation.date) >= currentDate) {
-                                reservations.push(reservation);
-                            }
-                        });
-
-                        updateReservationList();
-                        resolve();
-                    }, function (error) {
-                        console.error("Error getting reservations: ", error);
-                        reject(error);
-                    });
-            });
-        }
-
-        function updateReservationList() {
-            var reservationList = document.getElementById('reservationList');
-            reservationList.innerHTML = '';
-
-            reservations.forEach(function (reservation) {
-                var listItem = document.createElement('li');
-                listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
-
-                var cancelButton = document.createElement('span');
-                cancelButton.className = 'cancel-button';
-                cancelButton.textContent = `(Anuluj)`;
-                cancelButton.onclick = function () {
-                    cancelReservation(reservation);
-                };
-                listItem.appendChild(cancelButton);
-                reservationList.appendChild(listItem);
-            });
-        }
-
-        function cancelReservation(reservation) {
-            var reservationId = reservation.id;
-
-            var index = reservations.findIndex(r => r.id === reservationId);
-            if (index !== -1) {
-                reservations.splice(index, 1);
-                updateReservationList();
-                deleteReservationFromFirestore(reservationId);
-            }
-        }
-
-        function deleteReservationFromFirestore(reservationId) {
-            db.collection("reservations").doc(reservationId).delete()
-                .then(function () {
-                    console.log("Reservation successfully deleted from Firestore!");
-                })
-                .catch(function (error) {
-                    console.error("Error deleting reservation from Firestore: ", error);
-                });
-        }
-
 
         function changeLanguage() {
             var languageSelect = document.getElementById('languageSelect');
@@ -448,7 +350,101 @@ function cancelReservation(reservation) {
                     console.error("Error deleting reservation from Firestore: ", error);
                 });
         }
-        
+
+         function confirmReservation() {
+    var currentDate = new Date();
+    var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
+    
+    var reservation = {
+        id: generateReservationId(),
+        userId: currentRoomNumber, // Tutaj powinno być poprawnie ustawione currentRoomNumber
+        date: currentDate.toLocaleDateString(),
+        timeSlotId: timeSlotId,
+        roomNumber: currentRoomNumber
+    };
+
+    reservations.push(reservation);
+    updateReservationList();
+    saveReservationToFirestore(reservation);
+    
+    closeConfirmationModal();
+}
+
+        function saveReservationToFirestore(reservation) {
+            db.collection("reservations").add(reservation)
+                .then(function (docRef) {
+                    console.log("Reservation successfully saved to Firestore with ID:", docRef.id);
+                })
+                .catch(function (error) {
+                    console.error("Error saving reservation to Firestore: ", error);
+                });
+        }
+
+        function loadReservations() {
+            return new Promise(function (resolve, reject) {
+                db.collection("reservations")
+                    .where("roomNumber", "==", currentRoomNumber)
+                    .onSnapshot(function (querySnapshot) {
+                        reservations = [];
+
+                        querySnapshot.forEach(function (doc) {
+                            var reservation = doc.data();
+                            reservation.id = doc.id;
+
+                            if (new Date(reservation.date) >= currentDate) {
+                                reservations.push(reservation);
+                            }
+                        });
+
+                        updateReservationList();
+                        resolve();
+                    }, function (error) {
+                        console.error("Error getting reservations: ", error);
+                        reject(error);
+                    });
+            });
+        }
+
+        function updateReservationList() {
+            var reservationList = document.getElementById('reservationList');
+            reservationList.innerHTML = '';
+
+            reservations.forEach(function (reservation) {
+                var listItem = document.createElement('li');
+                listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+
+                var cancelButton = document.createElement('span');
+                cancelButton.className = 'cancel-button';
+                cancelButton.textContent = `(Anuluj)`;
+                cancelButton.onclick = function () {
+                    cancelReservation(reservation);
+                };
+                listItem.appendChild(cancelButton);
+                reservationList.appendChild(listItem);
+            });
+        }
+
+        function cancelReservation(reservation) {
+            var reservationId = reservation.id;
+
+            var index = reservations.findIndex(r => r.id === reservationId);
+            if (index !== -1) {
+                reservations.splice(index, 1);
+                updateReservationList();
+                deleteReservationFromFirestore(reservationId);
+            }
+        }
+
+        function deleteReservationFromFirestore(reservationId) {
+            db.collection("reservations").doc(reservationId).delete()
+                .then(function () {
+                    console.log("Reservation successfully deleted from Firestore!");
+                })
+                .catch(function (error) {
+                    console.error("Error deleting reservation from Firestore: ", error);
+                });
+        }
+
 
         function openTakenModal() {
             var modal = document.getElementById('takenModal');
