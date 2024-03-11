@@ -262,6 +262,7 @@
                 timeSlot.classList.add('reserved');
                 timeSlot.style.backgroundColor = '#ff6666';
             } else {
+                timeSlot.classList.add('available');  // Nowa klasa dla dostępnych bloków
                 timeSlot.onclick = function () {
                     selectedTimeSlot = this;
                     if (!selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken')) {
@@ -277,8 +278,22 @@
 
         dayElement.appendChild(timeSlotsContainer);
         calendar.appendChild(dayElement);
+
+        dayElement.onclick = function () {
+            toggleDay(this);
+        };
     }
 }
+
+function toggleDay(dayElement) {
+    var timeSlotsContainer = dayElement.querySelector('.time-slots-container');
+    if (timeSlotsContainer.style.display === 'block') {
+        timeSlotsContainer.style.display = 'none';
+    } else {
+        timeSlotsContainer.style.display = 'block';
+    }
+}
+
 
         function showTakenMessage() {
     var takenModal = document.getElementById('takenModal');
