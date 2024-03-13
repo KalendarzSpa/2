@@ -163,6 +163,9 @@
             });
         }
 
+          function generateUserId() {
+            return '_' + Math.random().toString(36).substr(2, 9);
+        }
         function generateReservationId() {
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
                 var r = (Math.random() * 16) | 0,
