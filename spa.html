@@ -131,8 +131,18 @@
         firebase.initializeApp(firebaseConfig);
         var db = firebase.firestore();
 
-        var currentRoomNumber;
+        var currentLanguage = 'pl';
+        var roomNumber;
+        var userId;
         var reservations = [];
+        var selectedTimeSlot;
+        var currentRoomNumber;
+
+        function changeLanguage() {
+            var languageSelect = document.getElementById('languageSelect');
+            currentLanguage = languageSelect.value;
+            updateContent();
+        }
 
         function submitRoomNumber() {
             var roomNumberInput = document.getElementById('roomNumber');
@@ -336,6 +346,10 @@
 
 
         function confirmReservation() {
+           
+    console.log("Confirming Reservation:", selectedTimeSlot.dataset.timeSlotId);
+    selectedTimeSlot.classList.add('reserved');
+    selectedTimeSlot.style.backgroundColor = '#ff6666';
             var currentDate = new Date();
             var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
 
@@ -365,20 +379,20 @@
         }
 
         function loadReservations() {
-            return new Promise(function (resolve, reject) {
-                db.collection("reservations")
-                    .where("roomNumber", "==", currentRoomNumber)
-                    .onSnapshot(function (querySnapshot) {
-                        reservations = [];
-
-                        querySnapshot.forEach(function (doc) {
-                            var reservation = doc.data();
-                            reservation.id = doc.id;
-
-                            if (new Date(reservation.date) >= currentDate) {
-                                reservations.push(reservation);
-                            }
-                        });
+       return new Promise(function (resolve, reject) {
+        db.collection("reservations")
+            .get()
+            .then(function (querySnapshot) {
+                reservations = querySnapshot.docs.map(doc => doc.data());
+                updateReservationList();
+                resolve();
+            })
+            .catch(function (error) {
+                console.error("Error getting reservations: ", error);
+                reject(error);
+            });
+    });
+}
 
                         updateReservationList();
                         resolve();
@@ -390,8 +404,13 @@
         }
 
         function updateReservationList() {
-            var reservationList = document.getElementById('reservationList');
-            reservationList.innerHTML = '';
+             var reservationList = document.getElementById('reservationList');
+    reservationList.innerHTML = '';
+
+    var myReservations = reservations.filter(function (reservation) {
+        return reservation.roomNumber === roomNumber; // Dodany warunek dla numeru pokoju
+    });
+            
 
             reservations.forEach(function (reservation) {
                 var listItem = document.createElement('li');
