@@ -323,6 +323,27 @@
             overlay.style.display = 'none';
         }
 
+         function cancelReservation(reservation) {
+            var reservationId = reservation.id;
+
+            var index = reservations.findIndex(r => r.id === reservationId);
+            if (index !== -1) {
+                reservations.splice(index, 1);
+                updateReservationList();
+                deleteReservationFromFirestore(reservationId);
+            }
+        }
+
+        function deleteReservationFromFirestore(reservationId) {
+            db.collection("reservations").doc(reservationId).delete()
+                .then(function () {
+                    console.log("Reservation successfully deleted from Firestore!");
+                })
+                .catch(function (error) {
+                    console.error("Error deleting reservation from Firestore: ", error);
+                });
+        }
+
         function markTimeSlotAsReserved(timeSlotId) {
             var timeSlotElement = document.querySelector(`.time-slot[data-time-slot-id="${timeSlotId}"]`);
             if (timeSlotElement) {
@@ -408,27 +429,6 @@
                 listItem.appendChild(cancelButton);
                 reservationList.appendChild(listItem);
             });
-        }
-
-       function cancelReservation(reservation) {
-            var reservationId = reservation.id;
-
-            var index = reservations.findIndex(r => r.id === reservationId);
-            if (index !== -1) {
-                reservations.splice(index, 1);
-                updateReservationList();
-                deleteReservationFromFirestore(reservationId);
-            }
-        }
-
-        function deleteReservationFromFirestore(reservationId) {
-            db.collection("reservations").doc(reservationId).delete()
-                .then(function () {
-                    console.log("Reservation successfully deleted from Firestore!");
-                })
-                .catch(function (error) {
-                    console.error("Error deleting reservation from Firestore: ", error);
-                });
         }
 
         function openTakenModal() {
