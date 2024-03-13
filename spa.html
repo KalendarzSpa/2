@@ -172,13 +172,6 @@
             });
         }
 
-
-        function changeLanguage() {
-            var languageSelect = document.getElementById('languageSelect');
-            currentLanguage = languageSelect.value;
-            updateContent();
-        }
-
         function updateContent() {
             var titleElement = document.getElementById('calendarTitle');
             var takenMessageElement = document.getElementById('takenMessage');
@@ -223,8 +216,8 @@
             }
 
             generateCalendar();
-            loadReservations();
         }
+
         function generateUserId() {
             return '_' + Math.random().toString(36).substr(2, 9);
         }
@@ -233,11 +226,11 @@
             var calendar = document.getElementById('calendar');
             calendar.innerHTML = '';
 
-            today = new Date();  
+            var today = new Date();  
             today.setHours(0, 0, 0, 0);
 
             for (var dayOffset = 0; dayOffset < 2; dayOffset++) {
-                currentDate = new Date(today);
+                var currentDate = new Date(today);
                 currentDate.setDate(currentDate.getDate() + dayOffset);
 
                 var dayElement = document.createElement('div');
@@ -251,7 +244,6 @@
                 dayElement.onclick = function () {
                     toggleDay(this);
                 };
-
 
                 var timeSlotsContainer = document.createElement('div');
                 timeSlotsContainer.className = 'time-slots-container';
@@ -290,6 +282,7 @@
                 calendar.appendChild(dayElement);
             }
         }
+
         function toggleDay(dayElement) {
             var timeSlotsContainer = dayElement.querySelector('.time-slots-container');
             if (timeSlotsContainer.style.display === 'block') {
@@ -305,7 +298,6 @@
             confirmationModal.style.display = 'block';
             overlay.style.display = 'block';
         }
-
 
         function generateTimeSlotId(date, hour) {
             return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + '-' + hour;
@@ -344,12 +336,10 @@
             }
         }
 
-
         function confirmReservation() {
-           
-    console.log("Confirming Reservation:", selectedTimeSlot.dataset.timeSlotId);
-    selectedTimeSlot.classList.add('reserved');
-    selectedTimeSlot.style.backgroundColor = '#ff6666';
+            console.log("Confirming Reservation:", selectedTimeSlot.dataset.timeSlotId);
+            selectedTimeSlot.classList.add('reserved');
+            selectedTimeSlot.style.backgroundColor = '#ff6666';
             var currentDate = new Date();
             var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
 
@@ -379,24 +369,15 @@
         }
 
         function loadReservations() {
-       return new Promise(function (resolve, reject) {
-        db.collection("reservations")
-            .get()
-            .then(function (querySnapshot) {
-                reservations = querySnapshot.docs.map(doc => doc.data());
-                updateReservationList();
-                resolve();
-            })
-            .catch(function (error) {
-                console.error("Error getting reservations: ", error);
-                reject(error);
-            });
-    });
-}
-
+            return new Promise(function (resolve, reject) {
+                db.collection("reservations")
+                    .get()
+                    .then(function (querySnapshot) {
+                        reservations = querySnapshot.docs.map(doc => doc.data());
                         updateReservationList();
                         resolve();
-                     function (error) {
+                    })
+                    .catch(function (error) {
                         console.error("Error getting reservations: ", error);
                         reject(error);
                     });
@@ -404,15 +385,14 @@
         }
 
         function updateReservationList() {
-             var reservationList = document.getElementById('reservationList');
-    reservationList.innerHTML = '';
+            var reservationList = document.getElementById('reservationList');
+            reservationList.innerHTML = '';
 
-    var myReservations = reservations.filter(function (reservation) {
-        return reservation.roomNumber === roomNumber; // Dodany warunek dla numeru pokoju
-    });
-            
+            var myReservations = reservations.filter(function (reservation) {
+                return reservation.roomNumber === currentRoomNumber; // Fixed roomNumber to currentRoomNumber
+            });
 
-            reservations.forEach(function (reservation) {
+            myReservations.forEach(function (reservation) {
                 var listItem = document.createElement('li');
                 listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
 
@@ -429,6 +409,7 @@
 
         function cancelReservation(reservation) {
             var reservationId = reservation.id;
+            var timeSlotId = reservation.timeSlotId;
 
             var index = reservations.findIndex(r => r.id === reservationId);
             if (index !== -1) {
@@ -448,7 +429,6 @@
                     console.error("Error deleting reservation from Firestore: ", error);
                 });
         }
-
 
         function openTakenModal() {
             var modal = document.getElementById('takenModal');
