@@ -344,21 +344,7 @@
                 });
         }
 
-        function markTimeSlotAsReserved(timeSlotId) {
-            var timeSlotElement = document.querySelector(`.time-slot[data-time-slot-id="${timeSlotId}"]`);
-            if (timeSlotElement) {
-                timeSlotElement.classList.add('reserved');
-                timeSlotElement.style.backgroundColor = '#ff6666'; 
-            }
-        }
 
-        function unmarkTimeSlotAsReserved(timeSlotId) {
-            var timeSlotElement = document.querySelector(`.time-slot[data-time-slot-id="${timeSlotId}"]`);
-            if (timeSlotElement) {
-                timeSlotElement.classList.remove('reserved');
-                timeSlotElement.style.backgroundColor = ''; 
-            }
-        }
 
         function confirmReservation() {
             console.log("Confirming Reservation:", selectedTimeSlot.dataset.timeSlotId);
@@ -378,7 +364,6 @@
             reservations.push(reservation);
             updateReservationList();
             saveReservationToFirestore(reservation);
-            markTimeSlotAsReserved(timeSlotId); 
             closeConfirmationModal();
         }
 
