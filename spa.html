@@ -414,7 +414,6 @@
             if (index !== -1) {
                 reservations.splice(index, 1);
                 updateReservationList();
-                saveReservations();
                 deleteReservationFromFirestore(reservationId);
             }
         }
