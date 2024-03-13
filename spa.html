@@ -393,11 +393,11 @@ function unmarkTimeSlotAsReserved(timeSlotId) {
                 });
         }
 
-       function loadReservations() {
+    function loadReservations() {
     return new Promise(function (resolve, reject) {
         db.collection("reservations")
-            .where("roomNumber", "==", currentRoomNumber)
-            .onSnapshot(function (querySnapshot) {
+            .get()
+            .then(function (querySnapshot) {
                 reservations = [];
 
                 querySnapshot.forEach(function (doc) {
@@ -408,6 +408,16 @@ function unmarkTimeSlotAsReserved(timeSlotId) {
                         reservations.push(reservation);
                     }
                 });
+
+                updateReservationList();
+                resolve();
+            })
+            .catch(function (error) {
+                console.error("Error getting reservations: ", error);
+                reject(error);
+            });
+    });
+}
 
                 updateReservationList();
                 resolve();
