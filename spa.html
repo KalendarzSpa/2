@@ -3,6 +3,7 @@
 
 <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
 
+    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -81,12 +82,12 @@
 
     <div>
         <label for="languageSelect" id="languageLabel">Wybierz język:</label>
-        <select id="languageSelect" onchange="changeLanguage()">
-            <option value="pl">Polski</option>
-            <option value="de">Deutsch</option>
-            <option value="en">English</option>
-        </select>
-    </div>
+    <select id="languageSelect" onchange="changeLanguage()">
+    <option value="pl" selected>Polski</option>
+    <option value="de">Deutsch</option>
+    <option value="en">English</option>
+</select>
+</div>
 
     <div style="margin-top: 20px;" id="userSection">
         <label for="roomNumber" id="roomNumberLabel">Wprowadź numer pokoju:</label>
@@ -115,11 +116,13 @@
 
     <div id="overlay"></div>
 
-    <!-- Firebase scripts -->
-    <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-firestore.js"></script>
+    <!-- Dodaj te skrypty Firebase poniżej -->
+
+<script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-firestore.js"></script>
 
     <script>
+        
         var firebaseConfig = {
             apiKey: "AIzaSyCz7gGBCSi9pXaDvbrBDELvZOIRWgAutjs",
             authDomain: "strefaspa-7aaaa.firebaseapp.com",
@@ -131,18 +134,8 @@
         firebase.initializeApp(firebaseConfig);
         var db = firebase.firestore();
 
-        var currentLanguage = 'pl';
-        var roomNumber;
-        var reservations = [];
-        var selectedTimeSlot;
         var currentRoomNumber;
-        var userId;
-
-        function changeLanguage() {
-            var languageSelect = document.getElementById('languageSelect');
-            currentLanguage = languageSelect.value;
-            updateContent();
-        }
+        var reservations = [];
 
         function submitRoomNumber() {
             var roomNumberInput = document.getElementById('roomNumber');
@@ -164,15 +157,19 @@
             });
         }
 
-          function generateUserId() {
-            return '_' + Math.random().toString(36).substr(2, 9);
-        }
         function generateReservationId() {
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
                 var r = (Math.random() * 16) | 0,
                     v = c === 'x' ? r : (r & 0x3) | 0x8;
                 return v.toString(16);
             });
+        }
+
+
+        function changeLanguage() {
+            var languageSelect = document.getElementById('languageSelect');
+            currentLanguage = languageSelect.value;
+            updateContent();
         }
 
         function updateContent() {
@@ -219,8 +216,8 @@
             }
 
             generateCalendar();
+            loadReservations();
         }
-
         function generateUserId() {
             return '_' + Math.random().toString(36).substr(2, 9);
         }
@@ -229,63 +226,66 @@
             var calendar = document.getElementById('calendar');
             calendar.innerHTML = '';
 
-            var today = new Date();  
-            today.setHours(0, 0, 0, 0);
+  
+            
+            
+            today = new Date();  // Zmieniona na globalną zmienną
+    today.setHours(0, 0, 0, 0);
 
             for (var dayOffset = 0; dayOffset < 2; dayOffset++) {
-                var currentDate = new Date(today);
-                currentDate.setDate(currentDate.getDate() + dayOffset);
+        currentDate = new Date(today);
+        currentDate.setDate(currentDate.getDate() + dayOffset);
 
-                var dayElement = document.createElement('div');
-                dayElement.className = 'day';
-                dayElement.textContent = currentDate.toLocaleDateString(currentLanguage, {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'numeric',
-                    year: 'numeric'
-                });
-                dayElement.onclick = function () {
-                    toggleDay(this);
-                };
+        var dayElement = document.createElement('div');
+        dayElement.className = 'day';
+        dayElement.textContent = currentDate.toLocaleDateString(currentLanguage, {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'numeric',
+            year: 'numeric'
+        });
+        dayElement.onclick = function () {
+            toggleDay(this);
+        };
+               
 
-                var timeSlotsContainer = document.createElement('div');
-                timeSlotsContainer.className = 'time-slots-container';
+        var timeSlotsContainer = document.createElement('div');
+        timeSlotsContainer.className = 'time-slots-container';
 
-                for (var i = 8; i <= 21; i++) {
-                    var timeSlotId = generateTimeSlotId(currentDate, i);
-                    var isReserved = isTimeSlotReserved(timeSlotId);
-                    var isCurrentUserReservation = isReserved && reservations.find(r => r.userId === userId && r.timeSlotId === timeSlotId);
+        for (var i = 8; i <= 21; i++) {
+            var timeSlotId = generateTimeSlotId(currentDate, i);
+            var isReserved = isTimeSlotReserved(timeSlotId);
+            var isCurrentUserReservation = isReserved && reservations.find(r => r.userId === userId && r.timeSlotId === timeSlotId);
 
-                    var timeSlot = document.createElement('div');
-                    timeSlot.className = 'time-slot';
-                    timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
-                    timeSlot.dataset.timeSlotId = timeSlotId;
+            var timeSlot = document.createElement('div');
+            timeSlot.className = 'time-slot';
+            timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
+            timeSlot.dataset.timeSlotId = timeSlotId;
 
-                    if (isCurrentUserReservation) {
-                        timeSlot.classList.add('reserved');
-                        timeSlot.style.backgroundColor = '#00ff00'; 
-                    } else if (isReserved) {
-                        timeSlot.classList.add('reserved');
-                        timeSlot.style.backgroundColor = '#ff6666'; 
-                    }
-
-                    timeSlot.addEventListener('click', function () {
-                        selectedTimeSlot = this;
-                        if (!selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken')) {
-                            openConfirmationModal();
-                        } else {
-                            openTakenModal();
-                        }
-                    });
-
-                    timeSlotsContainer.appendChild(timeSlot);
-                }
-
-                dayElement.appendChild(timeSlotsContainer);
-                calendar.appendChild(dayElement);
+            if (isCurrentUserReservation) {
+                timeSlot.classList.add('reserved');
+                timeSlot.style.backgroundColor = '#00ff00'; // Zielony dla bieżącego użytkownika
+            } else if (isReserved) {
+                timeSlot.classList.add('reserved');
+                timeSlot.style.backgroundColor = '#ff6666'; // Kolor dla innych użytkowników
             }
+
+            timeSlot.addEventListener('click', function () {
+                selectedTimeSlot = this;
+                if (!selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken')) {
+                    openConfirmationModal();
+                } else {
+                    openTakenModal();
+                }
+            });
+
+            timeSlotsContainer.appendChild(timeSlot);
         }
 
+        dayElement.appendChild(timeSlotsContainer);
+        calendar.appendChild(dayElement);
+    }
+}
         function toggleDay(dayElement) {
             var timeSlotsContainer = dayElement.querySelector('.time-slots-container');
             if (timeSlotsContainer.style.display === 'block') {
@@ -302,6 +302,7 @@
             overlay.style.display = 'block';
         }
 
+
         function generateTimeSlotId(date, hour) {
             return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + '-' + hour;
         }
@@ -316,14 +317,113 @@
             closeConfirmationModal();
         }
 
-        function closeConfirmationModal() {
-            var confirmationModal = document.getElementById('confirmationModal');
-            var overlay = document.getElementById('overlay');
-            confirmationModal.style.display = 'none';
-            overlay.style.display = 'none';
+       function closeConfirmationModal() {
+    var confirmationModal = document.getElementById('confirmationModal');
+    var overlay = document.getElementById('overlay');
+    confirmationModal.style.display = 'none';
+    overlay.style.display = 'none';
+}
+
+     
+
+   
+
+function cancelReservation(reservation) {
+            var reservationId = reservation.id;
+
+            var index = reservations.findIndex(r => r.id === reservationId);
+            if (index !== -1) {
+                reservations.splice(index, 1);
+                updateReservationList();
+                saveReservations();
+
+                deleteReservationFromFirestore(reservationId);
+            }
         }
 
-         function cancelReservation(reservation) {
+        function deleteReservationFromFirestore(reservationId) {
+            db.collection("reservations").doc(reservationId).delete()
+                .then(function () {
+                    console.log("Reservation successfully deleted from Firestore!");
+                })
+                .catch(function (error) {
+                    console.error("Error deleting reservation from Firestore: ", error);
+                });
+        }
+
+         function confirmReservation() {
+    var currentDate = new Date();
+    var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
+    
+    var reservation = {
+        id: generateReservationId(),
+        userId: currentRoomNumber, // Tutaj powinno być poprawnie ustawione currentRoomNumber
+        date: currentDate.toLocaleDateString(),
+        timeSlotId: timeSlotId,
+        roomNumber: currentRoomNumber
+    };
+
+    reservations.push(reservation);
+    updateReservationList();
+    saveReservationToFirestore(reservation);
+    
+    closeConfirmationModal();
+}
+
+        function saveReservationToFirestore(reservation) {
+            db.collection("reservations").add(reservation)
+                .then(function (docRef) {
+                    console.log("Reservation successfully saved to Firestore with ID:", docRef.id);
+                })
+                .catch(function (error) {
+                    console.error("Error saving reservation to Firestore: ", error);
+                });
+        }
+
+       function loadReservations() {
+    return new Promise(function (resolve, reject) {
+        db.collection("reservations")
+            .where("roomNumber", "==", currentRoomNumber)
+            .onSnapshot(function (querySnapshot) {
+                reservations = [];
+
+                querySnapshot.forEach(function (doc) {
+                    var reservation = doc.data();
+                    reservation.id = doc.id;
+
+                    if (new Date(reservation.date) >= currentDate) {
+                        reservations.push(reservation);
+                    }
+                });
+
+                updateReservationList();
+                resolve();
+            }, function (error) {
+                console.error("Error getting reservations: ", error);
+                reject(error);
+            });
+    });
+}
+        function updateReservationList() {
+            var reservationList = document.getElementById('reservationList');
+            reservationList.innerHTML = '';
+
+            reservations.forEach(function (reservation) {
+                var listItem = document.createElement('li');
+                listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+
+                var cancelButton = document.createElement('span');
+                cancelButton.className = 'cancel-button';
+                cancelButton.textContent = `(Anuluj)`;
+                cancelButton.onclick = function () {
+                    cancelReservation(reservation);
+                };
+                listItem.appendChild(cancelButton);
+                reservationList.appendChild(listItem);
+            });
+        }
+
+        function cancelReservation(reservation) {
             var reservationId = reservation.id;
 
             var index = reservations.findIndex(r => r.id === reservationId);
@@ -344,77 +444,6 @@
                 });
         }
 
-
-
-        function confirmReservation() {
-            console.log("Confirming Reservation:", selectedTimeSlot.dataset.timeSlotId);
-            selectedTimeSlot.classList.add('reserved');
-            selectedTimeSlot.style.backgroundColor = '#ff6666';
-            var currentDate = new Date();
-            var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
-
-            var reservation = {
-                id: generateReservationId(),
-                userId: currentRoomNumber, 
-                date: currentDate.toLocaleDateString(),
-                timeSlotId: timeSlotId,
-                roomNumber: currentRoomNumber
-            };
-
-            reservations.push(reservation);
-            updateReservationList();
-            saveReservationToFirestore(reservation);
-            closeConfirmationModal();
-        }
-
-        function saveReservationToFirestore(reservation) {
-            db.collection("reservations").add(reservation)
-                .then(function (docRef) {
-                    console.log("Reservation successfully saved to Firestore with ID:", docRef.id);
-                })
-                .catch(function (error) {
-                    console.error("Error saving reservation to Firestore: ", error);
-                });
-        }
-
-        function loadReservations() {
-            return new Promise(function (resolve, reject) {
-                db.collection("reservations")
-                    .get()
-                    .then(function (querySnapshot) {
-                        reservations = querySnapshot.docs.map(doc => doc.data());
-                        updateReservationList();
-                        resolve();
-                    })
-                    .catch(function (error) {
-                        console.error("Error getting reservations: ", error);
-                        reject(error);
-                    });
-            });
-        }
-
-        function updateReservationList() {
-            var reservationList = document.getElementById('reservationList');
-            reservationList.innerHTML = '';
-
-            var myReservations = reservations.filter(function (reservation) {
-                return reservation.roomNumber === currentRoomNumber; // Fixed roomNumber to currentRoomNumber
-            });
-
-            myReservations.forEach(function (reservation) {
-                var listItem = document.createElement('li');
-                listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
-
-                var cancelButton = document.createElement('span');
-                cancelButton.className = 'cancel-button';
-                cancelButton.textContent = `(Anuluj)`;
-                cancelButton.onclick = function () {
-                    cancelReservation(reservation);
-                };
-                listItem.appendChild(cancelButton);
-                reservationList.appendChild(listItem);
-            });
-        }
 
         function openTakenModal() {
             var modal = document.getElementById('takenModal');
