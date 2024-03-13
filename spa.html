@@ -351,6 +351,23 @@ function cancelReservation(reservation) {
                 });
         }
 
+       function markTimeSlotAsReserved(timeSlotId) {
+    var timeSlotElement = document.querySelector(`.time-slot[data-time-slot-id="${timeSlotId}"]`);
+    if (timeSlotElement) {
+        timeSlotElement.classList.add('reserved');
+        timeSlotElement.style.backgroundColor = '#ff6666'; // Kolor czerwony dla zarezerwowanego bloku
+    }
+}
+
+function unmarkTimeSlotAsReserved(timeSlotId) {
+    var timeSlotElement = document.querySelector(`.time-slot[data-time-slot-id="${timeSlotId}"]`);
+    if (timeSlotElement) {
+        timeSlotElement.classList.remove('reserved');
+        timeSlotElement.style.backgroundColor = ''; // Usuwamy kolor tła
+    }
+}
+
+
          function confirmReservation() {
     var currentDate = new Date();
     var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
@@ -363,10 +380,10 @@ function cancelReservation(reservation) {
         roomNumber: currentRoomNumber
     };
 
-    reservations.push(reservation);
+   reservations.push(reservation);
     updateReservationList();
     saveReservationToFirestore(reservation);
-    
+    markTimeSlotAsReserved(timeSlotId); // Oznaczamy blok jako zarezerwowany
     closeConfirmationModal();
 }
 
@@ -431,6 +448,7 @@ function cancelReservation(reservation) {
                 reservations.splice(index, 1);
                 updateReservationList();
                 deleteReservationFromFirestore(reservationId);
+                unmarkTimeSlotAsReserved(timeSlotId);
             }
         }
 
