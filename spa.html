@@ -407,16 +407,15 @@
             });
         }
 
-        function cancelReservation(reservation) {
+       function cancelReservation(reservation) {
             var reservationId = reservation.id;
-            var timeSlotId = reservation.timeSlotId;
 
             var index = reservations.findIndex(r => r.id === reservationId);
             if (index !== -1) {
                 reservations.splice(index, 1);
                 updateReservationList();
+                saveReservations();
                 deleteReservationFromFirestore(reservationId);
-                unmarkTimeSlotAsReserved(timeSlotId);
             }
         }
 
