@@ -136,7 +136,6 @@
         var reservations = [];
         var selectedTimeSlot;
         var currentRoomNumber;
-        var userId;
 
         function changeLanguage() {
             var languageSelect = document.getElementById('languageSelect');
@@ -145,28 +144,26 @@
         }
 
         function submitRoomNumber() {
-            var roomNumberInput = document.getElementById('roomNumber');
-            var roomNumber = roomNumberInput.value.trim();
+    var roomNumberInput = document.getElementById('roomNumber');
+    var roomNumber = roomNumberInput.value.trim();
 
-            if (!roomNumber) {
-                alert('Wprowadź numer pokoju przed kontynuacją.');
-                return;
-            }
+    if (!roomNumber) {
+        alert('Wprowadź numer pokoju przed kontynuacją.');
+        return;
+    }
 
-            currentRoomNumber = roomNumber;
+    currentRoomNumber = roomNumber; // Aktualizacja numeru pokoju
 
-            document.getElementById('userSection').style.display = 'none';
+    document.getElementById('userSection').style.display = 'none';
 
-            loadReservations().then(function () {
-                generateCalendar();
-            }).catch(function (error) {
-                console.error("Error loading reservations:", error);
-            });
-        }
+    loadReservations().then(function () {
+        generateCalendar();
+    }).catch(function (error) {
+        console.error("Error loading reservations:", error);
+    });
+}
 
-          function generateUserId() {
-            return '_' + Math.random().toString(36).substr(2, 9);
-        }
+
         function generateReservationId() {
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
                 var r = (Math.random() * 16) | 0,
@@ -221,13 +218,28 @@
             generateCalendar();
         }
 
-        function generateUserId() {
-            return '_' + Math.random().toString(36).substr(2, 9);
-        }
-
         function generateCalendar() {
             var calendar = document.getElementById('calendar');
             calendar.innerHTML = '';
+function submitRoomNumber() {
+    var roomNumberInput = document.getElementById('roomNumber');
+    var roomNumber = roomNumberInput.value.trim();
+
+    if (!roomNumber) {
+        alert('Wprowadź numer pokoju przed kontynuacją.');
+        return;
+    }
+
+    currentRoomNumber = roomNumber; // Zapisz numer pokoju jako aktualny identyfikator użytkownika
+
+    document.getElementById('userSection').style.display = 'none';
+
+    loadReservations().then(function () {
+        generateCalendar();
+    }).catch(function (error) {
+        console.error("Error loading reservations:", error);
+    });
+}
 
             var today = new Date();  
             today.setHours(0, 0, 0, 0);
@@ -254,7 +266,7 @@
                 for (var i = 8; i <= 21; i++) {
                     var timeSlotId = generateTimeSlotId(currentDate, i);
                     var isReserved = isTimeSlotReserved(timeSlotId);
-                    var isCurrentUserReservation = isReserved && reservations.find(r => r.userId === userId && r.timeSlotId === timeSlotId);
+                    var isCurrentUserReservation = isReserved && reservations.find(r => r.reservationId === reservationId && r.timeSlotId === timeSlotId);
 
                     var timeSlot = document.createElement('div');
                     timeSlot.className = 'time-slot';
@@ -324,15 +336,15 @@
         }
 
          function cancelReservation(reservation) {
-            var reservationId = reservation.id;
+    var reservationId = reservation.id; // Pobierz identyfikator rezerwacji
 
-            var index = reservations.findIndex(r => r.id === reservationId);
-            if (index !== -1) {
-                reservations.splice(index, 1);
-                updateReservationList();
-                deleteReservationFromFirestore(reservationId);
-            }
-        }
+    var index = reservations.findIndex(r => r.id === reservationId); // Znajdź indeks rezerwacji w tablicy
+    if (index !== -1) {
+        reservations.splice(index, 1); // Usuń rezerwację z tablicy
+        updateReservationList(); // Zaktualizuj listę rezerwacji na interfejsie użytkownika
+        deleteReservationFromFirestore(reservationId); // Usuń rezerwację z Firestore
+    }
+}
 
         function deleteReservationFromFirestore(reservationId) {
             db.collection("reservations").doc(reservationId).delete()
@@ -360,27 +372,28 @@
             }
         }
 
-        function confirmReservation() {
-            console.log("Confirming Reservation:", selectedTimeSlot.dataset.timeSlotId);
-            selectedTimeSlot.classList.add('reserved');
-            selectedTimeSlot.style.backgroundColor = '#ff6666';
-            var currentDate = new Date();
-            var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
+       function confirmReservation() {
+    console.log("Confirming Reservation:", selectedTimeSlot.dataset.timeSlotId);
+    selectedTimeSlot.classList.add('reserved');
+    selectedTimeSlot.style.backgroundColor = '#ff6666';
+    var currentDate = new Date();
+    var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
 
-            var reservation = {
-                id: generateReservationId(),
-                userId: currentRoomNumber, 
-                date: currentDate.toLocaleDateString(),
-                timeSlotId: timeSlotId,
-                roomNumber: currentRoomNumber
-            };
+    var reservation = {
+        id: generateReservationId(), // Wywołanie funkcji generateReservationId do generowania identyfikatora
+        userId: currentRoomNumber, 
+        date: currentDate.toLocaleDateString(),
+        timeSlotId: timeSlotId,
+        roomNumber: currentRoomNumber
+    };
 
-            reservations.push(reservation);
-            updateReservationList();
-            saveReservationToFirestore(reservation);
-            markTimeSlotAsReserved(timeSlotId); 
-            closeConfirmationModal();
-        }
+    reservations.push(reservation);
+    updateReservationList();
+    saveReservationToFirestore(reservation);
+    markTimeSlotAsReserved(timeSlotId); 
+    closeConfirmationModal();
+}
+
 
         function saveReservationToFirestore(reservation) {
             db.collection("reservations").add(reservation)
@@ -392,21 +405,21 @@
                 });
         }
 
-        function loadReservations() {
-            return new Promise(function (resolve, reject) {
-                db.collection("reservations")
-                    .get()
-                    .then(function (querySnapshot) {
-                        reservations = querySnapshot.docs.map(doc => doc.data());
-                        updateReservationList();
-                        resolve();
-                    })
-                    .catch(function (error) {
-                        console.error("Error getting reservations: ", error);
-                        reject(error);
-                    });
+      function loadReservations() {
+    return new Promise(function (resolve, reject) {
+        db.collection("reservations")
+            .get()
+            .then(function (querySnapshot) {
+                reservations = querySnapshot.docs.map(doc => doc.data());
+                updateReservationList();
+                resolve();
+            })
+            .catch(function (error) {
+                console.error("Error getting reservations: ", error);
+                reject(error);
             });
-        }
+    });
+}
 
         function updateReservationList() {
             var reservationList = document.getElementById('reservationList');
