@@ -335,7 +335,7 @@ function submitRoomNumber() {
             overlay.style.display = 'none';
         }
 
-         function cancelReservation(reservation) {
+         function cancelReservation(reservation.id) {
     var reservationId = reservation.id; // Pobierz identyfikator rezerwacji
 
     var index = reservations.findIndex(r => r.id === reservationId); // Znajdź indeks rezerwacji w tablicy
