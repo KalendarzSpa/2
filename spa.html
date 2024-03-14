@@ -438,7 +438,7 @@ function cancelReservation(reservationId) {
                 cancelButton.className = 'cancel-button';
                 cancelButton.textContent = `(Anuluj)`;
                 cancelButton.onclick = function () {
-                    cancelReservation(reservation);
+                    cancelReservation(reservationId);
                 };
                 listItem.appendChild(cancelButton);
                 reservationList.appendChild(listItem);
