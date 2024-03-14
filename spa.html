@@ -222,62 +222,69 @@
             return '_' + Math.random().toString(36).substr(2, 9);
         }
 
-       function generateCalendar() {
-    var calendar = document.getElementById('calendar');
-    calendar.innerHTML = '';
+        function generateCalendar() {
+            var calendar = document.getElementById('calendar');
+            calendar.innerHTML = '';
 
-    today = new Date();
+  
+            
+            
+            today = new Date();  // Zmieniona na globalną zmienną
     today.setHours(0, 0, 0, 0);
 
-    for (var dayOffset = 0; dayOffset < 2; dayOffset++) {
-        currentDate = new Date(today);
-        currentDate.setDate(currentDate.getDate() + dayOffset);
+         for (var dayOffset = 0; dayOffset < 2; dayOffset++) {
+    currentDate = new Date(today);
+    currentDate.setDate(currentDate.getDate() + dayOffset);
 
-        var dayElement = document.createElement('div');
-        dayElement.className = 'day';
-        dayElement.textContent = currentDate.toLocaleDateString(currentLanguage, {
-            weekday: 'long',
-            day: 'numeric',
-            month: 'numeric',
-            year: 'numeric'
-        });
-        dayElement.onclick = function () {
-            toggleDay(this);
-        };
+    var dayElement = document.createElement('div');
+    dayElement.className = 'day';
+    dayElement.textContent = currentDate.toLocaleDateString(currentLanguage, {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'numeric',
+        year: 'numeric'
+    });
+    dayElement.onclick = function () {
+        toggleDay(this);
+    };
 
-        var timeSlotsContainer = document.createElement('div');
-        timeSlotsContainer.className = 'time-slots-container';
+    var timeSlotsContainer = document.createElement('div');
+    timeSlotsContainer.className = 'time-slots-container';
 
-        for (var i = 8; i <= 21; i++) {
-            var timeSlotId = generateTimeSlotId(currentDate, i);
-            var isReserved = isTimeSlotReserved(timeSlotId);
-            var isCurrentUserReservation = isReserved && reservations.find(r => r.userId === currentRoomNumber && r.timeSlotId === timeSlotId);
+    for (var i = 8; i <= 21; i++) {
+        var timeSlotId = generateTimeSlotId(currentDate, i);
+        var isReserved = isTimeSlotReserved(timeSlotId);
+        var isCurrentUserReservation = isReserved && reservations.find(r => r.userId === userId && r.timeSlotId === timeSlotId);
 
-            var timeSlot = document.createElement('div');
-            timeSlot.className = 'time-slot';
-            timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
-            timeSlot.dataset.timeSlotId = timeSlotId;
+        var timeSlot = document.createElement('div');
+        timeSlot.className = 'time-slot';
+        timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
+        timeSlot.dataset.timeSlotId = timeSlotId;
 
-            if (isCurrentUserReservation) {
-                timeSlot.classList.add('reserved');
-                timeSlot.style.backgroundColor = '#00ff00';
-            } else if (isReserved) {
-                timeSlot.classList.add('reserved');
-                timeSlot.style.backgroundColor = '#ff6666';
-
-                // Dodaj komunikat po kliknięciu na zajęty blok
-                timeSlot.onclick = function () {
-                    showTakenMessage();
-                };
-            }
-
-            timeSlotsContainer.appendChild(timeSlot);
+        if (isCurrentUserReservation) {
+            timeSlot.classList.add('reserved');
+            timeSlot.style.backgroundColor = '#00ff00'; // Zielony dla bieżącego użytkownika
+        } else if (isReserved) {
+            timeSlot.classList.add('reserved');
+            timeSlot.style.backgroundColor = '#ff6666'; // Kolor dla innych użytkowników
+        } else {
+            timeSlot.addEventListener('click', function () {
+                selectedTimeSlot = this;
+                if (!selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken')) {
+                    openConfirmationModal();
+                } else {
+                    openTakenModal();
+                }
+            });
         }
 
-        dayElement.appendChild(timeSlotsContainer);
-        calendar.appendChild(dayElement);
+        timeSlotsContainer.appendChild(timeSlot);
     }
+
+    dayElement.appendChild(timeSlotsContainer);
+    calendar.appendChild(dayElement);
 }
+
         function toggleDay(dayElement) {
             var timeSlotsContainer = dayElement.querySelector('.time-slots-container');
             if (timeSlotsContainer.style.display === 'block') {
@@ -372,31 +379,30 @@ function cancelReservation(reservation) {
                 });
         }
 
-        function loadReservations() {
-            return new Promise(function (resolve, reject) {
-                db.collection("reservations")
-                    .where("roomNumber", "==", currentRoomNumber)
-                    .onSnapshot(function (querySnapshot) {
-                        reservations = [];
+       function loadReservations() {
+    return new Promise(function (resolve, reject) {
+        db.collection("reservations")
+            .where("roomNumber", "==", currentRoomNumber)
+            .onSnapshot(function (querySnapshot) {
+                reservations = [];
 
-                        querySnapshot.forEach(function (doc) {
-                            var reservation = doc.data();
-                            reservation.id = doc.id;
+                querySnapshot.forEach(function (doc) {
+                    var reservation = doc.data();
+                    reservation.id = doc.id;
 
-                            if (new Date(reservation.date) >= currentDate) {
-                                reservations.push(reservation);
-                            }
-                        });
+                    if (new Date(reservation.date) >= currentDate) {
+                        reservations.push(reservation);
+                    }
+                });
 
-                        updateReservationList();
-                        resolve();
-                    }, function (error) {
-                        console.error("Error getting reservations: ", error);
-                        reject(error);
-                    });
+                updateReservationList();
+                resolve();
+            }, function (error) {
+                console.error("Error getting reservations: ", error);
+                reject(error);
             });
-        }
-
+    });
+}
         function updateReservationList() {
             var reservationList = document.getElementById('reservationList');
             reservationList.innerHTML = '';
@@ -417,15 +423,15 @@ function cancelReservation(reservation) {
         }
 
         function cancelReservation(reservation) {
-            var reservationId = reservation.id;
+    var reservationId = reservation.id;
 
-            var index = reservations.findIndex(r => r.id === reservationId);
-            if (index !== -1) {
-                reservations.splice(index, 1);
-                updateReservationList();
-                deleteReservationFromFirestore(reservationId);
-            }
-        }
+    var index = reservations.findIndex(r => r.id === reservationId);
+    if (index !== -1) {
+        reservations.splice(index, 1);
+        updateReservationList();
+        deleteReservationFromFirestore(reservationId);
+    }
+}
 
         function deleteReservationFromFirestore(reservationId) {
             db.collection("reservations").doc(reservationId).delete()
