@@ -335,17 +335,16 @@ function submitRoomNumber() {
             overlay.style.display = 'none';
         }
 
-        
-function cancelReservation(reservationId) {
+         function cancelReservation(reservation.id) {
+    var reservationId = reservation.id; // Pobierz identyfikator rezerwacji
+
     var index = reservations.findIndex(r => r.id === reservationId); // Znajdź indeks rezerwacji w tablicy
     if (index !== -1) {
-        var canceledReservation = reservations.splice(index, 1)[0]; // Usuń rezerwację z tablicy i zapisz ją do zmiennej
+        reservations.splice(index, 1); // Usuń rezerwację z tablicy
         updateReservationList(); // Zaktualizuj listę rezerwacji na interfejsie użytkownika
-        deleteReservationFromFirestore(reservationId); // Usuń rezerwację z Firestore
-        unmarkTimeSlotAsReserved(canceledReservation.timeSlotId); // Odznacz czas jako dostępny na kalendarzu
+        deleteReservationFromFirestore(reservation.id); // Usuń rezerwację z Firestore
     }
 }
-
 
         function deleteReservationFromFirestore(reservationId) {
             db.collection("reservations").doc(reservationId).delete()
@@ -438,7 +437,7 @@ function cancelReservation(reservationId) {
                 cancelButton.className = 'cancel-button';
                 cancelButton.textContent = `(Anuluj)`;
                 cancelButton.onclick = function () {
-                    cancelReservation(reservationId);
+                    cancelReservation(reservation);
                 };
                 listItem.appendChild(cancelButton);
                 reservationList.appendChild(listItem);
