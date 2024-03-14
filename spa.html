@@ -335,16 +335,16 @@ function submitRoomNumber() {
             overlay.style.display = 'none';
         }
 
-         function cancelReservation(reservation.id) {
-    var reservationId = reservation.id; // Pobierz identyfikator rezerwacji
-
+        
+function cancelReservation(reservationId) {
     var index = reservations.findIndex(r => r.id === reservationId); // Znajdź indeks rezerwacji w tablicy
     if (index !== -1) {
         reservations.splice(index, 1); // Usuń rezerwację z tablicy
         updateReservationList(); // Zaktualizuj listę rezerwacji na interfejsie użytkownika
-        deleteReservationFromFirestore(reservation.id); // Usuń rezerwację z Firestore
+        deleteReservationFromFirestore(reservationId); // Usuń rezerwację z Firestore
     }
 }
+
 
         function deleteReservationFromFirestore(reservationId) {
             db.collection("reservations").doc(reservationId).delete()
@@ -437,7 +437,7 @@ function submitRoomNumber() {
                 cancelButton.className = 'cancel-button';
                 cancelButton.textContent = `(Anuluj)`;
                 cancelButton.onclick = function () {
-                    cancelReservation(reservation);
+                    cancelReservation(reservationId);
                 };
                 listItem.appendChild(cancelButton);
                 reservationList.appendChild(listItem);
