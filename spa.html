@@ -335,14 +335,16 @@ function submitRoomNumber() {
             overlay.style.display = 'none';
         }
 
-         function cancelReservation(reservationId) {
-    var index = reservations.findIndex(r => r.id === reservationId); // Znajdź indeks rezerwacji w tablicy
+         function cancelReservation(reservation) {
+    var index = reservations.findIndex(r => r.id === reservation.id); // Znajdź indeks rezerwacji w tablicy
     if (index !== -1) {
         reservations.splice(index, 1); // Usuń rezerwację z tablicy
         updateReservationList(); // Zaktualizuj listę rezerwacji na interfejsie użytkownika
-        deleteReservationFromFirestore(reservationId); // Usuń rezerwację z Firestore
+        deleteReservationFromFirestore(reservation.id); // Usuń rezerwację z Firestore
+        unmarkTimeSlotAsReserved(reservation.timeSlotId); // Usuń oznaczenie czasu jako zarezerwowany
     }
 }
+
 
         function deleteReservationFromFirestore(reservationId) {
             db.collection("reservations").doc(reservationId).delete()
@@ -429,14 +431,15 @@ function submitRoomNumber() {
 
             myReservations.forEach(function (reservation) {
                 var listItem = document.createElement('li');
-                listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+               listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
 
-                var cancelButton = document.createElement('span');
-                cancelButton.className = 'cancel-button';
-                cancelButton.textContent = `(Anuluj)`;
-                cancelButton.onclick = function () {
-                    cancelReservation(reservation);
-                };
+var cancelButton = document.createElement('span');
+cancelButton.className = 'cancel-button';
+cancelButton.textContent = `(Anuluj)`;
+cancelButton.onclick = function () {
+    cancelReservation(reservation);
+};
+
                 listItem.appendChild(cancelButton);
                 reservationList.appendChild(listItem);
             });
