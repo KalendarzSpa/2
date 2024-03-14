@@ -346,7 +346,7 @@ function submitRoomNumber() {
     }
 }
 
-        function deleteReservationFromFirestore(reservation.id) {
+        function deleteReservationFromFirestore(reservationId) {
             db.collection("reservations").doc(reservation.id).delete()
                 .then(function () {
                     console.log("Reservation successfully deleted from Firestore!");
