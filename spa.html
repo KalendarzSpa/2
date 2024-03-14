@@ -336,13 +336,11 @@ function submitRoomNumber() {
         }
 
          function cancelReservation(reservationId) {
-    var reservationId = reservation.id; // Pobierz identyfikator rezerwacji
-
     var index = reservations.findIndex(r => r.id === reservationId); // Znajdź indeks rezerwacji w tablicy
     if (index !== -1) {
         reservations.splice(index, 1); // Usuń rezerwację z tablicy
         updateReservationList(); // Zaktualizuj listę rezerwacji na interfejsie użytkownika
-        deleteReservationFromFirestore(reservation.id); // Usuń rezerwację z Firestore
+        deleteReservationFromFirestore(reservationId); // Usuń rezerwację z Firestore
     }
 }
 
