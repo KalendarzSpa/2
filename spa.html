@@ -338,16 +338,16 @@ function submitRoomNumber() {
          function cancelReservation(reservation) {
     var reservationId = reservation.id; // Pobierz identyfikator rezerwacji
 
-    var index = reservations.findIndex(r => r.id === reservationId); // Znajdź indeks rezerwacji w tablicy
+    var index = reservations.findIndex(r => r.id === reservation.id); // Znajdź indeks rezerwacji w tablicy
     if (index !== -1) {
         reservations.splice(index, 1); // Usuń rezerwację z tablicy
         updateReservationList(); // Zaktualizuj listę rezerwacji na interfejsie użytkownika
-        deleteReservationFromFirestore(reservationId); // Usuń rezerwację z Firestore
+        deleteReservationFromFirestore(reservation.id); // Usuń rezerwację z Firestore
     }
 }
 
-        function deleteReservationFromFirestore(reservationId) {
-            db.collection("reservations").doc(reservationId).delete()
+        function deleteReservationFromFirestore(reservation.id) {
+            db.collection("reservations").doc(reservation.id).delete()
                 .then(function () {
                     console.log("Reservation successfully deleted from Firestore!");
                 })
