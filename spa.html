@@ -222,17 +222,14 @@
             return '_' + Math.random().toString(36).substr(2, 9);
         }
 
-        function generateCalendar() {
-            var calendar = document.getElementById('calendar');
-            calendar.innerHTML = '';
+       function generateCalendar() {
+    var calendar = document.getElementById('calendar');
+    calendar.innerHTML = '';
 
-  
-            
-            
-            today = new Date();  // Zmieniona na globalną zmienną
+    today = new Date();
     today.setHours(0, 0, 0, 0);
 
-            for (var dayOffset = 0; dayOffset < 2; dayOffset++) {
+    for (var dayOffset = 0; dayOffset < 2; dayOffset++) {
         currentDate = new Date(today);
         currentDate.setDate(currentDate.getDate() + dayOffset);
 
@@ -247,7 +244,6 @@
         dayElement.onclick = function () {
             toggleDay(this);
         };
-               
 
         var timeSlotsContainer = document.createElement('div');
         timeSlotsContainer.className = 'time-slots-container';
@@ -255,7 +251,7 @@
         for (var i = 8; i <= 21; i++) {
             var timeSlotId = generateTimeSlotId(currentDate, i);
             var isReserved = isTimeSlotReserved(timeSlotId);
-            var isCurrentUserReservation = isReserved && reservations.find(r => r.userId === userId && r.timeSlotId === timeSlotId);
+            var isCurrentUserReservation = isReserved && reservations.find(r => r.userId === currentRoomNumber && r.timeSlotId === timeSlotId);
 
             var timeSlot = document.createElement('div');
             timeSlot.className = 'time-slot';
@@ -264,20 +260,16 @@
 
             if (isCurrentUserReservation) {
                 timeSlot.classList.add('reserved');
-                timeSlot.style.backgroundColor = '#00ff00'; // Zielony dla bieżącego użytkownika
+                timeSlot.style.backgroundColor = '#00ff00';
             } else if (isReserved) {
                 timeSlot.classList.add('reserved');
-                timeSlot.style.backgroundColor = '#ff6666'; // Kolor dla innych użytkowników
-            }
+                timeSlot.style.backgroundColor = '#ff6666';
 
-            timeSlot.addEventListener('click', function () {
-                selectedTimeSlot = this;
-                if (!selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken')) {
-                    openConfirmationModal();
-                } else {
-                    openTakenModal();
-                }
-            });
+                // Dodaj komunikat po kliknięciu na zajęty blok
+                timeSlot.onclick = function () {
+                    showTakenMessage();
+                };
+            }
 
             timeSlotsContainer.appendChild(timeSlot);
         }
