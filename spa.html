@@ -335,20 +335,38 @@ function submitRoomNumber() {
             overlay.style.display = 'none';
         }
 
-        function cancelReservation(reservation) {
-    var index = reservations.findIndex(r => r.id === reservation.id); // Znajdź indeks rezerwacji w tablicy
+     function cancelReservation(reservation) {
+    // Znajdź indeks rezerwacji w tablicy
+    var index = reservations.findIndex(r => r.id === reservation.id); 
+
+    // Sprawdź, czy rezerwacja istnieje w tablicy
     if (index !== -1) {
-        reservations.splice(index, 1); // Usuń rezerwację z tablicy
-        console.log("Deleting reservation with ID:", reservation.id); // Dodaj tę linię do sprawdzenia ID rezerwacji
-        deleteReservationFromFirestore(reservation.id); // Usuń rezerwację z Firestore
-        unmarkTimeSlotAsReserved(reservation.timeSlotId); // Usuń oznaczenie czasu jako zarezerwowany
-        updateReservationList(); // Zaktualizuj listę rezerwacji na interfejsie użytkownika
+        // Usuń rezerwację z tablicy
+        reservations.splice(index, 1); 
+
+        // Dodaj log dla informacji
+        console.log("Deleting reservation with ID:", reservation.id); 
+
+        // Sprawdź, czy rezerwacja istnieje w Firestore przed próbą usunięcia
+        if (reservation.documentId) {
+            deleteReservationFromFirestore(reservation.documentId); // Usuń rezerwację z Firestore
+        } else {
+            console.error("Reservation document ID not found. Cannot delete reservation from Firestore.");
+        }
+
+        // Usuń oznaczenie czasu jako zarezerwowany
+        unmarkTimeSlotAsReserved(reservation.timeSlotId); 
+
+        // Zaktualizuj listę rezerwacji na interfejsie użytkownika
+        updateReservationList(); 
+    } else {
+        console.error("Reservation not found in local storage. Cannot cancel reservation.");
     }
 }
 
-function deleteReservationFromFirestore(reservationId) {
-    console.log("Deleting reservation with ID:", reservationId); // Dodaj tę linię do sprawdzenia ID rezerwacji
-    db.collection("reservations").doc(reservationId).delete() // Przekazanie ID dokumentu do funkcji doc()
+
+function deleteReservationFromFirestore(documentId) {
+    db.collection("reservations").doc(documentId).delete()
         .then(function () {
             console.log("Reservation successfully deleted from Firestore!");
         })
@@ -356,7 +374,6 @@ function deleteReservationFromFirestore(reservationId) {
             console.error("Error deleting reservation from Firestore: ", error);
         });
 }
-
 
 
         function markTimeSlotAsReserved(timeSlotId) {
