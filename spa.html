@@ -407,23 +407,34 @@ function deleteReservationFromFirestore(documentId) {
         roomNumber: currentRoomNumber
     };
 
-    reservations.push(reservation);
-    updateReservationList();
-    saveReservationToFirestore(reservation);
-    markTimeSlotAsReserved(timeSlotId); 
-    closeConfirmationModal();
+    saveReservationToFirestore(reservation)
+        .then(function (documentId) {
+            reservation.documentId = documentId; // Dodaj pole documentId do rezerwacji
+            reservations.push(reservation);
+            updateReservationList();
+            markTimeSlotAsReserved(timeSlotId); 
+            closeConfirmationModal();
+        })
+        .catch(function (error) {
+            console.error("Error confirming reservation: ", error);
+            openTakenModal(); // Jeśli zapis do Firestore nie powiedzie się, pokaż modal z informacją o zajętym terminie
+        });
 }
 
 
-        function saveReservationToFirestore(reservation) {
-            db.collection("reservations").add(reservation)
-                .then(function (docRef) {
-                    console.log("Reservation successfully saved to Firestore with ID:", docRef.id);
-                })
-                .catch(function (error) {
-                    console.error("Error saving reservation to Firestore: ", error);
-                });
-        }
+
+             function saveReservationToFirestore(reservation) {
+    return db.collection("reservations").add(reservation)
+        .then(function (docRef) {
+            console.log("Reservation successfully saved to Firestore with ID:", docRef.id);
+            return docRef.id; // Zwróć identyfikator dokumentu
+        })
+        .catch(function (error) {
+            console.error("Error saving reservation to Firestore: ", error);
+            throw error; // Rzuć błąd w przypadku niepowodzenia zapisu
+        });
+}
+
 
       function loadReservations() {
     return new Promise(function (resolve, reject) {
