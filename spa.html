@@ -335,9 +335,10 @@ function submitRoomNumber() {
             overlay.style.display = 'none';
         }
 
-     function cancelReservation(reservation, documentId) {
+     function cancelReservation(reservation) {
     var index = reservations.findIndex(r => r.id === reservation.id);
     if (index !== -1) {
+        var documentId = reservation.documentId; // Pobierz documentId z rezerwacji
         reservations.splice(index, 1);
         console.log("Deleting reservation with ID:", reservation.id);
         deleteReservationFromFirestore(documentId); // Przekazanie identyfikatora dokumentu do funkcji
@@ -345,6 +346,7 @@ function submitRoomNumber() {
         updateReservationList();
     }
 }
+
 
 
 
@@ -406,7 +408,7 @@ function deleteReservationFromFirestore(documentId) {
 
 
 
-             function saveReservationToFirestore(reservation) {
+            function saveReservationToFirestore(reservation) {
     return db.collection("reservations").add(reservation)
         .then(function (docRef) {
             console.log("Reservation successfully saved to Firestore with ID:", docRef.id);
@@ -417,6 +419,7 @@ function deleteReservationFromFirestore(documentId) {
             throw error; // Rzuć błąd w przypadku niepowodzenia zapisu
         });
 }
+
 
 
       function loadReservations() {
