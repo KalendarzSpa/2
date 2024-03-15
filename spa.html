@@ -336,7 +336,7 @@ function submitRoomNumber() {
         }
 
          function cancelReservation(reservation) {
-    var index = reservations.findIndex(r => r.id === reservationId); // Znajdź indeks rezerwacji w tablicy
+    var index = reservations.findIndex(r => r.id === reservation.id); // Znajdź indeks rezerwacji w tablicy
     if (index !== -1) {
         reservations.splice(index, 1); // Usuń rezerwację z tablicy
         deleteReservationFromFirestore(reservation); // Usuń rezerwację z Firestore
@@ -437,7 +437,7 @@ var cancelButton = document.createElement('span');
 cancelButton.className = 'cancel-button';
 cancelButton.textContent = `(Anuluj)`;
 cancelButton.onclick = function () {
-    cancelReservation(reservationId);
+    cancelReservation(reservation);
 };
 
                 listItem.appendChild(cancelButton);
