@@ -347,8 +347,8 @@ function submitRoomNumber() {
 }
 
 
-        function deleteReservationFromFirestore(reservation) {
-    db.collection("reservations").doc(reservation).delete() // Przekazanie ID dokumentu do funkcji doc()
+        function deleteReservationFromFirestore(reservationId) {
+    db.collection("reservations").doc(reservationId).delete() // Przekazanie ID dokumentu do funkcji doc()
         .then(function () {
             console.log("Reservation successfully deleted from Firestore!");
         })
