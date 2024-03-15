@@ -335,23 +335,20 @@ function submitRoomNumber() {
             overlay.style.display = 'none';
         }
 
-     function cancelReservation(reservation) {
-    var index = reservations.findIndex(r => r.id === reservation.id);
+        function cancelReservation(reservation) {
+    var index = reservations.findIndex(r => r.id === reservation.id); // Znajdź indeks rezerwacji w tablicy
     if (index !== -1) {
-        var documentId = reservation.documentId; // Pobierz documentId z rezerwacji
-        reservations.splice(index, 1);
-        console.log("Deleting reservation with ID:", reservation.id);
-        deleteReservationFromFirestore(documentId); // Przekazanie identyfikatora dokumentu do funkcji
-        unmarkTimeSlotAsReserved(reservation.timeSlotId);
-        updateReservationList();
+        reservations.splice(index, 1); // Usuń rezerwację z tablicy
+        console.log("Deleting reservation with ID:", reservation.id); // Dodaj tę linię do sprawdzenia ID rezerwacji
+        deleteReservationFromFirestore(reservation.id); // Usuń rezerwację z Firestore
+        unmarkTimeSlotAsReserved(reservation.timeSlotId); // Usuń oznaczenie czasu jako zarezerwowany
+        updateReservationList(); // Zaktualizuj listę rezerwacji na interfejsie użytkownika
     }
 }
 
-
-
-
-function deleteReservationFromFirestore(documentId) {
-    db.collection("reservations").doc(documentId).delete()
+function deleteReservationFromFirestore(reservationId) {
+    console.log("Deleting reservation with ID:", reservationId); // Dodaj tę linię do sprawdzenia ID rezerwacji
+    db.collection("reservations").doc(reservationId).delete() // Przekazanie ID dokumentu do funkcji doc()
         .then(function () {
             console.log("Reservation successfully deleted from Firestore!");
         })
@@ -359,6 +356,7 @@ function deleteReservationFromFirestore(documentId) {
             console.error("Error deleting reservation from Firestore: ", error);
         });
 }
+
 
 
         function markTimeSlotAsReserved(timeSlotId) {
@@ -392,35 +390,23 @@ function deleteReservationFromFirestore(documentId) {
         roomNumber: currentRoomNumber
     };
 
-    saveReservationToFirestore(reservation)
-        .then(function (documentId) {
-            reservation.documentId = documentId; // Dodaj pole documentId do rezerwacji
-            reservations.push(reservation);
-            updateReservationList();
-            markTimeSlotAsReserved(timeSlotId); 
-            closeConfirmationModal();
-        })
-        .catch(function (error) {
-            console.error("Error confirming reservation: ", error);
-            openTakenModal(); // Jeśli zapis do Firestore nie powiedzie się, pokaż modal z informacją o zajętym terminie
-        });
-}
-
-function saveReservationToFirestore(reservation) {
-    return db.collection("reservations").add(reservation)
-        .then(function (docRef) {
-            console.log("Reservation successfully saved to Firestore with ID:", docRef.id);
-            reservation.documentId = docRef.id; // Przypisz documentId do rezerwacji
-            return docRef.id; // Zwróć identyfikator dokumentu
-        })
-        .catch(function (error) {
-            console.error("Error saving reservation to Firestore: ", error);
-            throw error; // Rzuć błąd w przypadku niepowodzenia zapisu
-        });
+    reservations.push(reservation);
+    updateReservationList();
+    saveReservationToFirestore(reservation);
+    markTimeSlotAsReserved(timeSlotId); 
+    closeConfirmationModal();
 }
 
 
-
+        function saveReservationToFirestore(reservation) {
+            db.collection("reservations").add(reservation)
+                .then(function (docRef) {
+                    console.log("Reservation successfully saved to Firestore with ID:", docRef.id);
+                })
+                .catch(function (error) {
+                    console.error("Error saving reservation to Firestore: ", error);
+                });
+        }
 
       function loadReservations() {
     return new Promise(function (resolve, reject) {
@@ -454,15 +440,8 @@ var cancelButton = document.createElement('span');
 cancelButton.className = 'cancel-button';
 cancelButton.textContent = `(Anuluj)`;
 cancelButton.onclick = function () {
-    if (reservation && reservation.id) {
-        cancelReservation(reservation);
-    } else {
-        console.error("Invalid reservation ID:", reservation);
-    }
+    cancelReservation(reservation);
 };
-
-
-
 
                 listItem.appendChild(cancelButton);
                 reservationList.appendChild(listItem);
