@@ -335,34 +335,17 @@ function submitRoomNumber() {
             overlay.style.display = 'none';
         }
 
-     function cancelReservation(reservation) {
-    // Znajdź indeks rezerwacji w tablicy
-    var index = reservations.findIndex(r => r.id === reservation.id); 
-
-    // Sprawdź, czy rezerwacja istnieje w tablicy
+     function cancelReservation(reservation, documentId) {
+    var index = reservations.findIndex(r => r.id === reservation.id);
     if (index !== -1) {
-        // Usuń rezerwację z tablicy
-        reservations.splice(index, 1); 
-
-        // Dodaj log dla informacji
-        console.log("Deleting reservation with ID:", reservation.id); 
-
-        // Sprawdź, czy rezerwacja istnieje w Firestore przed próbą usunięcia
-        if (reservation.documentId) {
-            deleteReservationFromFirestore(reservation.documentId); // Usuń rezerwację z Firestore
-        } else {
-            console.error("Reservation document ID not found. Cannot delete reservation from Firestore.");
-        }
-
-        // Usuń oznaczenie czasu jako zarezerwowany
-        unmarkTimeSlotAsReserved(reservation.timeSlotId); 
-
-        // Zaktualizuj listę rezerwacji na interfejsie użytkownika
-        updateReservationList(); 
-    } else {
-        console.error("Reservation not found in local storage. Cannot cancel reservation.");
+        reservations.splice(index, 1);
+        console.log("Deleting reservation with ID:", reservation.id);
+        deleteReservationFromFirestore(documentId); // Przekazanie identyfikatora dokumentu do funkcji
+        unmarkTimeSlotAsReserved(reservation.timeSlotId);
+        updateReservationList();
     }
 }
+
 
 
 function deleteReservationFromFirestore(documentId) {
@@ -468,8 +451,9 @@ var cancelButton = document.createElement('span');
 cancelButton.className = 'cancel-button';
 cancelButton.textContent = `(Anuluj)`;
 cancelButton.onclick = function () {
-    cancelReservation(reservation);
+    cancelReservation(reservation, reservation.documentId); // Dodaj przekazanie identyfikatora dokumentu
 };
+
 
                 listItem.appendChild(cancelButton);
                 reservationList.appendChild(listItem);
