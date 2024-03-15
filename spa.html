@@ -406,12 +406,11 @@ function deleteReservationFromFirestore(documentId) {
         });
 }
 
-
-
-           function saveReservationToFirestore(reservation) {
+function saveReservationToFirestore(reservation) {
     return db.collection("reservations").add(reservation)
         .then(function (docRef) {
             console.log("Reservation successfully saved to Firestore with ID:", docRef.id);
+            reservation.documentId = docRef.id; // Przypisz documentId do rezerwacji
             return docRef.id; // Zwróć identyfikator dokumentu
         })
         .catch(function (error) {
