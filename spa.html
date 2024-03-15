@@ -339,22 +339,23 @@ function submitRoomNumber() {
     var index = reservations.findIndex(r => r.id === reservation.id); // Znajdź indeks rezerwacji w tablicy
     if (index !== -1) {
         reservations.splice(index, 1); // Usuń rezerwację z tablicy
-        deleteReservationFromFirestore(reservation); // Usuń rezerwację z Firestore
+        deleteReservationFromFirestore(reservation.id); // Usuń rezerwację z Firestore
         unmarkTimeSlotAsReserved(reservation.timeSlotId); // Usuń oznaczenie czasu jako zarezerwowany
          updateReservationList(); // Zaktualizuj listę rezerwacji na interfejsie użytkownika
     }
 }
 
 
-        function deleteReservationFromFirestore(reservation) {
-            db.collection("reservations").doc(reservation).delete()
-                .then(function () {
-                    console.log("Reservation successfully deleted from Firestore!");
-                })
-                .catch(function (error) {
-                    console.error("Error deleting reservation from Firestore: ", error);
-                });
-        }
+        function deleteReservationFromFirestore(reservationId) {
+    db.collection("reservations").doc(reservationId).delete() // Przekazanie ID dokumentu do funkcji doc()
+        .then(function () {
+            console.log("Reservation successfully deleted from Firestore!");
+        })
+        .catch(function (error) {
+            console.error("Error deleting reservation from Firestore: ", error);
+        });
+}
+
 
         function markTimeSlotAsReserved(timeSlotId) {
             var timeSlotElement = document.querySelector(`.time-slot[data-time-slot-id="${timeSlotId}"]`);
