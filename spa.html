@@ -451,9 +451,13 @@ var cancelButton = document.createElement('span');
 cancelButton.className = 'cancel-button';
 cancelButton.textContent = `(Anuluj)`;
 cancelButton.onclick = function () {
-    console.log("Reservation to cancel:", reservation);
-    cancelReservation(reservation);
+    if (reservation && reservation.id) {
+        cancelReservation(reservation);
+    } else {
+        console.error("Invalid reservation ID:", reservation);
+    }
 };
+
 
 
 
