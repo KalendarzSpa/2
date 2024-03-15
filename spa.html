@@ -351,7 +351,7 @@ function submitRoomNumber() {
     db.collection("reservations").doc(reservationId).delete() // Przekazanie ID dokumentu do funkcji doc()
         .then(function () {
             console.log("Reservation successfully deleted from Firestore!");
-            console.log("reservationId:", reservation.id);
+            console.log("reservationId:");
         })
         .catch(function (error) {
             console.error("Error deleting reservation from Firestore: ", error);
