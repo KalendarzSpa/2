@@ -346,17 +346,17 @@ function submitRoomNumber() {
     }
 }
 
-
-        function deleteReservationFromFirestore(reservationId) {
+function deleteReservationFromFirestore(reservationId) {
+    console.log("Deleting reservation with ID:", reservationId); // Dodaj tę linię do sprawdzenia ID rezerwacji
     db.collection("reservations").doc(reservationId).delete() // Przekazanie ID dokumentu do funkcji doc()
         .then(function () {
             console.log("Reservation successfully deleted from Firestore!");
-            console.log(reservationId);
         })
         .catch(function (error) {
             console.error("Error deleting reservation from Firestore: ", error);
         });
 }
+
 
 
         function markTimeSlotAsReserved(timeSlotId) {
