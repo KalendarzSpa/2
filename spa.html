@@ -408,7 +408,7 @@ function deleteReservationFromFirestore(documentId) {
 
 
 
-            function saveReservationToFirestore(reservation) {
+           function saveReservationToFirestore(reservation) {
     return db.collection("reservations").add(reservation)
         .then(function (docRef) {
             console.log("Reservation successfully saved to Firestore with ID:", docRef.id);
@@ -419,6 +419,7 @@ function deleteReservationFromFirestore(documentId) {
             throw error; // Rzuć błąd w przypadku niepowodzenia zapisu
         });
 }
+
 
 
 
