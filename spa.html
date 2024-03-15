@@ -340,6 +340,7 @@ function submitRoomNumber() {
     if (index !== -1) {
         reservations.splice(index, 1); // Usuń rezerwację z tablicy
         console.log("Deleting reservation with ID:", reservation.id); // Dodaj tę linię do sprawdzenia ID rezerwacji
+        console.log("reservationId:", reservation.id);
         deleteReservationFromFirestore(reservation.id); // Usuń rezerwację z Firestore
         unmarkTimeSlotAsReserved(reservation.timeSlotId); // Usuń oznaczenie czasu jako zarezerwowany
         updateReservationList(); // Zaktualizuj listę rezerwacji na interfejsie użytkownika
