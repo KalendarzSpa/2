@@ -336,7 +336,7 @@ function submitRoomNumber() {
         }
 
          function cancelReservation(reservationId) {
-    var index = reservations.findIndex(r => r.userId === reservation.userId); // Znajdź indeks rezerwacji w tablicy
+    var index = reservations.findIndex(r => r.id === reservationId); // Znajdź indeks rezerwacji w tablicy
     if (index !== -1) {
         reservations.splice(index, 1); // Usuń rezerwację z tablicy
         deleteReservationFromFirestore(reservationId); // Usuń rezerwację z Firestore
