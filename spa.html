@@ -416,21 +416,21 @@ function deleteReservationFromFirestore(reservationId) {
                 return reservation.roomNumber === currentRoomNumber; // Fixed roomNumber to currentRoomNumber
             });
 
-            myReservations.forEach(function (reservation) {
-                var listItem = document.createElement('li');
-               listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+           myReservations.forEach(function (reservation) {
+    var listItem = document.createElement('li');
+    listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
 
-var cancelButton = document.createElement('span');
-cancelButton.className = 'cancel-button';
-cancelButton.textContent = `(Anuluj)`;
-cancelButton.onclick = function () {
-    cancelReservation(reservation);
-};
+    var cancelButton = document.createElement('span');
+    cancelButton.className = 'cancel-button';
+    cancelButton.textContent = `(Anuluj)`;
+    cancelButton.onclick = function () {
+        cancelReservation(reservation);
+    };
 
-                listItem.appendChild(cancelButton);
-                reservationList.appendChild(listItem);
-            });
-        }
+    listItem.appendChild(cancelButton);
+    reservationList.appendChild(listItem);
+});
+
 
         function openTakenModal() {
             var modal = document.getElementById('takenModal');
