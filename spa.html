@@ -335,17 +335,15 @@ function submitRoomNumber() {
             overlay.style.display = 'none';
         }
 
-       function cancelReservation(reservation) {
-    var reservationId = reservation.id; // Pobieramy identyfikator rezerwacji
-    var index = reservations.findIndex(r => r.id === reservationId); // Znajdujemy indeks rezerwacji w tablicy
+        function cancelReservation(reservation) {
+    var index = reservations.findIndex(r => r.id === reservation.id); // Znajdź indeks rezerwacji w tablicy
     if (index !== -1) {
-        reservations.splice(index, 1); // Usuwamy rezerwację z tablicy
-        console.log("Deleting reservation with ID:", reservationId);
-        deleteReservationFromFirestore(reservationId); // Usuwamy rezerwację z Firestore
+        reservations.splice(index, 1); // Usuń rezerwację z tablicy
+        console.log("Deleting reservation with ID:", reservation.id); // Dodaj tę linię do sprawdzenia ID rezerwacji
+        deleteReservationFromFirestore(reservation.id); // Usuń rezerwację z Firestore
         updateReservationList(); // Zaktualizuj listę rezerwacji na interfejsie użytkownika
     }
 }
-
 
 function deleteReservationFromFirestore(reservationId) {
     console.log("Deleting reservation with ID:", reservationId); // Dodaj tę linię do sprawdzenia ID rezerwacji
@@ -418,21 +416,21 @@ function deleteReservationFromFirestore(reservationId) {
                 return reservation.roomNumber === currentRoomNumber; // Fixed roomNumber to currentRoomNumber
             });
 
-           myReservations.forEach(function (reservation) {
-    var listItem = document.createElement('li');
-    listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+            myReservations.forEach(function (reservation) {
+                var listItem = document.createElement('li');
+               listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
 
-    var cancelButton = document.createElement('span');
-    cancelButton.className = 'cancel-button';
-    cancelButton.textContent = `(Anuluj)`;
-    cancelButton.onclick = function () {
-        cancelReservation(reservation);
-    };
+var cancelButton = document.createElement('span');
+cancelButton.className = 'cancel-button';
+cancelButton.textContent = `(Anuluj)`;
+cancelButton.onclick = function () {
+    cancelReservation(reservation);
+};
 
-    listItem.appendChild(cancelButton);
-    reservationList.appendChild(listItem);
-});
-
+                listItem.appendChild(cancelButton);
+                reservationList.appendChild(listItem);
+            });
+        }
 
         function openTakenModal() {
             var modal = document.getElementById('takenModal');
