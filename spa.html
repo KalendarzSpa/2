@@ -114,6 +114,56 @@ var firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+  var roomPasswords = {
+  "0": "8572",
+  "1": "3491",
+  "2": "6004",
+  "3": "7284",
+  "4": "9548",
+  "5": "1729",
+  "6": "4093",
+  "7": "6251",
+  "8": "5038",
+  "9": "3617",
+  "10": "1425",
+  "11": "2389",
+  "12": "5719",
+  "13": "8473",
+  "14": "9205",
+  "15": "3852",
+  "16": "7163",
+  "17": "2004",
+  "18": "5901",
+  "19": "9372",
+  "20": "4681",
+  "21": "3297",
+  "22": "8024",
+  "23": "5541",
+  "24": "1468",
+  "25": "6901",
+  "26": "2190",
+  "27": "7530"
+};
+
+
+// Funkcja sprawdzająca autoryzację
+function authenticate(roomNumber, password) {
+  if (roomPasswords.hasOwnProperty(roomNumber) && roomPasswords[roomNumber] === password) {
+    return true; // Hasło pasuje do numeru pokoju
+  } else {
+    return false; // Nieprawidłowe hasło lub numer pokoju
+  }
+}
+
+// Przykładowe użycie funkcji authenticate
+var enteredRoomNumber = '5'; // Numer pokoju wprowadzony przez użytkownika
+var enteredPassword = '1729'; // Hasło wprowadzone przez użytkownika
+if (authenticate(enteredRoomNumber, enteredPassword)) {
+  console.log('Autoryzacja udana. Użytkownik ma dostęp do pokoju ' + enteredRoomNumber + '.');
+} else {
+  console.log('Nieudana autoryzacja. Wprowadzone hasło jest nieprawidłowe.');
+}
+   
 
 // Funkcja autoryzacji użytkownika
 function authenticate() {
@@ -128,6 +178,7 @@ function authenticate() {
     alert('Nieprawidłowy numer pokoju lub hasło');
   }
 }
+    
 
 // Funkcja wyświetlająca kalendarz
 function displayCalendar() {
