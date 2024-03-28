@@ -243,7 +243,7 @@ body {
 
         // Sprawdzenie poprawności hasła dla danego numeru pokoju
         if (roomPasswords.hasOwnProperty(roomNumber) && roomPasswords[roomNumber] === password) {
-            displayCalendar();
+            generateCalendar();
         } else {
             alert('Nieprawidłowe hasło dla tego pokoju');
         }
@@ -262,12 +262,13 @@ function logout() {
 
 
    // Funkcja wyświetlająca kalendarz
-function displayCalendar() {
-    var calendarContainer = document.getElementById('calendar');
-    calendarContainer.innerHTML = ''; // Wyczyszczenie kontenera kalendarza
+
+    function generateCalendar() {
+    var calendar = document.getElementById('calendar');
+    calendar.innerHTML = '';
 
     var today = new Date();
-    today.setHours(0, 0, 0, 0); // Ustawienie godziny na 00:00:00
+    today.setHours(0, 0, 0, 0);
 
     for (var dayOffset = 0; dayOffset < 2; dayOffset++) {
         var currentDate = new Date(today);
@@ -275,54 +276,41 @@ function displayCalendar() {
 
         var dayElement = document.createElement('div');
         dayElement.className = 'day';
-        dayElement.textContent = currentDate.toLocaleDateString('pl-PL', {
+        dayElement.textContent = currentDate.toLocaleDateString(currentLanguage, {
             weekday: 'long',
             day: 'numeric',
-            month: 'long',
+            month: 'numeric',
             year: 'numeric'
         });
-        dayElement.dataset.date = currentDate.toISOString().split('T')[0]; // Dodanie atrybutu z datą
-
+        
         dayElement.onclick = function () {
-            toggleDay(this);
+            toggleDay(this); // Dodaj to wywołanie funkcji toggleDay
         };
 
-        calendarContainer.appendChild(dayElement);
-    }
-}
-
-// Funkcja przekształcająca identyfikator slotu czasowego w obiekt daty
-function parseTimeSlotId(timeSlotId) {
-    var parts = timeSlotId.split('-');
-    var dateParts = parts[0].split('-');
-    var hour = parseInt(parts[1]);
-    return new Date(dateParts[0], dateParts[1] - 1, dateParts[2], hour);
-}
-
-// Funkcja obsługująca kliknięcie na dzień
-function toggleDay(dayElement) {
-    var timeSlotsContainer = dayElement.querySelector('.time-slots-container');
-    if (!timeSlotsContainer) {
-        timeSlotsContainer = document.createElement('div');
+        var timeSlotsContainer = document.createElement('div');
         timeSlotsContainer.className = 'time-slots-container';
 
-        var currentDate = new Date(dayElement.dataset.date);
         for (var i = 8; i <= 21; i++) {
             var timeSlotId = generateTimeSlotId(currentDate, i);
             var isReserved = isTimeSlotReserved(timeSlotId);
+            var isCurrentUserReservation = isReserved && reservations.find(r => r.reservationId === reservationId && r.timeSlotId === timeSlotId);
 
             var timeSlot = document.createElement('div');
             timeSlot.className = 'time-slot';
             timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
             timeSlot.dataset.timeSlotId = timeSlotId;
 
-            if (isReserved) {
+            if (isCurrentUserReservation) {
                 timeSlot.classList.add('reserved');
+                timeSlot.style.backgroundColor = '#00ff00'; 
+            } else if (isReserved) {
+                timeSlot.classList.add('reserved');
+                timeSlot.style.backgroundColor = '#ff6666'; 
             }
 
             timeSlot.addEventListener('click', function () {
                 selectedTimeSlot = this;
-                if (!selectedTimeSlot.classList.contains('reserved')) {
+                if (!selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken')) {
                     openConfirmationModal();
                 } else {
                     openTakenModal();
@@ -333,16 +321,9 @@ function toggleDay(dayElement) {
         }
 
         dayElement.appendChild(timeSlotsContainer);
-    } else {
-        // Jeśli kontener slotów czasowych jest już widoczny, to go ukrywamy
-        if (timeSlotsContainer.classList.contains('hidden')) {
-            timeSlotsContainer.classList.remove('hidden');
-        } else {
-            timeSlotsContainer.classList.add('hidden');
-        }
+        calendar.appendChild(dayElement);
     }
 }
-
 
 
     // Funkcja generująca identyfikator slotu czasowego
