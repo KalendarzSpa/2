@@ -376,15 +376,16 @@ function openConfirmationModal() {
     selectedTimeSlot.classList.add('reserved');
     selectedTimeSlot.style.backgroundColor = '#ff6666';
     var currentDate = new Date();
-    var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
+    var timeSlotId = selectedTimeSlot.dataset.timeSlotId
 
-    var reservation = {
-        id: generateReservationId(), // Wywołanie funkcji generateReservationId do generowania identyfikatora
-        userId: roomNumber, 
-        date: currentDate.toLocaleDateString(),
-        timeSlotId: timeSlotId,
-        roomNumber: roomNumber,
-    };
+      var reservation = {
+    id: generateReservationId(),
+    userId: firebase.auth().currentUser.uid, // Pobranie identyfikatora użytkownika
+    date: currentDate.toLocaleDateString(),
+    timeSlotId: timeSlotId,
+    roomNumber: roomNumber,
+};
+
 
       
     reservations.push(reservation);
