@@ -238,18 +238,27 @@ body {
         "27": "7530"
     };
 
-    function authenticate() {
+   function authenticate() {
     var roomNumber = document.getElementById('roomNumber').value;
     var password = document.getElementById('password').value;
 
-    if (roomPasswords.hasOwnProperty(roomNumber) && roomPasswords[roomNumber] === password) {
-        loadReservations(roomNumber).then(function () {
-        generateCalendar(); // Wywołaj funkcję generującą kalendarz po pobraniu rezerwacji
-    }).catch(function (error) {
-    console.error("Error loading reservations:", error);
-});
-};
-    } 
+    if (roomPasswords.hasOwnProperty(roomNumber)) {
+        if (roomPasswords[roomNumber] === password) {
+            loadReservations(roomNumber).then(function () {
+                generateCalendar(); // Wywołaj funkcję generującą kalendarz po pobraniu rezerwacji
+            }).catch(function (error) {
+                console.error("Error loading reservations:", error);
+            });
+        } else {
+            console.error("Invalid password for room number:", roomNumber);
+            // Możesz dodać tutaj kod, który wyświetli komunikat dla użytkownika o błędnym haśle
+        }
+    } else {
+        console.error("Invalid room number:", roomNumber);
+        // Możesz dodać tutaj kod, który wyświetli komunikat dla użytkownika o błędnym numerze pokoju
+    }
+}
+
 
     function generateCalendar() {
     var calendar = document.getElementById('calendar');
