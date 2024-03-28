@@ -256,62 +256,83 @@ function logout() {
 }
 
 
-    // Funkcja wyświetlająca kalendarz
-    function displayCalendar() {
-        var calendarContainer = document.getElementById('calendar');
-        calendarContainer.innerHTML = ''; // Wyczyszczenie kontenera kalendarza
+   // Funkcja wyświetlająca kalendarz
+function displayCalendar() {
+    var calendarContainer = document.getElementById('calendar');
+    calendarContainer.innerHTML = ''; // Wyczyszczenie kontenera kalendarza
 
-        var today = new Date();
-        today.setHours(0, 0, 0, 0); // Ustawienie godziny na 00:00:00
+    var today = new Date();
+    today.setHours(0, 0, 0, 0); // Ustawienie godziny na 00:00:00
 
-        for (var dayOffset = 0; dayOffset < 2; dayOffset++) {
-            var currentDate = new Date(today);
-            currentDate.setDate(currentDate.getDate() + dayOffset);
+    for (var dayOffset = 0; dayOffset < 2; dayOffset++) {
+        var currentDate = new Date(today);
+        currentDate.setDate(currentDate.getDate() + dayOffset);
 
-            var dayElement = document.createElement('div');
-            dayElement.className = 'day';
-            dayElement.textContent = currentDate.toLocaleDateString('pl-PL', {
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            });
-            dayElement.onclick = function () {
-                toggleDay(this);
-            };
+        var dayElement = document.createElement('div');
+        dayElement.className = 'day';
+        dayElement.textContent = currentDate.toLocaleDateString('pl-PL', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+        dayElement.dataset.date = currentDate.toISOString().split('T')[0]; // Dodanie atrybutu z datą
 
-            var timeSlotsContainer = document.createElement('div');
-            timeSlotsContainer.className = 'time-slots-container';
+        dayElement.onclick = function () {
+            toggleDay(this);
+        };
 
-            for (var i = 8; i <= 21; i++) {
-                var timeSlotId = generateTimeSlotId(currentDate, i);
-                var isReserved = isTimeSlotReserved(timeSlotId);
+        calendarContainer.appendChild(dayElement);
+    }
+}
 
-                var timeSlot = document.createElement('div');
-                timeSlot.className = 'time-slot';
-                timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
-                timeSlot.dataset.timeSlotId = timeSlotId;
+// Funkcja przekształcająca identyfikator slotu czasowego w obiekt daty
+function parseTimeSlotId(timeSlotId) {
+    var parts = timeSlotId.split('-');
+    var dateParts = parts[0].split('-');
+    var hour = parseInt(parts[1]);
+    return new Date(dateParts[0], dateParts[1] - 1, dateParts[2], hour);
+}
 
-                if (isReserved) {
-                    timeSlot.classList.add('reserved');
-                }
+// Funkcja obsługująca kliknięcie na dzień
+function toggleDay(dayElement) {
+    var timeSlotsContainer = dayElement.querySelector('.time-slots-container');
+    if (!timeSlotsContainer) {
+        timeSlotsContainer = document.createElement('div');
+        timeSlotsContainer.className = 'time-slots-container';
 
-                timeSlot.addEventListener('click', function () {
-                    selectedTimeSlot = this;
-                    if (!selectedTimeSlot.classList.contains('reserved')) {
-                        openConfirmationModal();
-                    } else {
-                        openTakenModal();
-                    }
-                });
+        var currentDate = new Date(dayElement.dataset.date);
+        for (var i = 8; i <= 21; i++) {
+            var timeSlotId = generateTimeSlotId(currentDate, i);
+            var isReserved = isTimeSlotReserved(timeSlotId);
 
-                timeSlotsContainer.appendChild(timeSlot);
+            var timeSlot = document.createElement('div');
+            timeSlot.className = 'time-slot';
+            timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
+            timeSlot.dataset.timeSlotId = timeSlotId;
+
+            if (isReserved) {
+                timeSlot.classList.add('reserved');
             }
 
-            dayElement.appendChild(timeSlotsContainer);
-            calendarContainer.appendChild(dayElement);
+            timeSlot.addEventListener('click', function () {
+                selectedTimeSlot = this;
+                if (!selectedTimeSlot.classList.contains('reserved')) {
+                    openConfirmationModal();
+                } else {
+                    openTakenModal();
+                }
+            });
+
+            timeSlotsContainer.appendChild(timeSlot);
         }
+
+        dayElement.appendChild(timeSlotsContainer);
+    } else {
+        timeSlotsContainer.classList.toggle('hidden');
     }
+}
+
 
     // Funkcja generująca identyfikator slotu czasowego
     function generateTimeSlotId(date, hour) {
