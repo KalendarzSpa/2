@@ -358,16 +358,12 @@ function openConfirmationModal() {
     confirmationModal.style.display = 'block';
     overlay.style.display = 'block';
 
-     function cancelConfirmation() {
-            closeConfirmationModal();
-        }
 
-        function closeConfirmationModal() {
-            var confirmationModal = document.getElementById('confirmationModal');
-            var overlay = document.getElementById('overlay');
-            confirmationModal.style.display = 'none';
-            overlay.style.display = 'none';
-        }
+      function closeConfirmationModal() {
+    var confirmationModal = document.getElementById('confirmationModal');
+    var overlay = document.getElementById('overlay');
+    confirmationModal.style.display = 'none';
+    overlay.style.display = 'none';
 }
 
 // Funkcja potwierdzająca rezerwację
