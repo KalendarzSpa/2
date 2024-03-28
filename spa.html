@@ -276,7 +276,7 @@ function logout() {
 
         var dayElement = document.createElement('div');
         dayElement.className = 'day';
-        dayElement.textContent = currentDate.toLocaleDateString({
+        dayElement.textContent = currentDate.toLocaleDateString(undefined, {
             weekday: 'long',
             day: 'numeric',
             month: 'numeric',
