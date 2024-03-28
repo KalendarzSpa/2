@@ -380,7 +380,6 @@ function openConfirmationModal() {
 
       var reservation = {
     id: generateReservationId(),
-    userId: firebase.auth().currentUser.uid, // Pobranie identyfikatora użytkownika
     date: currentDate.toLocaleDateString(),
     timeSlotId: timeSlotId,
     roomNumber: roomNumber,
