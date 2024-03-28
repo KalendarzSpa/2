@@ -6,36 +6,85 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rezerwacja pokoju</title>
     <style>
-    .container {
-      max-width: 400px;
-      margin: 0 auto;
-      padding: 20px;
-      text-align: center;
-    }
+      /* styles.css */
 
-    input, select, button {
-      margin-bottom: 10px;
-      width: 100%;
-      padding: 10px;
-      box-sizing: border-box;
-    }
+/* Resetowanie marginesów i paddingów dla wszystkich elementów */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    .day {
-      margin-bottom: 20px;
-    }
+/* Stylizacja całego kontenera */
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
 
-    .reservation {
-      padding: 10px;
-      cursor: pointer;
-    }
+/* Stylizacja nagłówków */
+h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+}
 
-    .orange {
-      background-color: orange;
-    }
+/* Stylizacja przycisków */
+button {
+  padding: 10px 20px;
+  background-color: #007bff; /* Niebieski kolor tła */
+  color: #fff; /* Biały kolor tekstu */
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
 
-    .red {
-      background-color: red;
-    }
+button:hover {
+  background-color: #0056b3; /* Ciemniejszy odcień niebieskiego po najechaniu myszką */
+}
+
+/* Stylizacja formularza */
+input[type="text"],
+input[type="password"],
+select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc; /* Szary kolor obramowania */
+  border-radius: 5px; /* Zaokrąglone rogi */
+}
+
+/* Stylizacja kalendarza */
+.day {
+  margin-bottom: 20px;
+}
+
+.reservation {
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  text-align: center;
+  line-height: 50px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.orange {
+  background-color: orange;
+}
+
+.red {
+  background-color: red;
+}
+
+/* Dodatkowe style dla responsywności */
+@media only screen and (max-width: 600px) {
+  .container {
+    padding: 10px;
+  }
+}
+
         </style>
   <link rel="stylesheet" href="styles.css">
 </head>
