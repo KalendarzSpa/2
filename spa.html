@@ -287,6 +287,16 @@ function logout() {
             toggleDay(this); // Dodaj to wywołanie funkcji toggleDay
         };
 
+        // Funkcja zmieniająca widoczność bloków godzinowych
+function toggleDay(dayElement) {
+    var timeSlotsContainer = dayElement.querySelector('.time-slots-container');
+    if (timeSlotsContainer.style.display === 'block') {
+        timeSlotsContainer.style.display = 'none';
+    } else {
+        timeSlotsContainer.style.display = 'block';
+    }
+}
+
         var timeSlotsContainer = document.createElement('div');
         timeSlotsContainer.className = 'time-slots-container';
 
