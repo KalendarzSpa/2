@@ -205,7 +205,17 @@ body {
     var auth = firebase.auth();
      var reservations = [];
      var selectedTimeSlot;
-    var timeSlot;
+   var timeSlots = document.querySelectorAll('.time-slot');
+timeSlots.forEach(function(timeSlot) {
+    timeSlot.addEventListener('click', function () {
+        selectedTimeSlot = this;
+        if (!selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken')) {
+            openConfirmationModal();
+        } else {
+            openTakenModal();
+        }
+    });
+});
 
     // Mapa numeru pokoju do hasła
     var roomPasswords = {
