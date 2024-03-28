@@ -253,19 +253,6 @@ body {
 }
 
 
-function logout() {
-    auth.signOut().then(function () {
-        // Wylogowano pomyślnie
-        // Tutaj możesz dodać dodatkowe czynności, które mają zostać wykonane po wylogowaniu
-    }).catch(function (error) {
-        // Wystąpił błąd podczas wylogowywania
-        var errorMessage = error.message;
-        alert('Błąd wylogowania: ' + errorMessage);
-    });
-}
-
-
-   // Funkcja wyświetlająca kalendarz
 
     function generateCalendar() {
     var calendar = document.getElementById('calendar');
@@ -314,13 +301,29 @@ function toggleDay(dayElement) {
             timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
             timeSlot.dataset.timeSlotId = timeSlotId;
 
-            if (isCurrentUserReservation) {
-                timeSlot.classList.add('reserved');
-                timeSlot.style.backgroundColor = '#00ff00'; 
-            } else if (isReserved) {
-                timeSlot.classList.add('reserved');
-                timeSlot.style.backgroundColor = '#ff6666'; 
-            }
+
+            for (var i = 8; i <= 21; i++) {
+    var timeSlotId = generateTimeSlotId(currentDate, i);
+    var isReserved = isTimeSlotReserved(timeSlotId);
+
+    // Sprawdzenie czy istnieje co najmniej jedna rezerwacja na ten slot czasowy
+    if (isReserved) {
+        var reservationsForSlot = reservations.filter(function (reservation) {
+            return reservation.timeSlotId === timeSlotId;
+        });
+
+        // Sprawdzenie liczby rezerwacji na ten slot czasowy
+        if (reservationsForSlot.length === 1) {
+            // Jeśli jest jedna rezerwacja, nadaj klasę "orange"
+            timeSlot.classList.add('reserved', 'orange');
+        } else if (reservationsForSlot.length === 2) {
+            // Jeśli są dwie rezerwacje, nadaj klasę "red"
+            timeSlot.classList.add('reserved', 'red');
+            // Dodaj komunikat informujący, że dany blok jest niedostępny
+            timeSlot.textContent = 'Zajęte';
+        }
+    }
+
 
             timeSlot.addEventListener('click', function () {
                 selectedTimeSlot = this;
@@ -384,6 +387,11 @@ function openConfirmationModal() {
                 roomNumber: document.getElementById('roomNumber').value,
             };
 
+            var reservationList = document.getElementById('reservationList');
+    var listItem = document.createElement('li');
+    listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+    reservationList.appendChild(listItem);
+
             reservations.push(reservation);
             updateReservationList();
             saveReservationToFirestore(reservation);
@@ -392,6 +400,20 @@ function openConfirmationModal() {
             console.error("Nie wybrano slotu czasowego do potwierdzenia rezerwacji.");
         }
     }
+
+        function cancelReservation(reservation) {
+    // Usunięcie rezerwacji z listy "Moje rezerwacje"
+    var reservationList = document.getElementById('reservationList');
+    var listItem = reservationList.querySelector(`[data-reservation-id="${reservation.id}"]`);
+    reservationList.removeChild(listItem);
+
+    // Usunięcie rezerwacji z bazy danych Firestore
+    db.collection("reservations").doc(reservation.id).delete().then(function() {
+        console.log("Rezerwacja pomyślnie usunięta z Firestore");
+    }).catch(function(error) {
+        console.error("Błąd podczas usuwania rezerwacji z Firestore: ", error);
+    });
+}
 
 
     function generateReservationId() {
