@@ -245,11 +245,7 @@ body {
     // Sprawdzenie poprawności hasła dla danego numeru pokoju
     if (roomPasswords.hasOwnProperty(roomNumber) && roomPasswords[roomNumber] === password) {
         generateCalendar();
-        // Ukrycie sekcji logowania po udanym zalogowaniu
-        document.getElementById('loginSection').style.display = 'none';
-    } else {
-        alert('Nieprawidłowe hasło dla tego pokoju');
-    }
+    } 
 }
 
 
