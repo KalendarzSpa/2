@@ -392,13 +392,6 @@ function openConfirmationModal() {
     }
 
 
-      
-    reservations.push(reservation);
-    updateReservationList();
-    saveReservationToFirestore(reservation);
-    closeConfirmationModal();
-}
-
     function generateReservationId() {
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
                 var r = (Math.random() * 16) | 0,
