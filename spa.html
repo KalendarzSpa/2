@@ -343,13 +343,12 @@ function toggleDay(dayElement) {
         return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + '-' + hour;
     }
 
-    // Funkcja sprawdzająca, czy slot czasowy jest zarezerwowany
-    function isTimeSlotReserved(timeSlotId) {
-        // Tutaj należy dodać logikę sprawdzającą rezerwacje w bazie danych Firebase
-        // Zwróć true, jeśli slot jest zarezerwowany, false w przeciwnym razie
-    }
-
-    // Funkcja otwierająca modal potwierdzenia rezerwacji
+ 
+          function isTimeSlotReserved(timeSlotId) {
+            return reservations.some(function (reservation) {
+                return reservation.timeSlotId === timeSlotId;
+            });
+        }
 
     // Funkcja otwierająca modal potwierdzenia rezerwacji
 function openConfirmationModal() {
@@ -367,19 +366,29 @@ function openConfirmationModal() {
 }
 
 // Funkcja potwierdzająca rezerwację
-  function confirmReservation() {
-    console.log("Confirming Reservation:", selectedTimeSlot.dataset.timeSlotId);
-    selectedTimeSlot.classList.add('reserved');
-    selectedTimeSlot.style.backgroundColor = '#ff6666';
-    var currentDate = new Date();
-    var timeSlotId = selectedTimeSlot.dataset.timeSlotId
+   function confirmReservation() {
+        if(selectedTimeSlot) { // Sprawdzenie czy selectedTimeSlot został zdefiniowany
+            console.log("Confirming Reservation:", selectedTimeSlot.dataset.timeSlotId);
+            selectedTimeSlot.classList.add('reserved');
+            selectedTimeSlot.style.backgroundColor = '#ff6666';
+            var currentDate = new Date();
+            var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
 
-      var reservation = {
-    id: generateReservationId(),
-    date: currentDate.toLocaleDateString(),
-    timeSlotId: timeSlotId,
-    roomNumber: document.getElementById('roomNumber').value,
-};
+            var reservation = {
+                id: generateReservationId(),
+                date: currentDate.toLocaleDateString(),
+                timeSlotId: timeSlotId,
+                roomNumber: document.getElementById('roomNumber').value,
+            };
+
+            reservations.push(reservation);
+            updateReservationList();
+            saveReservationToFirestore(reservation);
+            closeConfirmationModal();
+        } else {
+            console.error("Nie wybrano slotu czasowego do potwierdzenia rezerwacji.");
+        }
+    }
 
 
       
