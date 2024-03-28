@@ -245,6 +245,12 @@ body {
     // Sprawdzenie poprawności hasła dla danego numeru pokoju
     if (roomPasswords.hasOwnProperty(roomNumber) && roomPasswords[roomNumber] === password) {
         generateCalendar();
+          loadReservations().then(function () {
+        generateCalendar();
+    }).catch(function (error) {
+        console.error("Error loading reservations:", error);
+    });
+}
     } 
 }
 
@@ -415,36 +421,45 @@ function openConfirmationModal() {
                 return v.toString(16);
             });
         }
-// Funkcja aktualizująca listę rezerwacji użytkownika
-function updateReservationList() {
-    var reservationList = document.getElementById('reservationList');
-    reservationList.innerHTML = '';
 
-    if (firebase.auth().currentUser) {
-        var myReservations = reservations.filter(function (reservation) {
-            return reservation.userId === firebase.auth().currentUser.uid;
-        });
-
-        myReservations.forEach(function (reservation) {
-            var listItem = document.createElement('li');
-            listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
-
-            var cancelButton = document.createElement('span');
-            cancelButton.className = 'cancel-button';
-            cancelButton.textContent = `(Anuluj)`;
-            cancelButton.onclick = function () {
-                cancelReservation(reservation);
-            };
-
-            listItem.appendChild(cancelButton);
-            reservationList.appendChild(listItem);
-        });
-    } else {
-        // Obsługa przypadku, gdy użytkownik nie jest zalogowany
-        // Możesz np. wyświetlić komunikat o konieczności zalogowania się
-        console.log('Użytkownik nie jest zalogowany');
-    }
+    function loadReservations() {
+    return new Promise(function (resolve, reject) {
+        db.collection("reservations")
+            .get()
+            .then(function (querySnapshot) {
+                reservations = querySnapshot.docs.map(doc => doc.data());
+                updateReservationList();
+                resolve();
+            })
+            .catch(function (error) {
+                console.error("Error getting reservations: ", error);
+                reject(error);
+            });
+    });
 }
+
+        function updateReservationList() {
+            var reservationList = document.getElementById('reservationList');
+            reservationList.innerHTML = '';
+
+            var myReservations = reservations.filter(function (reservation) {
+                return reservation.roomNumber === currentRoomNumber; // Fixed roomNumber to currentRoomNumber
+            });
+
+           myReservations.forEach(function (reservation) {
+    var listItem = document.createElement('li');
+    listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+
+    var cancelButton = document.createElement('span');
+    cancelButton.className = 'cancel-button';
+    cancelButton.textContent = `(Anuluj)`;
+    cancelButton.onclick = function () {
+        cancelReservation(reservation);
+    };
+
+    listItem.appendChild(cancelButton);
+    reservationList.appendChild(listItem);
+});
 
   
 
