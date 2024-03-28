@@ -434,30 +434,29 @@ function openConfirmationModal() {
     });
 }
 
+function updateReservationList(roomNumber) {
+    var reservationList = document.getElementById('reservationList');
+    reservationList.innerHTML = '';
 
-        function updateReservationList() {
-            var reservationList = document.getElementById('reservationList');
-            reservationList.innerHTML = '';
+    var myReservations = reservations.filter(function (reservation) {
+        return reservation.roomNumber === roomNumber;
+    });
 
-            var myReservations = reservations.filter(function (reservation) {
-                return reservation.roomNumber === roomNumber;
-            });
-        
-           myReservations.forEach(function (reservation) {
-    var listItem = document.createElement('li');
-    listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+    myReservations.forEach(function (reservation) {
+        var listItem = document.createElement('li');
+        listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
 
-    var cancelButton = document.createElement('span');
-    cancelButton.className = 'cancel-button';
-    cancelButton.textContent = `(Anuluj)`;
-    cancelButton.onclick = function () {
-        cancelReservation(reservation);
-    };
+        var cancelButton = document.createElement('span');
+        cancelButton.className = 'cancel-button';
+        cancelButton.textContent = `(Anuluj)`;
+        cancelButton.onclick = function () {
+            cancelReservation(reservation);
+        };
 
-    listItem.appendChild(cancelButton);
-    reservationList.appendChild(listItem);
-});
-        }
+        listItem.appendChild(cancelButton);
+        reservationList.appendChild(listItem);
+    });
+}
   
 
     function saveReservationToFirestore(reservation) {
