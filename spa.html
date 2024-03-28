@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rezerwacja pokoju</title>
-  <style>
-    /* styles.css */
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalendarz Rezerwacji Strefy Spa</title>
+    <style>
 
-    /* Resetowanie marginesów i paddingów dla wszystkich elementów */
-    * {
+     {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
@@ -83,27 +81,111 @@
         padding: 10px;
       }
     }
-  </style>
+        body {
+            background-color: #f5f5dc;
+            font-family: Arial, sans-serif;
+        }
+
+        .day {
+            border: 1px solid #ccc;
+            padding: 10px;
+            cursor: pointer;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .time-slot {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        .reserved {
+            background-color: #ffcccc;
+        }
+
+        .taken {
+            background-color: #ff9999;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            z-index: 1000;
+        }
+
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .reservation-section {
+            margin-top: 20px;
+        }
+
+        .cancel-button {
+            cursor: pointer;
+            color: #007bff;
+            text-decoration: underline;
+        }
+
+        .time-slots-container {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Wybierz język</h2>
-    <select id="language">
-      <option value="pl">Polski</option>
-      <option value="en">English</option>
-    </select>
-    <h2>Wprowadź numer pokoju i hasło</h2>
-    <input type="text" id="roomNumber" placeholder="Numer pokoju">
-    <input type="password" id="password" placeholder="Hasło">
-    <button onclick="authenticate()">Zaloguj</button>
-    <div id="calendar"></div>
-  </div>
 
-<script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-database.js"></script>
-  <script>
-    // Inicjalizacja Firebase (zastąp konfiguracją z Twojego projektu Firebase)
+<h2 id="calendarTitle">Kalendarz Rezerwacji Strefy Spa</h2>
+
+<div>
+    <label for="roomNumber">Wprowadź numer pokoju:</label>
+    <input type="text" id="roomNumber">
+    <label for="password">Wprowadź hasło:</label>
+    <input type="password" id="password">
+    <button onclick="authenticate()">Zaloguj</button>
+</div>
+
+<div class="calendar" id="calendar">
+    <!-- Kalendarz będzie generowany tutaj -->
+</div>
+
+<div class="reservation-section" id="reservationSection">
+    <h3 id="reservationTitle">Rezerwacje:</h3>
+    <ul id="reservationList"></ul>
+</div>
+
+<div class="modal" id="confirmationModal">
+    <span id="confirmationMessage"></span>
+    <button onclick="confirmReservation()" id="yesButton">(Tak)</button>
+    <button onclick="cancelConfirmation()" id="noButton">(Nie)</button>
+</div>
+
+<div class="modal" id="takenModal">
+    <span id="takenMessage"></span>
+</div>
+
+<div id="overlay"></div>
+
+<!-- Firebase scripts -->
+<script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-firestore.js"></script>
+
+<script>
+    // Konfiguracja Firebase
     var firebaseConfig = {
         apiKey: "AIzaSyCz7gGBCSi9pXaDvbrBDELvZOIRWgAutjs",
         authDomain: "strefaspa-7aaaa.firebaseapp.com",
@@ -111,166 +193,170 @@
         storageBucket: "strefaspa-7aaaa.appspot.com",
         messagingSenderId: "899188726768",
     };
-
     firebase.initializeApp(firebaseConfig);
+    var db = firebase.firestore();
 
+    // Mapa numeru pokoju do hasła
     var roomPasswords = {
-      "0": "8572",
-      "1": "3491",
-      "2": "6004",
-      "3": "7284",
-      "4": "9548",
-      "5": "1729",
-      "6": "4093",
-      "7": "6251",
-      "8": "5038",
-      "9": "3617",
-      "10": "1425",
-      "11": "2389",
-      "12": "5719",
-      "13": "8473",
-      "14": "9205",
-      "15": "3852",
-      "16": "7163",
-      "17": "2004",
-      "18": "5901",
-      "19": "9372",
-      "20": "4681",
-      "21": "3297",
-      "22": "8024",
-      "23": "5541",
-      "24": "1468",
-      "25": "6901",
-      "26": "2190",
-      "27": "7530"
+        "0": "8572",
+        "1": "3491",
+        "2": "6004",
+        "3": "7284",
+        "4": "9548",
+        "5": "1729",
+        "6": "4093",
+        "7": "6251",
+        "8": "5038",
+        "9": "3617",
+        "10": "1425",
+        "11": "2389",
+        "12": "5719",
+        "13": "8473",
+        "14": "9205",
+        "15": "3852",
+        "16": "7163",
+        "17": "2004",
+        "18": "5901",
+        "19": "9372",
+        "20": "4681",
+        "21": "3297",
+        "22": "8024",
+        "23": "5541",
+        "24": "1468",
+        "25": "6901",
+        "26": "2190",
+        "27": "7530"
+    };
+        // Tutaj dodaj więcej par numer pokoju - hasło
     };
 
-    // Funkcja sprawdzająca autoryzację
-   function authenticate() {
-  var roomNumber = document.getElementById('roomNumber').value;
-  var password = document.getElementById('password').value;
+    // Funkcja autoryzacji
+    function authenticate() {
+        var roomNumber = document.getElementById('roomNumber').value;
+        var password = document.getElementById('password').value;
 
-  // Sprawdzenie, czy hasło jest poprawne dla danego numeru pokoju
-  if (roomPasswords.hasOwnProperty(roomNumber) && roomPasswords[roomNumber] === password) {
-    // Hasło poprawne, zaloguj użytkownika
-    displayCalendar();
-  } else {
-    // Hasło niepoprawne, wyświetl komunikat o błędzie
-    alert('Nieprawidłowe hasło dla tego pokoju');
-  }
-}
-
+        // Sprawdzenie poprawności hasła dla danego numeru pokoju
+        if (roomPasswords.hasOwnProperty(roomNumber) && roomPasswords[roomNumber] === password) {
+            displayCalendar();
+        } else {
+            alert('Nieprawidłowe hasło dla tego pokoju');
+        }
+    }
 
     // Funkcja wyświetlająca kalendarz
     function displayCalendar() {
-      var calendarContainer = document.getElementById('calendar');
-      var today = new Date();
-      var tomorrow = new Date();
-      tomorrow.setDate(today.getDate() + 1);
+        var calendarContainer = document.getElementById('calendar');
+        calendarContainer.innerHTML = ''; // Wyczyszczenie kontenera kalendarza
 
-      // Tutaj możesz użyć dowolnej biblioteki kalendarza lub zaimplementować własny kalendarz
-      // Dla uproszczenia, użyjemy prostego wyświetlenia dat
-      calendarContainer.innerHTML = `
-        <h2>Kalendarz</h2>
-        <div class="day">
-          <p>Dzisiaj: ${today.toDateString()}</p>
-          <button onclick="makeReservation('${today.toISOString()}')">Zarezerwuj</button>
-          <div id="todayReservations"></div>
-        </div>
-        <div class="day">
-          <p>Jutro: ${tomorrow.toDateString()}</p>
-          <button onclick="makeReservation('${tomorrow.toISOString()}')">Zarezerwuj</button>
-          <div id="tomorrowReservations"></div>
-        </div>
-      `;
-    }
+        var today = new Date();
+        today.setHours(0, 0, 0, 0); // Ustawienie godziny na 00:00:00
 
-    // Funkcja dokonująca rezerwacji
-    function makeReservation(date) {
-      var user = firebase.auth().currentUser;
-      if (!user) {
-        alert('Musisz być zalogowany, aby dokonać rezerwacji.');
-        return;
-      }
+        for (var dayOffset = 0; dayOffset < 2; dayOffset++) {
+            var currentDate = new Date(today);
+            currentDate.setDate(currentDate.getDate() + dayOffset);
 
-      var roomNumber = document.getElementById('roomNumber').value;
+            var dayElement = document.createElement('div');
+            dayElement.className = 'day';
+            dayElement.textContent = currentDate.toLocaleDateString('pl-PL', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+            dayElement.onclick = function () {
+                toggleDay(this);
+            };
 
-      var reservationsRef = firebase.database().ref('reservations').child(date).child(roomNumber);
-      reservationsRef.once('value', function(snapshot) {
-        var reservationsCount = snapshot.numChildren();
-        if (reservationsCount >= 2) {
-          alert('Nie można dokonać więcej rezerwacji na ten pokój na tę datę.');
-          return;
+            var timeSlotsContainer = document.createElement('div');
+            timeSlotsContainer.className = 'time-slots-container';
+
+            for (var i = 8; i <= 21; i++) {
+                var timeSlotId = generateTimeSlotId(currentDate, i);
+                var isReserved = isTimeSlotReserved(timeSlotId);
+
+                var timeSlot = document.createElement('div');
+                timeSlot.className = 'time-slot';
+                timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
+                timeSlot.dataset.timeSlotId = timeSlotId;
+
+                if (isReserved) {
+                    timeSlot.classList.add('reserved');
+                }
+
+                timeSlot.addEventListener('click', function () {
+                    selectedTimeSlot = this;
+                    if (!selectedTimeSlot.classList.contains('reserved')) {
+                        openConfirmationModal();
+                    } else {
+                        openTakenModal();
+                    }
+                });
+
+                timeSlotsContainer.appendChild(timeSlot);
+            }
+
+            dayElement.appendChild(timeSlotsContainer);
+            calendarContainer.appendChild(dayElement);
         }
-
-        // Dokonaj rezerwacji
-        var newReservationRef = reservationsRef.push({
-          userId: user.uid,
-          date: date
-        });
-        var reservationId = newReservationRef.key;
-        updateReservationView(date, roomNumber, reservationsCount + 1, reservationId);
-      });
     }
 
-    // Funkcja aktualizująca widok rezerwacji po dokonaniu rezerwacji
-    function updateReservationView(date, roomNumber, reservationsCount, reservationId) {
-      var reservationContainer = document.getElementById(date === new Date().toISOString().split('T')[0] ? 'todayReservations' : 'tomorrowReservations');
-      var reservationDiv = document.createElement('div');
-      reservationDiv.innerHTML = `<div class="reservation ${reservationsCount === 1 ? 'orange' : 'red'}">${reservationsCount}/2</div>`;
-      reservationContainer.appendChild(reservationDiv);
-
-      // Ustawienie koloru bloku i wyświetlenie znacznika 1/2 lub 2/2
-      if (reservationsCount === 1) {
-        reservationDiv.style.backgroundColor = 'orange';
-        reservationDiv.textContent = '1/2';
-      } else {
-        reservationDiv.style.backgroundColor = 'red';
-        reservationDiv.textContent = '2/2';
-      }
-
-      // Po kliknięciu w blok rezerwacji, użytkownik może anulować rezerwację
-      reservationDiv.addEventListener('click', function() {
-        cancelReservation(date, roomNumber, reservationId);
-      });
+    // Funkcja generująca identyfikator slotu czasowego
+    function generateTimeSlotId(date, hour) {
+        return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + '-' + hour;
     }
 
-    // Funkcja anulująca rezerwację
-    function cancelReservation(date, roomNumber, reservationId) {
-      var user = firebase.auth().currentUser;
-      if (!user) {
-        alert('Musisz być zalogowany, aby anulować rezerwację.');
-        return;
-      }
-
-      var reservationRef = firebase.database().ref('reservations').child(date).child(roomNumber).child(reservationId);
-      reservationRef.remove().then(function() {
-        alert('Rezerwacja została anulowana.');
-        location.reload(); // Odświeżenie strony, aby zaktualizować widok rezerwacji
-      }).catch(function(error) {
-        console.error('Błąd podczas anulowania rezerwacji:', error);
-        alert('Wystąpił błąd podczas anulowania rezerwacji. Spróbuj ponownie.');
-      });
+    // Funkcja sprawdzająca, czy slot czasowy jest zarezerwowany
+    function isTimeSlotReserved(timeSlotId) {
+        // Tutaj należy dodać logikę sprawdzającą rezerwacje w bazie danych Firebase
+        // Zwróć true, jeśli slot jest zarezerwowany, false w przeciwnym razie
     }
-  </script>
-</body>
-</html>
 
-    // Słuchacz zdarzenia dla przycisku zalogowania
-    document.getElementById('loginBtn').addEventListener('click', function() {
-      authenticate();
-    });
+    // Funkcja otwierająca modal potwierdzenia rezerwacji
+    function openConfirmationModal() {
+        var confirmationModal = document.getElementById('confirmationModal');
+        var overlay = document.getElementById('overlay');
+        confirmationModal.style.display = 'block';
+        overlay.style.display = 'block';
+    }
 
-    // Słuchacz zdarzenia dla przycisku wylogowania
-    document.getElementById('logoutBtn').addEventListener('click', function() {
-      firebase.auth().signOut().then(function() {
-        alert('Zostałeś wylogowany.');
-        location.reload(); // Odświeżenie strony po wylogowaniu
-      }).catch(function(error) {
-        console.error('Błąd podczas wylogowywania:', error);
-        alert('Wystąpił błąd podczas wylogowywania. Spróbuj ponownie.');
-      });
-    });
-  </script>
+    // Funkcja potwierdzająca rezerwację
+    function confirmReservation() {
+        // Tutaj należy dodać logikę dodawania rezerwacji do bazy danych Firebase
+        var currentDate = new Date();
+        var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
+        var roomNumber = document.getElementById('roomNumber').value;
+
+        var reservation = {
+            userId: firebase.auth().currentUser.uid,
+            date: currentDate.toLocaleDateString(),
+            timeSlotId: timeSlotId,
+            roomNumber: roomNumber
+        };
+
+        // Dodanie rezerwacji do listy i zapis do bazy danych Firebase
+    }
+
+    // Funkcja zamykająca modal potwierdzenia rezerwacji
+    function cancelConfirmation() {
+        var confirmationModal = document.getElementById('confirmationModal');
+        var overlay = document.getElementById('overlay');
+        confirmationModal.style.display = 'none';
+        overlay.style.display = 'none';
+    }
+
+    // Funkcja otwierająca modal informujący o zajętym slocie
+    function openTakenModal() {
+        var takenModal = document.getElementById('takenModal');
+        var overlay = document.getElementById('overlay');
+        takenModal.style.display = 'block';
+        overlay.style.display = 'block';
+
+        setTimeout(function () {
+            takenModal.style.display = 'none';
+            overlay.style.display = 'none';
+        }, 2000);
+    }
+</script>
+
 </body>
 </html>
