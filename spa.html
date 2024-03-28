@@ -405,24 +405,30 @@ function updateReservationList() {
     var reservationList = document.getElementById('reservationList');
     reservationList.innerHTML = '';
 
-    var myReservations = reservations.filter(function (reservation) {
-        return reservation.userId === firebase.auth().currentUser.uid;
-    });
+    if (firebase.auth().currentUser) {
+        var myReservations = reservations.filter(function (reservation) {
+            return reservation.userId === firebase.auth().currentUser.uid;
+        });
 
-    myReservations.forEach(function (reservation) {
-        var listItem = document.createElement('li');
-        listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+        myReservations.forEach(function (reservation) {
+            var listItem = document.createElement('li');
+            listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
 
-        var cancelButton = document.createElement('span');
-        cancelButton.className = 'cancel-button';
-        cancelButton.textContent = `(Anuluj)`;
-        cancelButton.onclick = function () {
-            cancelReservation(reservation);
-        };
+            var cancelButton = document.createElement('span');
+            cancelButton.className = 'cancel-button';
+            cancelButton.textContent = `(Anuluj)`;
+            cancelButton.onclick = function () {
+                cancelReservation(reservation);
+            };
 
-        listItem.appendChild(cancelButton);
-        reservationList.appendChild(listItem);
-    });
+            listItem.appendChild(cancelButton);
+            reservationList.appendChild(listItem);
+        });
+    } else {
+        // Obsługa przypadku, gdy użytkownik nie jest zalogowany
+        // Możesz np. wyświetlić komunikat o konieczności zalogowania się
+        console.log('Użytkownik nie jest zalogowany');
+    }
 }
 
   
