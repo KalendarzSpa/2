@@ -278,6 +278,7 @@ body {
             toggleDay(this); // Dodaj to wywołanie funkcji toggleDay
         };
 
+    }
         // Funkcja zmieniająca widoczność bloków godzinowych
 function toggleDay(dayElement) {
     var timeSlotsContainer = dayElement.querySelector('.time-slots-container');
@@ -290,16 +291,6 @@ function toggleDay(dayElement) {
 
         var timeSlotsContainer = document.createElement('div');
         timeSlotsContainer.className = 'time-slots-container';
-
-        for (var i = 8; i <= 21; i++) {
-            var timeSlotId = generateTimeSlotId(currentDate, i);
-            var isReserved = isTimeSlotReserved(timeSlotId);
-            var isCurrentUserReservation = isReserved && reservations.find(r => r.reservationId === reservationId && r.timeSlotId === timeSlotId);
-
-            var timeSlot = document.createElement('div');
-            timeSlot.className = 'time-slot';
-            timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
-            timeSlot.dataset.timeSlotId = timeSlotId;
 
 
             for (var i = 8; i <= 21; i++) {
