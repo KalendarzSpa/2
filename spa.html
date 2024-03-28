@@ -325,6 +325,15 @@ function logout() {
     }
 }
 
+// Funkcja zmieniająca widoczność bloków godzinowych
+function toggleDay(dayElement) {
+    var timeSlotsContainer = dayElement.querySelector('.time-slots-container');
+    if (timeSlotsContainer.style.display === 'block') {
+        timeSlotsContainer.style.display = 'none';
+    } else {
+        timeSlotsContainer.style.display = 'block';
+    }
+}
 
     // Funkcja generująca identyfikator slotu czasowego
     function generateTimeSlotId(date, hour) {
