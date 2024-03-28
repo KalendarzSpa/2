@@ -343,6 +343,14 @@ for (var i = 8; i <= 21; i++) {
         calendar.appendChild(dayElement);
         }
 
+    function getReservationsForSlot(timeSlotId) {
+    // Filtrujemy listę rezerwacji, aby znaleźć te, które odpowiadają podanemu identyfikatorowi slotu czasowego
+    var reservationsForSlot = reservations.filter(function (reservation) {
+        return reservation.timeSlotId === timeSlotId;
+    });
+    return reservationsForSlot;
+}
+
        
     
     // Funkcja generująca identyfikator slotu czasowego
