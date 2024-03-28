@@ -1,92 +1,89 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rezerwacja pokoju</title>
-    <style>
-      /* styles.css */
+  <style>
+    /* styles.css */
 
-/* Resetowanie marginesów i paddingów dla wszystkich elementów */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+    /* Resetowanie marginesów i paddingów dla wszystkich elementów */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-/* Stylizacja całego kontenera */
-.container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-}
+    /* Stylizacja całego kontenera */
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
 
-/* Stylizacja nagłówków */
-h2 {
-  margin-bottom: 20px;
-  font-size: 24px;
-}
+    /* Stylizacja nagłówków */
+    h2 {
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
 
-/* Stylizacja przycisków */
-button {
-  padding: 10px 20px;
-  background-color: #007bff; /* Niebieski kolor tła */
-  color: #fff; /* Biały kolor tekstu */
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
+    /* Stylizacja przycisków */
+    button {
+      padding: 10px 20px;
+      background-color: #007bff; /* Niebieski kolor tła */
+      color: #fff; /* Biały kolor tekstu */
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
 
-button:hover {
-  background-color: #0056b3; /* Ciemniejszy odcień niebieskiego po najechaniu myszką */
-}
+    button:hover {
+      background-color: #0056b3; /* Ciemniejszy odcień niebieskiego po najechaniu myszką */
+    }
 
-/* Stylizacja formularza */
-input[type="text"],
-input[type="password"],
-select {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc; /* Szary kolor obramowania */
-  border-radius: 5px; /* Zaokrąglone rogi */
-}
+    /* Stylizacja formularza */
+    input[type="text"],
+    input[type="password"],
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc; /* Szary kolor obramowania */
+      border-radius: 5px; /* Zaokrąglone rogi */
+    }
 
-/* Stylizacja kalendarza */
-.day {
-  margin-bottom: 20px;
-}
+    /* Stylizacja kalendarza */
+    .day {
+      margin-bottom: 20px;
+    }
 
-.reservation {
-  width: 50px;
-  height: 50px;
-  display: inline-block;
-  text-align: center;
-  line-height: 50px;
-  font-size: 18px;
-  font-weight: bold;
-  border-radius: 50%;
-  cursor: pointer;
-}
+    .reservation {
+      width: 50px;
+      height: 50px;
+      display: inline-block;
+      text-align: center;
+      line-height: 50px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 50%;
+      cursor: pointer;
+    }
 
-.orange {
-  background-color: orange;
-}
+    .orange {
+      background-color: orange;
+    }
 
-.red {
-  background-color: red;
-}
+    .red {
+      background-color: red;
+    }
 
-/* Dodatkowe style dla responsywności */
-@media only screen and (max-width: 600px) {
-  .container {
-    padding: 10px;
-  }
-}
-
-        </style>
-  <link rel="stylesheet" href="styles.css">
+    /* Dodatkowe style dla responsywności */
+    @media only screen and (max-width: 600px) {
+      .container {
+        padding: 10px;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -102,193 +99,182 @@ select {
     <div id="calendar"></div>
   </div>
 
+  <script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-database.js"></script>
+  <script>
+    // Inicjalizacja Firebase (zastąp konfiguracją z Twojego projektu Firebase)
+    var firebaseConfig = {
+        apiKey: "AIzaSyCz7gGBCSi9pXaDvbrBDELvZOIRWgAutjs",
+        authDomain: "strefaspa-7aaaa.firebaseapp.com",
+        projectId: "strefaspa-7aaaa",
+        storageBucket: "strefaspa-7aaaa.appspot.com",
+        messagingSenderId: "899188726768",
+    };
 
-  <script src="script.js">
-// Inicjalizacja Firebase (zastąp konfiguracją z Twojego projektu Firebase)
-var firebaseConfig = {
-  apiKey: "AIzaSyCz7gGBCSi9pXaDvbrBDELvZOIRWgAutjs",
-            authDomain: "strefaspa-7aaaa.firebaseapp.com",
-            projectId: "strefaspa-7aaaa",
-            storageBucket: "strefaspa-7aaaa.appspot.com",
-            messagingSenderId: "899188726768",
-};
+    firebase.initializeApp(firebaseConfig);
 
-firebase.initializeApp(firebaseConfig);
-  var roomPasswords = {
-  "0": "8572",
-  "1": "3491",
-  "2": "6004",
-  "3": "7284",
-  "4": "9548",
-  "5": "1729",
-  "6": "4093",
-  "7": "6251",
-  "8": "5038",
-  "9": "3617",
-  "10": "1425",
-  "11": "2389",
-  "12": "5719",
-  "13": "8473",
-  "14": "9205",
-  "15": "3852",
-  "16": "7163",
-  "17": "2004",
-  "18": "5901",
-  "19": "9372",
-  "20": "4681",
-  "21": "3297",
-  "22": "8024",
-  "23": "5541",
-  "24": "1468",
-  "25": "6901",
-  "26": "2190",
-  "27": "7530"
-};
+    var roomPasswords = {
+      "0": "8572",
+      "1": "3491",
+      "2": "6004",
+      "3": "7284",
+      "4": "9548",
+      "5": "1729",
+      "6": "4093",
+      "7": "6251",
+      "8": "5038",
+      "9": "3617",
+      "10": "1425",
+      "11": "2389",
+      "12": "5719",
+      "13": "8473",
+      "14": "9205",
+      "15": "3852",
+      "16": "7163",
+      "17": "2004",
+      "18": "5901",
+      "19": "9372",
+      "20": "4681",
+      "21": "3297",
+      "22": "8024",
+      "23": "5541",
+      "24": "1468",
+      "25": "6901",
+      "26": "2190",
+      "27": "7530"
+    };
 
-
-// Funkcja sprawdzająca autoryzację
-function authenticate(roomNumber, password) {
-  if (roomPasswords.hasOwnProperty(roomNumber) && roomPasswords[roomNumber] === password) {
-    return true; // Hasło pasuje do numeru pokoju
-  } else {
-    return false; // Nieprawidłowe hasło lub numer pokoju
-  }
-}
-
-// Przykładowe użycie funkcji authenticate
-var enteredRoomNumber = '5'; // Numer pokoju wprowadzony przez użytkownika
-var enteredPassword = '1729'; // Hasło wprowadzone przez użytkownika
-if (authenticate(enteredRoomNumber, enteredPassword)) {
-  console.log('Autoryzacja udana. Użytkownik ma dostęp do pokoju ' + enteredRoomNumber + '.');
-} else {
-  console.log('Nieudana autoryzacja. Wprowadzone hasło jest nieprawidłowe.');
-}
-   
-
-// Funkcja autoryzacji użytkownika
-function authenticate() {
-  var roomNumber = document.getElementById('roomNumber').value;
-  var password = document.getElementById('password').value;
-
-  // Tu możesz zaimplementować logikę autoryzacji na podstawie numeru pokoju i hasła
-  // Dla uproszczenia, załóżmy wartości na sztywno
-  if (roomNumber === '123' && password === 'password') {
-    displayCalendar();
-  } else {
-    alert('Nieprawidłowy numer pokoju lub hasło');
-  }
-}
-    
-
-// Funkcja wyświetlająca kalendarz
-function displayCalendar() {
-  var calendarContainer = document.getElementById('calendar');
-  var today = new Date();
-  var tomorrow = new Date();
-  tomorrow.setDate(today.getDate() + 1);
-
-  // Tutaj możesz użyć dowolnej biblioteki kalendarza lub zaimplementować własny kalendarz
-  // Dla uproszczenia, użyjemy prostego wyświetlenia dat
-  calendarContainer.innerHTML = `
-    <h2>Kalendarz</h2>
-    <div class="day">
-      <p>Dzisiaj: ${today.toDateString()}</p>
-      <button onclick="makeReservation('${today.toISOString()}')">Zarezerwuj</button>
-      <div id="todayReservations"></div>
-    </div>
-    <div class="day">
-      <p>Jutro: ${tomorrow.toDateString()}</p>
-      <button onclick="makeReservation('${tomorrow.toISOString()}')">Zarezerwuj</button>
-      <div id="tomorrowReservations"></div>
-    </div>
-  `;
-}
-
-// Funkcja dokonująca rezerwacji
-function makeReservation(date) {
-  var user = firebase.auth().currentUser;
-  if (!user) {
-    alert('Musisz być zalogowany, aby dokonać rezerwacji.');
-    return;
-  }
-
-  var roomNumber = document.getElementById('roomNumber').value;
-
-  // Sprawdzenie, czy istnieją już rezerwacje na wybraną datę i numer pokoju
-  var reservationsRef = firebase.database().ref('reservations').child(date).child(roomNumber);
-  reservationsRef.once('value', function(snapshot) {
-    var reservationsCount = snapshot.numChildren();
-    if (reservationsCount >= 2) {
-      alert('Nie można dokonać więcej rezerwacji na ten pokój na tę datę.');
-      return;
+    // Funkcja sprawdzająca autoryzację
+    function authenticate(roomNumber, password) {
+      if (roomPasswords.hasOwnProperty(roomNumber) && roomPasswords[roomNumber] === password) {
+        return true; // Hasło pasuje do numeru pokoju
+      } else {
+        return false; // Nieprawidłowe hasło lub numer pokoju
+      }
     }
 
-    // Dokonanie rezerwacji
-    var newReservationRef = reservationsRef.push({
-      userId: user.uid,
-      date: date
+    // Funkcja autoryzacji użytkownika
+    function authenticate() {
+      var roomNumber = document.getElementById('roomNumber').value;
+      var password = document.getElementById('password').value;
+
+      // Tu możesz zaimplementować logikę autoryzacji na podstawie numeru pokoju i hasła
+      // Dla uproszczenia, załóżmy wartości na sztywno
+      if (roomNumber === '123' && password === 'password') {
+        displayCalendar();
+      } else {
+        alert('Nieprawidłowy numer pokoju lub hasło');
+      }
+    }
+
+    // Funkcja wyświetlająca kalendarz
+    function displayCalendar() {
+      var calendarContainer = document.getElementById('calendar');
+      var today = new Date();
+      var tomorrow = new Date();
+      tomorrow.setDate(today.getDate() + 1);
+
+      // Tutaj możesz użyć dowolnej biblioteki kalendarza lub zaimplementować własny kalendarz
+      // Dla uproszczenia, użyjemy prostego wyświetlenia dat
+      calendarContainer.innerHTML = `
+        <h2>Kalendarz</h2>
+        <div class="day">
+          <p>Dzisiaj: ${today.toDateString()}</p>
+          <button onclick="makeReservation('${today.toISOString()}')">Zarezerwuj</button>
+          <div id="todayReservations"></div>
+        </div>
+        <div class="day">
+          <p>Jutro: ${tomorrow.toDateString()}</p>
+          <button onclick="makeReservation('${tomorrow.toISOString()}')">Zarezerwuj</button>
+          <div id="tomorrowReservations"></div>
+        </div>
+      `;
+    }
+
+    // Funkcja dokonująca rezerwacji
+    function makeReservation(date) {
+      var user = firebase.auth().currentUser;
+      if (!user) {
+        alert('Musisz być zalogowany, aby dokonać rezerwacji.');
+        return;
+      }
+
+      var roomNumber = document.getElementById('roomNumber').value;
+
+      // Sprawdzenie, czy istnieją już rezerwacje na wybraną datę i numer pokoju
+      var reservationsRef = firebase.database().ref('reservations').child(date).child(roomNumber);
+      reservationsRef.once('value', function(snapshot) {
+        var reservationsCount = snapshot.numChildren();
+        if (reservationsCount >= 2) {
+          alert('Nie można dokonać więcej rezerwacji na ten pokój na tę datę.');
+          return;
+        }
+
+        // Dokonanie rezerwacji
+        var newReservationRef = reservationsRef.push({
+          userId: user.uid,
+          date: date
+        });
+        var reservationId = newReservationRef.key;
+        updateReservationView(date, roomNumber, reservationsCount + 1, reservationId);
+      });
+    }
+
+    // Funkcja aktualizująca widok rezerwacji po dokonaniu rezerwacji
+    function updateReservationView(date, roomNumber, reservationsCount, reservationId) {
+      var reservationContainer = document.getElementById(date === new Date().toISOString().split('T')[0] ? 'todayReservations' : 'tomorrowReservations');
+      var reservationDiv = document.createElement('div');
+      reservationDiv.innerHTML = `<div class="reservation ${reservationsCount === 1 ? 'orange' : 'red'}">${reservationsCount}/2</div>`;
+      reservationContainer.appendChild(reservationDiv);
+
+      // Ustawienie koloru bloku i wyświetlenie znacznika 1/2 lub 2/2
+      if (reservationsCount === 1) {
+        reservationDiv.style.backgroundColor = 'orange';
+        reservationDiv.textContent = '1/2';
+      } else {
+        reservationDiv.style.backgroundColor = 'red';
+        reservationDiv.textContent = '2/2';
+      }
+
+      // Po kliknięciu w blok rezerwacji, użytkownik może anulować rezerwację
+      reservationDiv.addEventListener('click', function() {
+        cancelReservation(date, roomNumber, reservationId);
+      });
+    }
+
+    // Funkcja anulująca rezerwację
+    function cancelReservation(date, roomNumber, reservationId) {
+      var user = firebase.auth().currentUser;
+      if (!user) {
+        alert('Musisz być zalogowany, aby anulować rezerwację.');
+        return;
+      }
+
+      var reservationRef = firebase.database().ref('reservations').child(date).child(roomNumber).child(reservationId);
+      reservationRef.remove().then(function() {
+        alert('Rezerwacja została anulowana.');
+        location.reload(); // Odświeżenie strony, aby zaktualizować widok rezerwacji
+      }).catch(function(error) {
+        console.error('Błąd podczas anulowania rezerwacji:', error);
+        alert('Wystąpił błąd podczas anulowania rezerwacji. Spróbuj ponownie.');
+      });
+    }
+
+    // Słuchacz zdarzenia dla przycisku zalogowania
+    document.getElementById('loginBtn').addEventListener('click', function() {
+      authenticate();
     });
-    var reservationId = newReservationRef.key;
-    updateReservationView(date, roomNumber, reservationsCount + 1, reservationId);
-  });
-}
 
-// Funkcja aktualizująca widok rezerwacji po dokonaniu rezerwacji
-function updateReservationView(date, roomNumber, reservationsCount, reservationId) {
-  var reservationContainer = document.getElementById(date === new Date().toISOString().split('T')[0] ? 'todayReservations' : 'tomorrowReservations');
-  var reservationDiv = document.createElement('div');
-  reservationDiv.innerHTML = `<div class="reservation ${reservationsCount === 1 ? 'orange' : 'red'}">${reservationsCount}/2</div>`;
-  reservationContainer.appendChild(reservationDiv);
-
-  // Ustawienie koloru bloku i wyświetlenie znacznika 1/2 lub 2/2
-  if (reservationsCount === 1) {
-    reservationDiv.style.backgroundColor = 'orange';
-    reservationDiv.textContent = '1/2';
-  } else {
-    reservationDiv.style.backgroundColor = 'red';
-    reservationDiv.textContent = '2/2';
-  }
-
-  // Po kliknięciu w blok rezerwacji, użytkownik może anulować rezerwację
-  reservationDiv.addEventListener('click', function() {
-    cancelReservation(date, roomNumber, reservationId);
-  });
-}
-
-// Funkcja anulująca rezerwację
-function cancelReservation(date, roomNumber, reservationId) {
-  var user = firebase.auth().currentUser;
-  if (!user) {
-    alert('Musisz być zalogowany, aby anulować rezerwację.');
-    return;
-  }
-
-  var reservationRef = firebase.database().ref('reservations').child(date).child(roomNumber).child(reservationId);
-  reservationRef.remove().then(function() {
-    alert('Rezerwacja została anulowana.');
-    location.reload(); // Odświeżenie strony, aby zaktualizować widok rezerwacji
-  }).catch(function(error) {
-    console.error('Błąd podczas anulowania rezerwacji:', error);
-    alert('Wystąpił błąd podczas anulowania rezerwacji. Spróbuj ponownie.');
-  });
-}
-
-// Słuchacz zdarzenia dla przycisku zalogowania
-document.getElementById('loginBtn').addEventListener('click', function() {
-  authenticate();
-});
-
-// Słuchacz zdarzenia dla przycisku wylogowania
-document.getElementById('logoutBtn').addEventListener('click', function() {
-  firebase.auth().signOut().then(function() {
-    alert('Zostałeś wylogowany.');
-    location.reload(); // Odświeżenie strony po wylogowaniu
-  }).catch(function(error) {
-    console.error('Błąd podczas wylogowywania:', error);
-    alert('Wystąpił błąd podczas wylogowywania. Spróbuj ponownie.');
-  });
-});
-    </script>
-
-    </body>
+    // Słuchacz zdarzenia dla przycisku wylogowania
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+      firebase.auth().signOut().then(function() {
+        alert('Zostałeś wylogowany.');
+        location.reload(); // Odświeżenie strony po wylogowaniu
+      }).catch(function(error) {
+        console.error('Błąd podczas wylogowywania:', error);
+        alert('Wystąpił błąd podczas wylogowywania. Spróbuj ponownie.');
+      });
+    });
+  </script>
+</body>
 </html>
