@@ -205,18 +205,7 @@ body {
     var auth = firebase.auth();
      var reservations = [];
      var selectedTimeSlot;
-   var timeSlots = document.querySelectorAll('.time-slot');
-timeSlots.forEach(function(timeSlot) {
-    timeSlot.addEventListener('click', function () {
-        selectedTimeSlot = this;
-        if (!selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken')) {
-            openConfirmationModal();
-        } else {
-            openTakenModal();
-        }
-    });
-});
-
+   
     // Mapa numeru pokoju do hasła
     var roomPasswords = {
         "0": "8572",
@@ -307,6 +296,12 @@ function toggleDay(dayElement) {
             for (var i = 8; i <= 21; i++) {
     var timeSlotId = generateTimeSlotId(currentDate, i);
     var isReserved = isTimeSlotReserved(timeSlotId);
+     var isCurrentUserReservation = isReserved && reservations.find(r => r.reservationId === reservationId && r.timeSlotId === timeSlotId);
+
+     var timeSlot = document.createElement('div');
+     timeSlot.className = 'time-slot';
+     timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
+     timeSlot.dataset.timeSlotId = timeSlotId;
 
     // Sprawdzenie czy istnieje co najmniej jedna rezerwacja na ten slot czasowy
     if (isReserved) {
