@@ -382,7 +382,7 @@ function openConfirmationModal() {
     id: generateReservationId(),
     date: currentDate.toLocaleDateString(),
     timeSlotId: timeSlotId,
-    roomNumber: roomNumber,
+    roomNumber: document.getElementById('roomNumber').value;,
 };
 
 
