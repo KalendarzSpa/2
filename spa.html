@@ -174,9 +174,9 @@ body {
 </div>
 
 <div class="modal" id="confirmationModal">
-    <span id="confirmationMessage"></span>
-    <button onclick="confirmReservation()" id="yesButton">(Tak)</button>
-    <button onclick="cancelConfirmation()" id="noButton">(Nie)</button>
+    <span Czy potwierdzasz rezerwację?></span>
+    <button onclick="confirmReservation()" id="yesButton">Tak</button>
+    <button onclick="cancelConfirmation()" id="noButton">Nie</button>
 </div>
 
 <div class="modal" id="takenModal">
@@ -325,15 +325,6 @@ function logout() {
     }
 }
 
-// Funkcja zmieniająca widoczność bloków godzinowych
-function toggleDay(dayElement) {
-    var timeSlotsContainer = dayElement.querySelector('.time-slots-container');
-    if (timeSlotsContainer.style.display === 'block') {
-        timeSlotsContainer.style.display = 'none';
-    } else {
-        timeSlotsContainer.style.display = 'block';
-    }
-}
 
     // Funkcja generująca identyfikator slotu czasowego
     function generateTimeSlotId(date, hour) {
@@ -347,30 +338,72 @@ function toggleDay(dayElement) {
     }
 
     // Funkcja otwierająca modal potwierdzenia rezerwacji
-    function openConfirmationModal() {
-        var confirmationModal = document.getElementById('confirmationModal');
-        var overlay = document.getElementById('overlay');
-        confirmationModal.style.display = 'block';
-        overlay.style.display = 'block';
-    }
 
-    // Funkcja potwierdzająca rezerwację
-    function confirmReservation() {
-        // Tutaj należy dodać logikę dodawania rezerwacji do bazy danych Firebase
-        var currentDate = new Date();
-        var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
-        var roomNumber = document.getElementById('roomNumber').value;
+    // Funkcja otwierająca modal potwierdzenia rezerwacji
+function openConfirmationModal() {
+    var confirmationModal = document.getElementById('confirmationModal');
+    var overlay = document.getElementById('overlay');
+    confirmationModal.style.display = 'block';
+    overlay.style.display = 'block';
+}
 
-        var reservation = {
-            userId: firebase.auth().currentUser.uid,
-            date: currentDate.toLocaleDateString(),
-            timeSlotId: timeSlotId,
-            roomNumber: roomNumber
+// Funkcja potwierdzająca rezerwację
+function confirmReservation() {
+    var currentDate = new Date();
+    var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
+    var roomNumber = document.getElementById('roomNumber').value;
+
+    var reservation = {
+        userId: firebase.auth().currentUser.uid,
+        date: currentDate.toLocaleDateString(),
+        timeSlotId: timeSlotId,
+        roomNumber: roomNumber
+    };
+
+    // Dodanie rezerwacji do bazy danych Firebase
+    saveReservationToFirestore(reservation);
+
+    // Dodanie rezerwacji do listy rezerwacji użytkownika
+    reservations.push(reservation);
+    updateReservationList();
+
+    closeConfirmationModal();
+}
+
+// Funkcja aktualizująca listę rezerwacji użytkownika
+function updateReservationList() {
+    var reservationList = document.getElementById('reservationList');
+    reservationList.innerHTML = '';
+
+    var myReservations = reservations.filter(function (reservation) {
+        return reservation.userId === firebase.auth().currentUser.uid;
+    });
+
+    myReservations.forEach(function (reservation) {
+        var listItem = document.createElement('li');
+        listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+
+        var cancelButton = document.createElement('span');
+        cancelButton.className = 'cancel-button';
+        cancelButton.textContent = `(Anuluj)`;
+        cancelButton.onclick = function () {
+            cancelReservation(reservation);
         };
 
-        // Dodanie rezerwacji do listy i zapis do bazy danych Firebase
-    }
+        listItem.appendChild(cancelButton);
+        reservationList.appendChild(listItem);
+    });
+}
 
+// Funkcja zamykająca modal potwierdzenia rezerwacji
+function closeConfirmationModal() {
+    var confirmationModal = document.getElementById('confirmationModal');
+    var overlay = document.getElementById('overlay');
+    confirmationModal.style.display = 'none';
+    overlay.style.display = 'none';
+}
+
+  
     // Funkcja zamykająca modal potwierdzenia rezerwacji
     function cancelConfirmation() {
         var confirmationModal = document.getElementById('confirmationModal');
