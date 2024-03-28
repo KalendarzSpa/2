@@ -183,6 +183,8 @@
 <!-- Firebase scripts -->
 <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-auth.js"></script>
+    
 
 <script>
     // Konfiguracja Firebase
@@ -195,6 +197,7 @@
     };
     firebase.initializeApp(firebaseConfig);
     var db = firebase.firestore();
+    var auth = firebase.auth();
 
     // Mapa numeru pokoju do hasła
     var roomPasswords = {
@@ -242,6 +245,33 @@
             alert('Nieprawidłowe hasło dla tego pokoju');
         }
     }
+
+    function authenticate() {
+    var roomNumber = document.getElementById('roomNumber').value;
+    var password = document.getElementById('password').value;
+
+    auth.signInWithEmailAndPassword(roomNumber + '@example.com', password)
+        .then(function () {
+            // Zalogowano pomyślnie
+            displayCalendar();
+        })
+        .catch(function (error) {
+            // Wystąpił błąd podczas logowania
+            var errorMessage = error.message;
+            alert('Błąd logowania: ' + errorMessage);
+        });
+}
+function logout() {
+    auth.signOut().then(function () {
+        // Wylogowano pomyślnie
+        // Tutaj możesz dodać dodatkowe czynności, które mają zostać wykonane po wylogowaniu
+    }).catch(function (error) {
+        // Wystąpił błąd podczas wylogowywania
+        var errorMessage = error.message;
+        alert('Błąd wylogowania: ' + errorMessage);
+    });
+}
+
 
     // Funkcja wyświetlająca kalendarz
     function displayCalendar() {
