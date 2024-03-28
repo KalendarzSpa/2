@@ -239,17 +239,19 @@ body {
     };
 
     function authenticate() {
-        var roomNumber = document.getElementById('roomNumber').value;
-        var password = document.getElementById('password').value;
-        
+    var roomNumber = document.getElementById('roomNumber').value;
+    var password = document.getElementById('password').value;
 
-        // Sprawdzenie poprawności hasła dla danego numeru pokoju
-        if (roomPasswords.hasOwnProperty(roomNumber) && roomPasswords[roomNumber] === password) {
-            generateCalendar();
-        } else {
-            alert('Nieprawidłowe hasło dla tego pokoju');
-        }
+    // Sprawdzenie poprawności hasła dla danego numeru pokoju
+    if (roomPasswords.hasOwnProperty(roomNumber) && roomPasswords[roomNumber] === password) {
+        generateCalendar();
+        // Ukrycie sekcji logowania po udanym zalogowaniu
+        document.getElementById('loginSection').style.display = 'none';
+    } else {
+        alert('Nieprawidłowe hasło dla tego pokoju');
     }
+}
+
 
 function logout() {
     auth.signOut().then(function () {
