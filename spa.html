@@ -174,7 +174,7 @@ body {
 </div>
 
 <div class="modal" id="confirmationModal">
-    <span Czy potwierdzasz rezerwację?></span>
+    <span>Czy potwierdzasz rezerwację?</span>
     <button onclick="confirmReservation()" id="yesButton">Tak</button>
     <button onclick="cancelConfirmation()" id="noButton">Nie</button>
 </div>
@@ -358,17 +358,29 @@ function openConfirmationModal() {
 }
 
 // Funkcja potwierdzająca rezerwację
-function confirmReservation() {
+  function confirmReservation() {
+    console.log("Confirming Reservation:", selectedTimeSlot.dataset.timeSlotId);
+    selectedTimeSlot.classList.add('reserved');
+    selectedTimeSlot.style.backgroundColor = '#ff6666';
     var currentDate = new Date();
     var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
-    var roomNumber = document.getElementById('roomNumber').value;
 
     var reservation = {
-        userId: firebase.auth().currentUser.uid,
+        id: generateReservationId(), // Wywołanie funkcji generateReservationId do generowania identyfikatora
+        userId: currentRoomNumber, 
         date: currentDate.toLocaleDateString(),
         timeSlotId: timeSlotId,
-        roomNumber: roomNumber
+        roomNumber: currentRoomNumber
     };
+
+      
+    reservations.push(reservation);
+    updateReservationList();
+    saveReservationToFirestore(reservation);
+    closeConfirmationModal();
+}
+
+
 
     // Dodanie rezerwacji do bazy danych Firebase
     saveReservationToFirestore(reservation);
@@ -380,6 +392,13 @@ function confirmReservation() {
     closeConfirmationModal();
 }
 
+    function generateReservationId() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                var r = (Math.random() * 16) | 0,
+                    v = c === 'x' ? r : (r & 0x3) | 0x8;
+                return v.toString(16);
+            });
+        }
 // Funkcja aktualizująca listę rezerwacji użytkownika
 function updateReservationList() {
     var reservationList = document.getElementById('reservationList');
@@ -414,13 +433,16 @@ function closeConfirmationModal() {
 }
 
   
-    // Funkcja zamykająca modal potwierdzenia rezerwacji
-    function cancelConfirmation() {
-        var confirmationModal = document.getElementById('confirmationModal');
-        var overlay = document.getElementById('overlay');
-        confirmationModal.style.display = 'none';
-        overlay.style.display = 'none';
-    }
+
+    function saveReservationToFirestore(reservation) {
+    db.collection("reservations").add(reservation)
+        .then(function (docRef) {
+            console.log("Rezerwacja pomyślnie zapisana w Firestore z ID:", docRef.id);
+        })
+        .catch(function (error) {
+            console.error("Błąd podczas zapisywania rezerwacji do Firestore: ", error);
+        });
+}
 
     // Funkcja otwierająca modal informujący o zajętym slocie
     function openTakenModal() {
