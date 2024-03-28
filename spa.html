@@ -442,7 +442,7 @@ function openConfirmationModal() {
             var myReservations = reservations.filter(function (reservation) {
                 return reservation.roomNumber === currentRoomNumber; // Fixed roomNumber to currentRoomNumber
             });
-
+        
            myReservations.forEach(function (reservation) {
     var listItem = document.createElement('li');
     listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
@@ -457,7 +457,7 @@ function openConfirmationModal() {
     listItem.appendChild(cancelButton);
     reservationList.appendChild(listItem);
 });
-
+        }
   
 
     function saveReservationToFirestore(reservation) {
