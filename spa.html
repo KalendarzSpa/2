@@ -99,8 +99,9 @@
     <div id="calendar"></div>
   </div>
 
-  <script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-database.js"></script>
   <script>
     // Inicjalizacja Firebase (zastąp konfiguracją z Twojego projektu Firebase)
     var firebaseConfig = {
@@ -145,27 +146,20 @@
     };
 
     // Funkcja sprawdzająca autoryzację
-    function authenticate(roomNumber, password) {
-      if (roomPasswords.hasOwnProperty(roomNumber) && roomPasswords[roomNumber] === password) {
-        return true; // Hasło pasuje do numeru pokoju
-      } else {
-        return false; // Nieprawidłowe hasło lub numer pokoju
-      }
-    }
+   function authenticate() {
+  var roomNumber = document.getElementById('roomNumber').value;
+  var password = document.getElementById('password').value;
 
-    // Funkcja autoryzacji użytkownika
-    function authenticate() {
-      var roomNumber = document.getElementById('roomNumber').value;
-      var password = document.getElementById('password').value;
+  // Sprawdzenie, czy hasło jest poprawne dla danego numeru pokoju
+  if (roomPasswords.hasOwnProperty(roomNumber) && roomPasswords[roomNumber] === password) {
+    // Hasło poprawne, zaloguj użytkownika
+    displayCalendar();
+  } else {
+    // Hasło niepoprawne, wyświetl komunikat o błędzie
+    alert('Nieprawidłowe hasło dla tego pokoju');
+  }
+}
 
-      // Tu możesz zaimplementować logikę autoryzacji na podstawie numeru pokoju i hasła
-      // Dla uproszczenia, załóżmy wartości na sztywno
-      if (roomNumber === '123' && password === 'password') {
-        displayCalendar();
-      } else {
-        alert('Nieprawidłowy numer pokoju lub hasło');
-      }
-    }
 
     // Funkcja wyświetlająca kalendarz
     function displayCalendar() {
@@ -201,7 +195,6 @@
 
       var roomNumber = document.getElementById('roomNumber').value;
 
-      // Sprawdzenie, czy istnieją już rezerwacje na wybraną datę i numer pokoju
       var reservationsRef = firebase.database().ref('reservations').child(date).child(roomNumber);
       reservationsRef.once('value', function(snapshot) {
         var reservationsCount = snapshot.numChildren();
@@ -210,7 +203,7 @@
           return;
         }
 
-        // Dokonanie rezerwacji
+        // Dokonaj rezerwacji
         var newReservationRef = reservationsRef.push({
           userId: user.uid,
           date: date
@@ -259,6 +252,9 @@
         alert('Wystąpił błąd podczas anulowania rezerwacji. Spróbuj ponownie.');
       });
     }
+  </script>
+</body>
+</html>
 
     // Słuchacz zdarzenia dla przycisku zalogowania
     document.getElementById('loginBtn').addEventListener('click', function() {
