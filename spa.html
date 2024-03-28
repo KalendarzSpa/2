@@ -367,10 +367,10 @@ function openConfirmationModal() {
 
     var reservation = {
         id: generateReservationId(), // Wywołanie funkcji generateReservationId do generowania identyfikatora
-        userId: currentRoomNumber, 
+        userId: roomNumber, 
         date: currentDate.toLocaleDateString(),
         timeSlotId: timeSlotId,
-        roomNumber: currentRoomNumber
+        roomNumber: roomNumber,
     };
 
       
@@ -390,7 +390,6 @@ function openConfirmationModal() {
     updateReservationList();
 
     closeConfirmationModal();
-}
 
     function generateReservationId() {
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
