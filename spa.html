@@ -333,9 +333,7 @@ for (var i = 8; i <= 21; i++) {
 
         dayElement.appendChild(timeSlotsContainer);
         calendar.appendChild(dayElement);
-    }
-
-
+    
     // Funkcja generująca identyfikator slotu czasowego
     function generateTimeSlotId(date, hour) {
         return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + '-' + hour;
