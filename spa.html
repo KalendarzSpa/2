@@ -242,16 +242,16 @@ body {
     var roomNumber = document.getElementById('roomNumber').value;
     var password = document.getElementById('password').value;
 
-    // Sprawdzenie poprawności hasła dla danego numeru pokoju
     if (roomPasswords.hasOwnProperty(roomNumber) && roomPasswords[roomNumber] === password) {
-        generateCalendar();
-          loadReservations().then(function () {
-        generateCalendar();
+        loadReservations(roomNumber).then(function () {
+        generateCalendar(); // Wywołaj funkcję generującą kalendarz po pobraniu rezerwacji
     }).catch(function (error) {
-        console.error("Error loading reservations:", error);
-    });
+    console.error("Error loading reservations:", error);
+});
+});
+    }
 }
-    } 
+ 
 
     function generateCalendar() {
     var calendar = document.getElementById('calendar');
@@ -418,9 +418,10 @@ function openConfirmationModal() {
             });
         }
 
-    function loadReservations() {
+    function loadReservations(roomNumber) {
     return new Promise(function (resolve, reject) {
         db.collection("reservations")
+            .where("roomNumber", "==", roomNumber)
             .get()
             .then(function (querySnapshot) {
                 reservations = querySnapshot.docs.map(doc => doc.data());
@@ -433,6 +434,7 @@ function openConfirmationModal() {
             });
     });
 }
+
 
         function updateReservationList() {
             var reservationList = document.getElementById('reservationList');
