@@ -289,33 +289,34 @@ function toggleDay(dayElement) {
         var timeSlotsContainer = document.createElement('div');
         timeSlotsContainer.className = 'time-slots-container';
 
-
-            for (var i = 8; i <= 21; i++) {
+for (var i = 8; i <= 21; i++) {
     var timeSlotId = generateTimeSlotId(currentDate, i);
-    var isReserved = isTimeSlotReserved(timeSlotId);
+    var reservationsForSlot = getReservationsForSlot(timeSlotId);
+    var numReservations = reservationsForSlot.length;
 
-     var timeSlot = document.createElement('div');
-     timeSlot.className = 'time-slot';
-     timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
-     timeSlot.dataset.timeSlotId = timeSlotId;
+    var timeSlot = document.createElement('div');
+    timeSlot.className = 'time-slot';
+    timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
+    timeSlot.dataset.timeSlotId = timeSlotId;
 
-    // Sprawdzenie czy istnieje co najmniej jedna rezerwacja na ten slot czasowy
-    if (isReserved) {
-        var reservationsForSlot = reservations.filter(function (reservation) {
-            return reservation.timeSlotId === timeSlotId;
-        });
-
-        // Sprawdzenie liczby rezerwacji na ten slot czasowy
-        if (reservationsForSlot.length === 1) {
-            // Jeśli jest jedna rezerwacja, nadaj klasę "orange"
-            timeSlot.classList.add('reserved', 'orange');
-        } else if (reservationsForSlot.length === 2) {
-            // Jeśli są dwie rezerwacje, nadaj klasę "red"
-            timeSlot.classList.add('reserved', 'red');
-            // Dodaj komunikat informujący, że dany blok jest niedostępny
-            timeSlot.textContent = 'Zajęte';
-        }
+    if (numReservations === 1) {
+        timeSlot.classList.add('light');
+    } else if (numReservations >= 2) {
+        timeSlot.classList.add('red');
     }
+
+    timeSlot.addEventListener('click', function () {
+        selectedTimeSlot = this;
+        if (selectedTimeSlot.classList.contains('red')) {
+            openTakenModal();
+        } else if (!selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken')) {
+            openConfirmationModal();
+        }
+    });
+
+    timeSlotsContainer.appendChild(timeSlot);
+}
+
 
 
             timeSlot.addEventListener('click', function () {
