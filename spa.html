@@ -203,6 +203,7 @@ body {
     firebase.initializeApp(firebaseConfig);
     var db = firebase.firestore();
     var auth = firebase.auth();
+     var reservations = [];
 
     // Mapa numeru pokoju do hasła
     var roomPasswords = {
@@ -240,6 +241,7 @@ body {
     function authenticate() {
         var roomNumber = document.getElementById('roomNumber').value;
         var password = document.getElementById('password').value;
+        
 
         // Sprawdzenie poprawności hasła dla danego numeru pokoju
         if (roomPasswords.hasOwnProperty(roomNumber) && roomPasswords[roomNumber] === password) {
