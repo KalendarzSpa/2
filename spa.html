@@ -440,7 +440,7 @@ function openConfirmationModal() {
             reservationList.innerHTML = '';
 
             var myReservations = reservations.filter(function (reservation) {
-                return reservation.roomNumber === currentRoomNumber; // Fixed roomNumber to currentRoomNumber
+                return reservation.roomNumber === roomNumber;
             });
         
            myReservations.forEach(function (reservation) {
