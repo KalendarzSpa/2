@@ -285,7 +285,19 @@ body {
         };
 
     }
-        // Funkcja zmieniająca widoczność bloków godzinowych
+
+var dayElement = document.createElement('div');
+                dayElement.className = 'day';
+                dayElement.textContent = currentDate.toLocaleDateString(currentLanguage, {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'numeric',
+                    year: 'numeric'
+                });
+                dayElement.onclick = function () {
+                    toggleDay(this);
+                };
+        
 function toggleDay(dayElement) {
     var timeSlotsContainer = dayElement.querySelector('.time-slots-container');
     if (timeSlotsContainer.style.display === 'block') {
