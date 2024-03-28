@@ -439,19 +439,18 @@ function updateReservationList() {
         });
 }
 
-    // Funkcja otwierająca modal informujący o zajętym slocie
-    function openTakenModal() {
-        var takenModal = document.getElementById('takenModal');
-        var overlay = document.getElementById('overlay');
-        takenModal.style.display = 'block';
-        overlay.style.display = 'block';
+  function openTakenModal() {
+    var takenModal = document.getElementById('takenModal');
+    var overlay = document.getElementById('overlay');
+    takenModal.style.display = 'block';
+    overlay.style.display = 'block';
 
-        setTimeout(function () {
-            takenModal.style.display = 'none';
-            overlay.style.display = 'none';
-        }, 2000);
-    };    
-    </script>
+    setTimeout(function () {
+        takenModal.style.display = 'none';
+        overlay.style.display = 'none';
+    }, 2000);
+}   
+</script>
 
 </body>
 </html>
