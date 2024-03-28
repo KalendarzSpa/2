@@ -230,8 +230,6 @@
         "26": "2190",
         "27": "7530"
     };
-        // Tutaj dodaj więcej par numer pokoju - hasło
-    };
 
     // Funkcja autoryzacji
     function authenticate() {
@@ -246,21 +244,6 @@
         }
     }
 
-    function authenticate() {
-    var roomNumber = document.getElementById('roomNumber').value;
-    var password = document.getElementById('password').value;
-
-    auth.signInWithEmailAndPassword(roomNumber + '@example.com', password)
-        .then(function () {
-            // Zalogowano pomyślnie
-            displayCalendar();
-        })
-        .catch(function (error) {
-            // Wystąpił błąd podczas logowania
-            var errorMessage = error.message;
-            alert('Błąd logowania: ' + errorMessage);
-        });
-}
 function logout() {
     auth.signOut().then(function () {
         // Wylogowano pomyślnie
