@@ -279,7 +279,7 @@ body {
             month: 'numeric',
             year: 'numeric'
         });
-        
+        dayElement.appendChild(timeSlotsContainer);
         dayElement.onclick = function () {
             toggleDay(this); // Dodaj to wywołanie funkcji toggleDay
         };
@@ -400,7 +400,8 @@ function openConfirmationModal() {
             var reservationList = document.getElementById('reservationList');
     var listItem = document.createElement('li');
     listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
-    reservationList.appendChild(listItem);
+           listItem.dataset.reservationId = reservation.id;
+            reservationList.appendChild(listItem);
 
             reservations.push(reservation);
             updateReservationList();
@@ -413,6 +414,7 @@ function openConfirmationModal() {
 
         function cancelReservation(reservation) {
     // Usunięcie rezerwacji z listy "Moje rezerwacje"
+            reservations = reservations.filter(r => r.id !== reservation.id);
     var reservationList = document.getElementById('reservationList');
     var listItem = reservationList.querySelector(`[data-reservation-id="${reservation.id}"]`);
     reservationList.removeChild(listItem);
@@ -438,7 +440,7 @@ function openConfirmationModal() {
     return new Promise(function (resolve, reject) {
         db.collection("reservations")
             .where("roomNumber", "==", roomNumber)
-            .get()
+            .onSnapshot()
             .then(function (querySnapshot) {
                 reservations = querySnapshot.docs.map(doc => doc.data());
                 updateReservationList();
@@ -471,6 +473,7 @@ function updateReservationList(roomNumber) {
         };
 
         listItem.appendChild(cancelButton);
+        listItem.dataset.reservationId = reservation.id;
         reservationList.appendChild(listItem);
     });
 }
@@ -486,6 +489,7 @@ function updateReservationList(roomNumber) {
         });
 }
   function openTakenModal() {
+      document.getElementById('takenMessage').textContent = 'Ten slot czasowy jest już zajęty.';
     var takenModal = document.getElementById('takenModal');
     var overlay = document.getElementById('overlay');
     takenModal.style.display = 'block';
