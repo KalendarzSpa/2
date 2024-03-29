@@ -413,19 +413,20 @@ function openConfirmationModal() {
     }
 
 function cancelReservation(reservation) {
-    // Remove the reservation from the "My Reservations" list
+    // Usunięcie rezerwacji z listy "Moje rezerwacje"
     reservations = reservations.filter(r => r.id !== reservation.id);
     var reservationList = document.getElementById('reservationList');
     var listItem = reservationList.querySelector(`[data-reservation-id="${reservation.id}"]`);
     reservationList.removeChild(listItem);
 
-    // Remove the reservation from the Firestore database
+    // Usunięcie rezerwacji z bazy danych Firestore
     db.collection("reservations").doc(reservation.id).delete().then(function() {
-        console.log("Reservation successfully deleted from Firestore");
+        console.log("Rezerwacja pomyślnie usunięta z Firestore");
     }).catch(function(error) {
-        console.error("Error removing reservation from Firestore: ", error);
+        console.error("Błąd podczas usuwania rezerwacji z Firestore: ", error);
     });
 }
+
 
     function generateReservationId() {
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -451,6 +452,7 @@ function cancelReservation(reservation) {
     });
 }
 
+
 function updateReservationList(roomNumber) {
   var reservationList = document.getElementById('reservationList');
   reservationList.innerHTML = '';
@@ -459,10 +461,13 @@ function updateReservationList(roomNumber) {
     return reservation.roomNumber === roomNumber;
   });
 
-    myReservations.forEach(function (reservation) {
+  myReservations.forEach(function (reservation) {
     var listItem = document.createElement('li');
     listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
     
+    // Dodaj atrybut dataset z identyfikatorem rezerwacji
+    listItem.dataset.reservationId = reservation.id;
+
     // Stwórz przycisk Anuluj
     var cancelButton = document.createElement('button');
     cancelButton.textContent = 'Anuluj';
@@ -471,11 +476,10 @@ function updateReservationList(roomNumber) {
     };
 
     listItem.appendChild(cancelButton); // Dodaj przycisk Anuluj do elementu listy
-    listItem.dataset.reservationId = reservation.id;
     reservationList.appendChild(listItem);
-});
-
+  });
 }
+
 
 
     function saveReservationToFirestore(reservation) {
