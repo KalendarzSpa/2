@@ -422,6 +422,7 @@ function cancelReservation(reservation) {
     // Usunięcie rezerwacji z bazy danych Firestore
     db.collection("reservations").doc(reservation.id).delete().then(function() {
         console.log("Rezerwacja pomyślnie usunięta z Firestore");
+        console.log(reservation.id)
     }).catch(function(error) {
         console.error("Błąd podczas usuwania rezerwacji z Firestore: ", error);
     });
