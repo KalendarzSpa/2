@@ -479,7 +479,7 @@ function updateReservationList(roomNumber) {
 
 
     function saveReservationToFirestore(reservation) {
-    db.collection("reservations").add(reservation)
+    db.collection("reservations").doc(reservation.id).set(reservation)
         .then(function (docRef) {
             console.log("Rezerwacja pomyślnie zapisana w Firestore z ID:", docRef.id);
         })
