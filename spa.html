@@ -459,8 +459,8 @@ function confirmReservation() {
     }
 }
 
-    function canReserveSelectedTimeSlot(selectedTimeSlotId, roomNumber) {
-    var currentTime = new Date();
+  function canReserveSelectedTimeSlot(selectedTimeSlotId, roomNumber) {
+    var currentDate = new Date();
     var selectedTimeSlotStartTime = new Date(selectedTimeSlotId.split('-')[0], selectedTimeSlotId.split('-')[1] - 1, selectedTimeSlotId.split('-')[2], selectedTimeSlotId.split('-')[3]);
     var tenMinutesBeforeSelectedTimeSlot = new Date(selectedTimeSlotStartTime);
     tenMinutesBeforeSelectedTimeSlot.setMinutes(tenMinutesBeforeSelectedTimeSlot.getMinutes() - 10);
@@ -478,9 +478,13 @@ function confirmReservation() {
         }
     }
 
-    return availableTimeSlotExists;
-}
+    // Sprawdź, czy użytkownik już dokonał rezerwacji w danym dniu
+    var existingReservations = reservations.filter(function(reservation) {
+        return reservation.roomNumber === roomNumber && new Date(reservation.date).getTime() === new Date(selectedTimeSlotStartTime.getFullYear(), selectedTimeSlotStartTime.getMonth(), selectedTimeSlotStartTime.getDate()).getTime();
+    });
 
+    return availableTimeSlotExists && existingReservations.length === 0;
+}
 
 
 // Funkcja generująca unikalny identyfikator rezerwacji
