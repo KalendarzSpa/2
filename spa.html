@@ -282,7 +282,42 @@ function authenticate() {
             toggleDay(this); // Dodaj to wywołanie funkcji toggleDay
         };
 
+        var timeSlotsContainer = document.createElement('div');
+        timeSlotsContainer.className = 'time-slots-container';
+
+        for (var i = 8; i <= 21; i++) {
+            var timeSlotId = generateTimeSlotId(currentDate, i);
+            var reservationsForSlot = getReservationsForSlot(timeSlotId);
+            var numReservations = reservationsForSlot.length;
+
+            var timeSlot = document.createElement('div');
+            timeSlot.className = 'time-slot';
+            timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
+            timeSlot.dataset.timeSlotId = timeSlotId;
+
+            if (numReservations === 1) {
+                timeSlot.classList.add('orange');
+            } else if (numReservations >= 2) {
+                timeSlot.classList.add('red');
+            }
+
+            timeSlot.addEventListener('click', function () {
+                selectedTimeSlot = this;
+                var numReservations = getReservationsForSlot(selectedTimeSlot.dataset.timeSlotId).length;
+                if (numReservations >= 2) {
+                    openTakenModal();
+                } else if (!selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken')) {
+                    openConfirmationModal();
+                }
+            });
+
+            timeSlotsContainer.appendChild(timeSlot);
+        }
+
+        dayElement.appendChild(timeSlotsContainer);
+        calendar.appendChild(dayElement);
     }
+}
 
         
 function toggleDay(dayElement) {
