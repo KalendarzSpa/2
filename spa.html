@@ -442,7 +442,7 @@ function openConfirmationModal() {
     return new Promise(function (resolve, reject) {
         db.collection("reservations")
             .where("roomNumber", "==", roomNumber)
-            .onSnapshot()
+            .get
             .then(function (querySnapshot) {
                 reservations = querySnapshot.docs.map(doc => doc.data());
                 updateReservationList();
