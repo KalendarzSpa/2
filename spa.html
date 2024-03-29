@@ -413,17 +413,17 @@ function openConfirmationModal() {
     }
 
 function cancelReservation(reservation) {
-    // Usunięcie rezerwacji z listy "Moje rezerwacje"
+    // Remove the reservation from the "My Reservations" list
     reservations = reservations.filter(r => r.id !== reservation.id);
     var reservationList = document.getElementById('reservationList');
     var listItem = reservationList.querySelector(`[data-reservation-id="${reservation.id}"]`);
     reservationList.removeChild(listItem);
 
-    // Usunięcie rezerwacji z bazy danych Firestore
+    // Remove the reservation from the Firestore database
     db.collection("reservations").doc(reservation.id).delete().then(function() {
-        console.log("Rezerwacja pomyślnie usunięta z Firestore");
+        console.log("Reservation successfully deleted from Firestore");
     }).catch(function(error) {
-        console.error("Błąd podczas usuwania rezerwacji z Firestore: ", error);
+        console.error("Error removing reservation from Firestore: ", error);
     });
 }
 
