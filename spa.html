@@ -411,7 +411,6 @@ function openConfirmationModal() {
     }
 }
 
-
       function closeConfirmationModal() {
     var confirmationModal = document.getElementById('confirmationModal');
     var overlay = document.getElementById('overlay');
@@ -419,8 +418,7 @@ function openConfirmationModal() {
     overlay.style.display = 'none';
 }
 
-// Funkcja potwierdzająca rezerwację
- function confirmReservation() {
+function confirmReservation() {
     if (selectedTimeSlot) {
         var currentDate = new Date();
         var roomNumber = document.getElementById('roomNumber').value;
@@ -460,12 +458,13 @@ function openConfirmationModal() {
             closeConfirmationModal();
         } else {
             console.log("Nie można dokonać rezerwacji. Upewnij się, że pozostało mniej niż 10 minut do rozpoczęcia bloku czasowego.");
+            // Wyświetlenie komunikatu dla użytkownika
+            alert("Nie można zarezerwować, limit wyczerpany. Spróbuj ponownie 10 minut przed rozpoczęciem.");
         }
     } else {
         console.error("Nie wybrano slotu czasowego do potwierdzenia rezerwacji.");
     }
 }
-
 
 // Funkcja generująca unikalny identyfikator rezerwacji
 function generateReservationId() {
