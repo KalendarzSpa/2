@@ -316,13 +316,15 @@ for (var i = 8; i <= 21; i++) {
     }
 
     timeSlot.addEventListener('click', function () {
-        selectedTimeSlot = this;
-        if (selectedTimeSlot.classList.contains('red')) {
-            openTakenModal();
-        } else if (!selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken')) {
-            openConfirmationModal();
-        }
-    });
+    selectedTimeSlot = this;
+    var numReservations = getReservationsForSlot(selectedTimeSlot.dataset.timeSlotId).length;
+    if (numReservations >= 2) {
+        openTakenModal();
+    } else if (!selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken')) {
+        openConfirmationModal();
+    }
+});
+
 
     timeSlotsContainer.appendChild(timeSlot);
 }
@@ -461,6 +463,14 @@ function updateReservationList(roomNumber) {
         return reservation.roomNumber === roomNumber;
     });
 
+var cancelButton = document.createElement('button');
+cancelButton.textContent = 'Anuluj';
+cancelButton.onclick = function() {
+    cancelReservation(reservation);
+};
+listItem.appendChild(cancelButton);
+
+    
     myReservations.forEach(function (reservation) {
         var listItem = document.createElement('li');
         listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
