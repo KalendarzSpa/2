@@ -411,10 +411,9 @@ function openConfirmationModal() {
             console.error("Nie wybrano slotu czasowego do potwierdzenia rezerwacji.");
         }
     }
-
-        function cancelReservation(reservation) {
+function cancelReservation(reservation) {
     // Usunięcie rezerwacji z listy "Moje rezerwacje"
-            reservations = reservations.filter(r => r.id !== reservation.id);
+    reservations = reservations.filter(r => r.id !== reservation.id);
     var reservationList = document.getElementById('reservationList');
     var listItem = reservationList.querySelector(`[data-reservation-id="${reservation.id}"]`);
     reservationList.removeChild(listItem);
@@ -426,6 +425,7 @@ function openConfirmationModal() {
         console.error("Błąd podczas usuwania rezerwacji z Firestore: ", error);
     });
 }
+
 
 
     function generateReservationId() {
