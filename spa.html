@@ -363,21 +363,6 @@ for (var i = 8; i <= 21; i++) {
 }
 
 
-
-            timeSlot.addEventListener('click', function () {
-                selectedTimeSlot = this;
-                if (!selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken')) {
-                    openConfirmationModal();
-                } else {
-                    openTakenModal();
-                }
-            });
-
-            timeSlotsContainer.appendChild(timeSlot);
-         dayElement.appendChild(timeSlotsContainer);
-        calendar.appendChild(dayElement);
-        }
-
     function getReservationsForSlot(timeSlotId) {
     // Filtrujemy listę rezerwacji, aby znaleźć te, które odpowiadają podanemu identyfikatorowi slotu czasowego
     var reservationsForSlot = reservations.filter(function (reservation) {
