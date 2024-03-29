@@ -466,13 +466,23 @@ function updateReservationList(roomNumber) {
     cancelReservation(reservation);
   };
 
-  myReservations.forEach(function (reservation) {
+
+    myReservations.forEach(function (reservation) {
     var listItem = document.createElement('li');
     listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
-    listItem.appendChild(cancelButton.cloneNode(true)); // Klonuj przycisk anulowania
+    
+    // Stwórz przycisk Anuluj
+    var cancelButton = document.createElement('button');
+    cancelButton.textContent = 'Anuluj';
+    cancelButton.onclick = function() {
+        cancelReservation(reservation); // Przekazanie obiektu rezerwacji do funkcji cancelReservation()
+    };
+
+    listItem.appendChild(cancelButton); // Dodaj przycisk Anuluj do elementu listy
     listItem.dataset.reservationId = reservation.id;
     reservationList.appendChild(listItem);
-  });
+});
+
 }
 
   
