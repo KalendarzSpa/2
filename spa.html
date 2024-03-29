@@ -205,6 +205,8 @@ body {
     var auth = firebase.auth();
      var reservations = [];
      var selectedTimeSlot;
+    var roomDailyLimits = {};
+
    
     // Mapa numeru pokoju do hasła
     var roomPasswords = {
@@ -401,38 +403,40 @@ function openConfirmationModal() {
 }
 
 // Funkcja potwierdzająca rezerwację
-  function confirmReservation() {
+ function confirmReservation() {
     if (selectedTimeSlot) {
+        var currentDate = new Date();
+        var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
+        var roomNumber = document.getElementById('roomNumber').value;
+        var dailyLimitExceeded = checkDailyLimitExceeded(roomNumber);
+        var isWithinTenMinutes = checkIfWithinTenMinutes(timeSlotId);
+        var canExceedLimit = checkIfCanExceedLimit(timeSlotId);
+
+        if (dailyLimitExceeded && !canExceedLimit) {
+            openTakenModal("Wykorzystałeś dzienny limit. W przypadku gdy blok pozostanie wolny na 10 min przed rozpoczęciem, spróbuj ponownie.");
+            return;
+        }
+
         console.log("Confirming Reservation:", selectedTimeSlot.dataset.timeSlotId);
         selectedTimeSlot.classList.add('reserved');
         selectedTimeSlot.style.backgroundColor = '#ff6666';
-        var currentDate = new Date();
-        var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
 
         var reservation = {
-            id: generateReservationId(), // Generuj unikalny identyfikator rezerwacji
+            id: generateReservationId(),
             date: currentDate.toLocaleDateString(),
             timeSlotId: timeSlotId,
-            roomNumber: document.getElementById('roomNumber').value,
+            roomNumber: roomNumber,
         };
 
         var reservationList = document.getElementById('reservationList');
         var listItem = document.createElement('li');
         listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
-        
-        // Dodaj atrybut dataset z identyfikatorem rezerwacji
         listItem.dataset.reservationId = reservation.id;
-        
-        reservationList.appendChild(listItem); // Dodaj rezerwację do listy
+        reservationList.appendChild(listItem);
 
-        reservations.push(reservation); // Dodaj rezerwację do lokalnej tablicy rezerwacji
-        
-        // Sprawdź, czy obiekt rezerwacji jest zdefiniowany i czy posiada właściwość 'id'
-        if (reservation && reservation.id) {
-            saveReservationToFirestore(reservation); // Zapisz rezerwację do Firestore
-        } else {
-            console.error("Błąd podczas zapisywania rezerwacji do Firestore: Obiekt rezerwacji nie jest poprawnie zdefiniowany lub brakuje identyfikatora.");
-        }
+        reservations.push(reservation);
+        saveReservationToFirestore(reservation);
+        updateRoomDailyLimit(roomNumber); // Aktualizacja dziennego limitu rezerwacji
 
         closeConfirmationModal();
     } else {
@@ -440,6 +444,27 @@ function openConfirmationModal() {
     }
 }
 
+function checkIfCanExceedLimit(timeSlotId) {
+    var currentTime = new Date();
+    var selectedTime = new Date(timeSlotId.split('-')[0]);
+    var diffInMilliseconds = selectedTime - currentTime;
+    var diffInMinutes = Math.round(diffInMilliseconds / (1000 * 60));
+
+    // Jeśli różnica wynosi od 0 do 10 minut przed rozpoczęciem bloku czasowego, a blok jest wolny, zezwól na przekroczenie limitu
+    return diffInMinutes > 0 && diffInMinutes <= 10 && !selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken');
+}
+
+    function updateRoomDailyLimit(roomNumber) {
+    if (roomDailyLimits.hasOwnProperty(roomNumber)) {
+        roomDailyLimits[roomNumber] += 1;
+    } else {
+        roomDailyLimits[roomNumber] = 1;
+    }
+}
+
+function checkDailyLimitExceeded(roomNumber) {
+    return roomDailyLimits[roomNumber] && roomDailyLimits[roomNumber] >= 1;
+}
 // Funkcja generująca unikalny identyfikator rezerwacji
 function generateReservationId() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
