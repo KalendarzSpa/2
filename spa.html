@@ -245,6 +245,7 @@ function authenticate() {
     if (roomPasswords[roomNumber] === password) {
       loadReservations(roomNumber).then(function () {
         generateCalendar();
+        updateReservationList(roomNumber); // Dodaj przekazanie numeru pokoju
       }).catch(function (error) {
         console.error("Error loading reservations:", error);
       });
@@ -255,6 +256,7 @@ function authenticate() {
     console.error("Invalid room number:", roomNumber);
   }
 }
+
 
 
     function generateCalendar() {
@@ -437,7 +439,6 @@ function openConfirmationModal() {
     function loadReservations(roomNumber) {
     return new Promise(function (resolve, reject) {
         db.collection("reservations")
-            .where("roomNumber", "==", roomNumber)
             .get()
             .then(function (querySnapshot) {
                 reservations = querySnapshot.docs.map(doc => doc.data());
@@ -452,37 +453,28 @@ function openConfirmationModal() {
 }
 
 function updateReservationList(roomNumber) {
-    var reservationList = document.getElementById('reservationList');
-    reservationList.innerHTML = '';
+  var reservationList = document.getElementById('reservationList');
+  reservationList.innerHTML = '';
 
-    var myReservations = reservations.filter(function (reservation) {
-        return reservation.roomNumber === roomNumber;
-    });
+  var myReservations = reservations.filter(function (reservation) {
+    return reservation.roomNumber === roomNumber;
+  });
 
-var cancelButton = document.createElement('button');
-cancelButton.textContent = 'Anuluj';
-cancelButton.onclick = function() {
+  var cancelButton = document.createElement('button');
+  cancelButton.textContent = 'Anuluj';
+  cancelButton.onclick = function() {
     cancelReservation(reservation);
-};
+  };
 
-
-    
-    myReservations.forEach(function (reservation) {
-        var listItem = document.createElement('li');
-        listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
-        listItem.appendChild(cancelButton);
-        var cancelButton = document.createElement('span');
-        cancelButton.className = 'cancel-button';
-        cancelButton.textContent = `(Anuluj)`;
-        cancelButton.onclick = function () {
-            cancelReservation(reservation);
-        };
-
-        listItem.appendChild(cancelButton);
-        listItem.dataset.reservationId = reservation.id;
-        reservationList.appendChild(listItem);
-    });
+  myReservations.forEach(function (reservation) {
+    var listItem = document.createElement('li');
+    listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+    listItem.appendChild(cancelButton.cloneNode(true)); // Klonuj przycisk anulowania
+    listItem.dataset.reservationId = reservation.id;
+    reservationList.appendChild(listItem);
+  });
 }
+
   
 
     function saveReservationToFirestore(reservation) {
