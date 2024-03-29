@@ -411,6 +411,7 @@ function openConfirmationModal() {
             console.error("Nie wybrano slotu czasowego do potwierdzenia rezerwacji.");
         }
     }
+
 function cancelReservation(reservation) {
     // Usunięcie rezerwacji z listy "Moje rezerwacje"
     reservations = reservations.filter(r => r.id !== reservation.id);
@@ -425,8 +426,6 @@ function cancelReservation(reservation) {
         console.error("Błąd podczas usuwania rezerwacji z Firestore: ", error);
     });
 }
-
-
 
     function generateReservationId() {
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -460,13 +459,6 @@ function updateReservationList(roomNumber) {
     return reservation.roomNumber === roomNumber;
   });
 
-  var cancelButton = document.createElement('button');
-  cancelButton.textContent = 'Anuluj';
-  cancelButton.onclick = function() {
-    cancelReservation(reservation);
-  };
-
-
     myReservations.forEach(function (reservation) {
     var listItem = document.createElement('li');
     listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
@@ -485,7 +477,6 @@ function updateReservationList(roomNumber) {
 
 }
 
-  
 
     function saveReservationToFirestore(reservation) {
     db.collection("reservations").add(reservation)
