@@ -369,15 +369,10 @@ for (var i = 8; i <= 21; i++) {
     });
     return reservationsForSlot;
 }
-
-       
-    
     // Funkcja generująca identyfikator slotu czasowego
     function generateTimeSlotId(date, hour) {
         return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + '-' + hour;
     }
-
- 
           function isTimeSlotReserved(timeSlotId) {
             return reservations.some(function (reservation) {
                 return reservation.timeSlotId === timeSlotId;
@@ -492,8 +487,8 @@ function cancelReservation(reservation) {
     });
 }
 
-    function loadReservations(roomNumber) {
-    return new Promise(function (resolve, reject) {
+function loadReservations(roomNumber) {
+        return new Promise(function (resolve, reject) {
         db.collection("reservations")
             .get()
             .then(function (querySnapshot) {
@@ -510,51 +505,49 @@ function cancelReservation(reservation) {
 
 
 function updateReservationList(roomNumber) {
-  var reservationList = document.getElementById('reservationList');
-  reservationList.innerHTML = '';
+         var reservationList = document.getElementById('reservationList');
+         reservationList.innerHTML = '';
 
-  var myReservations = reservations.filter(function (reservation) {
-    return reservation.roomNumber === roomNumber;
-  });
+         var myReservations = reservations.filter(function (reservation) {
+         return reservation.roomNumber === roomNumber;
+         });
 
-  myReservations.forEach(function (reservation) {
-    var listItem = document.createElement('li');
-    listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+        myReservations.forEach(function (reservation) {
+        var listItem = document.createElement('li');
+        listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
     
-    // Dodaj atrybut dataset z identyfikatorem rezerwacji
-    listItem.dataset.reservationId = reservation.id;
+        listItem.dataset.reservationId = reservation.id;
 
-    // Stwórz przycisk Anuluj
-    var cancelButton = document.createElement('button');
-    cancelButton.textContent = 'Anuluj';
-    cancelButton.onclick = function() {
+        var cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Anuluj';
+        cancelButton.onclick = function() {
         cancelReservation(reservation); // Przekazanie obiektu rezerwacji do funkcji cancelReservation()
-    };
-
-    listItem.appendChild(cancelButton); // Dodaj przycisk Anuluj do elementu listy
-    reservationList.appendChild(listItem);
-  });
-}
-
+        };
+        listItem.appendChild(cancelButton); // Dodaj przycisk Anuluj do elementu listy
+        reservationList.appendChild(listItem);
+        });
+        }
 
 
-    function saveReservationToFirestore(reservation) {
-    db.collection("reservations").doc(reservation.id).set(reservation)
+
+function saveReservationToFirestore(reservation) {
+        db.collection("reservations").doc(reservation.id).set(reservation)
         .then(function (docRef) {
             console.log("Rezerwacja pomyślnie zapisana w Firestore z ID:", docRef.id);
         })
         .catch(function (error) {
             console.error("Błąd podczas zapisywania rezerwacji do Firestore: ", error);
         });
-}
-  function openTakenModal() {
-      document.getElementById('takenMessage').textContent = 'Ten slot czasowy jest już zajęty.';
-    var takenModal = document.getElementById('takenModal');
-    var overlay = document.getElementById('overlay');
-    takenModal.style.display = 'block';
-    overlay.style.display = 'block';
+        }
+    
+ function openTakenModal() {
+        document.getElementById('takenMessage').textContent = 'Ten slot czasowy jest już zajęty.';
+        var takenModal = document.getElementById('takenModal');
+        var overlay = document.getElementById('overlay');
+        takenModal.style.display = 'block';
+        overlay.style.display = 'block';
 
-    setTimeout(function () {
+        setTimeout(function () {
         takenModal.style.display = 'none';
         overlay.style.display = 'none';
     }, 2000);
