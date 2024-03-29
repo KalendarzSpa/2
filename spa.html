@@ -394,21 +394,23 @@ function openConfirmationModal() {
 }
 
 function canMakeReservation(roomNumber, currentDate) {
-    // Sprawdź, czy istnieje rezerwacja dla danego dnia i pokoju
+    // Sprawdź, czy istnieje już rezerwacja dla danego dnia i pokoju
     var existingReservations = reservations.filter(function(reservation) {
         return reservation.roomNumber === roomNumber && reservation.date === currentDate.toLocaleDateString();
     });
 
-    // Jeśli ilość rezerwacji dla danego dnia i pokoju nie przekracza limitu 1, zwróć true
-    if (existingReservations.length < 1) {
+    // Jeśli nie ma jeszcze żadnej rezerwacji dla danego dnia i pokoju lub istnieje tylko jedna rezerwacja i pozostało mniej niż 10 minut do rozpoczęcia bloku czasowego, zwróć true
+    if (existingReservations.length === 0) {
         return true;
-    } else {
+    } else if (existingReservations.length === 1) {
         // Sprawdź, czy pozostało mniej niż 10 minut do rozpoczęcia bloku czasowego
         var currentTime = new Date();
         var timeDifference = currentDate.getTime() - currentTime.getTime(); // Różnica czasu w milisekundach
         var minutesDifference = Math.floor(timeDifference / (1000 * 60)); // Różnica czasu w minutach
 
         return minutesDifference <= 10; // Zwróć true, jeśli pozostało mniej niż 10 minut
+    } else {
+        return false; // W przeciwnym razie zablokuj rezerwację
     }
 }
 
