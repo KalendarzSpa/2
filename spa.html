@@ -387,30 +387,32 @@ function openConfirmationModal() {
     overlay.style.display = 'block';
 }
 
-    function canMakeReservation(roomNumber, currentDate) {
-    // Sprawdź, czy istnieje rezerwacja dla danego dnia i pokoju
-    var existingReservation = reservations.find(function(reservation) {
-        return reservation.roomNumber === roomNumber && reservation.date === currentDate.toLocaleDateString();
-    });
-
-    // Jeśli nie ma żadnej rezerwacji dla danego dnia i pokoju, zwróć true
-    if (!existingReservation) {
-        return true;
-    } else {
-        // Jeśli istnieje rezerwacja, sprawdź, czy pozostało mniej niż 10 minut do rozpoczęcia bloku czasowego
-        var currentTime = new Date();
-        var timeDifference = currentDate.getTime() - currentTime.getTime(); // Różnica czasu w milisekundach
-        var minutesDifference = Math.floor(timeDifference / (1000 * 60)); // Różnica czasu w minutach
-
-        return minutesDifference <= 10; // Zwróć true, jeśli pozostało mniej niż 10 minut
-    }
-}
+   
 
       function closeConfirmationModal() {
     var confirmationModal = document.getElementById('confirmationModal');
     var overlay = document.getElementById('overlay');
     confirmationModal.style.display = 'none';
     overlay.style.display = 'none';
+}
+
+function canMakeReservation(roomNumber, currentDate) {
+    // Sprawdź, czy istnieje rezerwacja dla danego dnia i pokoju
+    var existingReservations = reservations.filter(function(reservation) {
+        return reservation.roomNumber === roomNumber && reservation.date === currentDate.toLocaleDateString();
+    });
+
+    // Jeśli ilość rezerwacji dla danego dnia i pokoju nie przekracza limitu 1, zwróć true
+    if (existingReservations.length < 1) {
+        return true;
+    } else {
+        // Sprawdź, czy pozostało mniej niż 10 minut do rozpoczęcia bloku czasowego
+        var currentTime = new Date();
+        var timeDifference = currentDate.getTime() - currentTime.getTime(); // Różnica czasu w milisekundach
+        var minutesDifference = Math.floor(timeDifference / (1000 * 60)); // Różnica czasu w minutach
+
+        return minutesDifference <= 10; // Zwróć true, jeśli pozostało mniej niż 10 minut
+    }
 }
 
 function confirmReservation() {
@@ -452,14 +454,15 @@ function confirmReservation() {
 
             closeConfirmationModal();
         } else {
-            console.log("Nie można dokonać rezerwacji. Upewnij się, że pozostało mniej niż 10 minut do rozpoczęcia bloku czasowego.");
+            console.log("Nie można dokonać rezerwacji. Upewnij się, że pozostało mniej niż 10 minut do rozpoczęcia bloku czasowego, lub limit rezerwacji na ten dzień został wyczerpany.");
             // Wyświetlenie komunikatu dla użytkownika
-            alert("Nie można zarezerwować, limit wyczerpany. Spróbuj ponownie 10 minut przed rozpoczęciem.");
+            alert("Nie można zarezerwować, limit wyczerpany lub pozostało mniej niż 10 minut do rozpoczęcia. Spróbuj ponownie później.");
         }
     } else {
         console.error("Nie wybrano slotu czasowego do potwierdzenia rezerwacji.");
     }
 }
+
 
 // Funkcja generująca unikalny identyfikator rezerwacji
 function generateReservationId() {
