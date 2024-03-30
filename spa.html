@@ -401,25 +401,40 @@ function openConfirmationModal() {
 }
 
 function canMakeReservation(roomNumber, currentDate) {
-    // Sprawdź, czy istnieje już rezerwacja dla danego dnia i pokoju
+    // Sprawdź, czy istnieją już rezerwacje dla danego dnia i pokoju
     var existingReservations = reservations.filter(function(reservation) {
         return reservation.roomNumber === roomNumber && reservation.date === currentDate.toLocaleDateString();
     });
 
-    // Jeśli istnieje już dwie rezerwacje dla danego dnia i pokoju, zablokuj rezerwację
+    // Jeśli istnieje już rezerwacja dla danego dnia i pokoju, zwróć false
     if (existingReservations.length >= 1) {
         return false;
     } else {
-        // Sprawdź, czy pozostało mniej niż 10 minut do rozpoczęcia bloku czasowego
+        // Jeśli nie ma jeszcze rezerwacji, sprawdź, czy spełnione są warunki wyjątku
         var currentTime = new Date();
         var timeDifference = currentDate.getTime() - currentTime.getTime(); // Różnica czasu w milisekundach
         var minutesDifference = Math.floor(timeDifference / (1000 * 60)); // Różnica czasu w minutach
 
-        return minutesDifference > 10; // Zwróć true, jeśli pozostało więcej niż 10 minut
+        // Sprawdź, czy pozostało mniej niż 10 minut do rozpoczęcia bloku czasowego
+        if (minutesDifference <= 10 && isAvailableTimeSlot(roomNumber, currentDate)) {
+            return true; // Zwróć true, jeśli pozostało mniej niż 10 minut i są jeszcze miejsca
+        } else {
+            return false; // W przeciwnym razie zwróć false
+        }
     }
 }
 
+function isAvailableTimeSlot(roomNumber, currentDate) {
+    // Pobierz wszystkie rezerwacje dla danego dnia i pokoju
+    var existingReservations = reservations.filter(function(reservation) {
+        return reservation.roomNumber === roomNumber && reservation.date === currentDate.toLocaleDateString();
+    });
 
+    // Sprawdź, czy są jeszcze wolne miejsca dla drugiej rezerwacji
+    var availableSlots = 2 - existingReservations.length;
+    return availableSlots > 0;
+}    
+    
 function confirmReservation() {
     if (selectedTimeSlot) {
         var currentDate = new Date();
