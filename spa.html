@@ -257,7 +257,6 @@ function authenticate() {
       }
       }
 
-
 function generateCalendar() {
     var calendar = document.getElementById('calendar');
     calendar.innerHTML = '';
@@ -277,7 +276,7 @@ function generateCalendar() {
             month: 'numeric',
             year: 'numeric'
         });
-        dayElement.onclick = function () {
+        dayElement.onclick = function() {
             toggleDay(this); // Dodaj to wywołanie funkcji toggleDay
         };
 
@@ -300,7 +299,11 @@ function generateCalendar() {
                 timeSlot.classList.add('red');
             }
 
-            timeSlot.addEventListener('click', function () {
+            if (currentDate < today || (currentDate.getTime() === today.getTime() && i <= today.getHours())) {
+                timeSlot.classList.add('disabled'); // Zmień klasę na 'disabled' dla przeszłych time slots
+            }
+
+            timeSlot.addEventListener('click', function() {
                 selectedTimeSlot = this;
                 var numReservations = getReservationsForSlot(selectedTimeSlot.dataset.timeSlotId).length;
                 if (numReservations >= 2) {
@@ -317,6 +320,7 @@ function generateCalendar() {
         calendar.appendChild(dayElement);
     }
 }
+
 
         
 function toggleDay(dayElement) {
@@ -399,7 +403,7 @@ function canMakeReservation(roomNumber, currentDate) {
         return reservation.roomNumber === roomNumber && reservation.date === currentDate.toLocaleDateString();
     });
 
-    // Jeśli nie ma jeszcze żadnej rezerwacji dla danego dnia i pokoju lub istnieje tylko jedna rezerwacja i pozostało mniej niż 10 minut do rozpoczęcia bloku czasowego, zwróć true
+    // Jeśli nie ma jeszcze żadnej rezerwacji dla danego dnia i pokoju lub istnieje tylko jedna rezerwacja
     if (existingReservations.length === 0) {
         return true;
     } else if (existingReservations.length === 1) {
@@ -413,6 +417,7 @@ function canMakeReservation(roomNumber, currentDate) {
         return false; // W przeciwnym razie zablokuj rezerwację
     }
 }
+
 
 function confirmReservation() {
     if (selectedTimeSlot) {
@@ -507,28 +512,37 @@ function loadReservations(roomNumber) {
 
 
 function updateReservationList(roomNumber) {
-         var reservationList = document.getElementById('reservationList');
-         reservationList.innerHTML = '';
+    var reservationList = document.getElementById('reservationList');
+    reservationList.innerHTML = '';
 
-         var myReservations = reservations.filter(function (reservation) {
-         return reservation.roomNumber === roomNumber;
-         });
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-        myReservations.forEach(function (reservation) {
+    var myReservations = reservations.filter(function(reservation) {
+        return reservation.roomNumber === roomNumber;
+    });
+
+    myReservations.forEach(function(reservation) {
+        var reservationDate = new Date(reservation.date);
         var listItem = document.createElement('li');
-        listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
-    
+        listItem.textContent = `Data: ${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+
+        if (reservationDate < today) {
+            listItem.style.color = '#999'; // Zmień kolor na szary dla przeszłych rezerwacji
+            listItem.textContent += ' - Termin już się odbył';
+        }
+
         listItem.dataset.reservationId = reservation.id;
 
         var cancelButton = document.createElement('button');
         cancelButton.textContent = 'Anuluj';
         cancelButton.onclick = function() {
-        cancelReservation(reservation); // Przekazanie obiektu rezerwacji do funkcji cancelReservation()
+            cancelReservation(reservation); // Przekazanie obiektu rezerwacji do funkcji cancelReservation()
         };
         listItem.appendChild(cancelButton); // Dodaj przycisk Anuluj do elementu listy
         reservationList.appendChild(listItem);
-        });
-        }
+    });
+}
 
 
 
