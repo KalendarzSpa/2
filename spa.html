@@ -520,6 +520,7 @@ function updateReservationList(roomNumber) {
     var myReservations = reservations.filter(function(reservation) {
         return reservation.roomNumber === roomNumber;
     });
+      var today = new Date(); 
 
     myReservations.forEach(function(reservation) {
         var listItem = document.createElement('li');
