@@ -300,7 +300,9 @@ function generateCalendar() {
             }
 
             // Dodaj warunek sprawdzający, czy blok jest przeszły i dodaj mu klasę 'gray'
-            if (currentDate < today || (currentDate.getTime() === today.getTime() && i <= today.getHours())) {
+            var blockDate = new Date(timeSlotId.split('-').slice(0, 3).join('-'));
+            var blockHour = parseInt(timeSlotId.split('-')[3]);
+            if (blockDate < today || (blockDate.getTime() === today.getTime() && blockHour <= today.getHours())) {
                 timeSlot.classList.add('gray');
             }
 
@@ -321,7 +323,6 @@ function generateCalendar() {
         calendar.appendChild(dayElement);
     }
 }
-
 
         
 function toggleDay(dayElement) {
