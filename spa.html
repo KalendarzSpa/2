@@ -410,12 +410,12 @@ function canMakeReservation(roomNumber, currentDate) {
     if (existingReservations.length >= 1) {
         return false;
     } else {
-        // Jeśli nie ma jeszcze rezerwacji, sprawdź, czy spełnione są warunki wyjątku
+        // Sprawdź, czy pozostało mniej niż 10 minut do rozpoczęcia bloku czasowego
         var currentTime = new Date();
         var timeDifference = currentDate.getTime() - currentTime.getTime(); // Różnica czasu w milisekundach
         var minutesDifference = Math.floor(timeDifference / (1000 * 60)); // Różnica czasu w minutach
 
-        // Sprawdź, czy pozostało mniej niż 10 minut do rozpoczęcia bloku czasowego
+        // Sprawdź, czy pozostało mniej niż 10 minut do rozpoczęcia bloku czasowego i czy jest miejsce
         if (minutesDifference <= 10 && isAvailableTimeSlot(roomNumber, currentDate)) {
             return true; // Zwróć true, jeśli pozostało mniej niż 10 minut i są jeszcze miejsca
         } else {
