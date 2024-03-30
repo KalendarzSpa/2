@@ -299,10 +299,9 @@ function generateCalendar() {
                 timeSlot.classList.add('red');
             }
 
-            var timeSlotDate = new Date(timeSlotId.split('-').slice(0, 3).join('-')); // Data dla danego time slotu
-
-            if (timeSlotDate < today || (timeSlotDate.getTime() === today.getTime() && i <= today.getHours())) {
-                timeSlot.classList.add('disabled'); // Zmień klasę na 'disabled' dla przeszłych time slots
+            // Dodaj warunek sprawdzający, czy blok jest przeszły i dodaj mu klasę 'gray'
+            if (currentDate < today || (currentDate.getTime() === today.getTime() && i <= today.getHours())) {
+                timeSlot.classList.add('gray');
             }
 
             timeSlot.addEventListener('click', function() {
@@ -517,18 +516,21 @@ function updateReservationList(roomNumber) {
     var reservationList = document.getElementById('reservationList');
     reservationList.innerHTML = '';
 
+    var today = new Date(); // Deklaracja zmiennej today tutaj
+
     var myReservations = reservations.filter(function(reservation) {
         return reservation.roomNumber === roomNumber;
     });
-      var today = new Date(); 
 
     myReservations.forEach(function(reservation) {
         var listItem = document.createElement('li');
 
         var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Data zarezerwowanego bloku
-        listItem.textContent = `${reservationDate.toLocaleDateString()}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+        var reservationHour = parseInt(reservation.timeSlotId.split('-')[3]); // Godzina zarezerwowanego bloku
 
-        if (reservationDate < today) {
+        listItem.textContent = `${reservationDate.toLocaleDateString()}, ${reservationHour}:00 - Room ${reservation.roomNumber} `;
+
+        if (reservationDate < today || (reservationDate.getTime() === today.getTime() && reservationHour <= today.getHours())) {
             listItem.style.color = '#999'; // Zmień kolor na szary dla przeszłych rezerwacji
             listItem.textContent += ' - Termin już się odbył';
         }
