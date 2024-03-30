@@ -404,18 +404,16 @@ function canMakeReservation(roomNumber, currentDate) {
         return reservation.roomNumber === roomNumber && reservation.date === currentDate.toLocaleDateString();
     });
 
-    // Jeśli nie ma jeszcze żadnej rezerwacji dla danego dnia i pokoju lub istnieje tylko jedna rezerwacja
-    if (existingReservations.length === 0) {
-        return true;
-    } else if (existingReservations.length === 1) {
+    // Jeśli istnieje już dwie rezerwacje dla danego dnia i pokoju, zablokuj rezerwację
+    if (existingReservations.length >= 1) {
+        return false;
+    } else {
         // Sprawdź, czy pozostało mniej niż 10 minut do rozpoczęcia bloku czasowego
         var currentTime = new Date();
         var timeDifference = currentDate.getTime() - currentTime.getTime(); // Różnica czasu w milisekundach
         var minutesDifference = Math.floor(timeDifference / (1000 * 60)); // Różnica czasu w minutach
 
-        return minutesDifference <= 10; // Zwróć true, jeśli pozostało mniej niż 10 minut
-    } else {
-        return false; // W przeciwnym razie zablokuj rezerwację
+        return minutesDifference > 10; // Zwróć true, jeśli pozostało więcej niż 10 minut
     }
 }
 
@@ -512,21 +510,23 @@ function loadReservations(roomNumber) {
 }
 
 
-function updateReservationList(roomNumber) {
+
+    function updateReservationList(roomNumber) {
     var reservationList = document.getElementById('reservationList');
     reservationList.innerHTML = '';
 
     var today = new Date(); // Deklaracja zmiennej today tutaj
 
     var myReservations = reservations.filter(function(reservation) {
-        return reservation.roomNumber === roomNumber;
+        var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Data zarezerwowanego bloku
+        var reservationHour = parseInt(reservation.timeSlotId.split('-')[3]); // Godzina zarezerwowanego bloku
+
+        // Zwróć tylko rezerwacje na przyszłość
+        return reservation.roomNumber === roomNumber && (reservationDate > today || (reservationDate.getTime() === today.getTime() && reservationHour > today.getHours()));
     });
 
     myReservations.forEach(function(reservation) {
         var listItem = document.createElement('li');
-
-        var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Data zarezerwowanego bloku
-        var reservationHour = parseInt(reservation.timeSlotId.split('-')[3]); // Godzina zarezerwowanego bloku
 
         listItem.textContent = `${reservationDate.toLocaleDateString()}, ${reservationHour}:00 - Room ${reservation.roomNumber} `;
 
