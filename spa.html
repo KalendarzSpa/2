@@ -299,7 +299,9 @@ function generateCalendar() {
                 timeSlot.classList.add('red');
             }
 
-            if (currentDate < today || (currentDate.getTime() === today.getTime() && i <= today.getHours())) {
+            var timeSlotDate = new Date(timeSlotId.split('-').slice(0, 3).join('-')); // Data dla danego time slotu
+
+            if (timeSlotDate < today || (timeSlotDate.getTime() === today.getTime() && i <= today.getHours())) {
                 timeSlot.classList.add('disabled'); // Zmień klasę na 'disabled' dla przeszłych time slots
             }
 
