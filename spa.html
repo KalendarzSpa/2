@@ -517,17 +517,15 @@ function updateReservationList(roomNumber) {
     var reservationList = document.getElementById('reservationList');
     reservationList.innerHTML = '';
 
-    var today = new Date();
-    today.setHours(0, 0, 0, 0);
-
     var myReservations = reservations.filter(function(reservation) {
         return reservation.roomNumber === roomNumber;
     });
 
     myReservations.forEach(function(reservation) {
-        var reservationDate = new Date(reservation.date);
         var listItem = document.createElement('li');
-        listItem.textContent = `Data: ${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+
+        var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Data zarezerwowanego bloku
+        listItem.textContent = `${reservationDate.toLocaleDateString()}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
 
         if (reservationDate < today) {
             listItem.style.color = '#999'; // Zmień kolor na szary dla przeszłych rezerwacji
@@ -545,7 +543,6 @@ function updateReservationList(roomNumber) {
         reservationList.appendChild(listItem);
     });
 }
-
 
 
 function saveReservationToFirestore(reservation) {
