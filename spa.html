@@ -530,10 +530,6 @@ function loadReservations(roomNumber) {
 
         listItem.textContent = `${reservationDate.toLocaleDateString()}, ${reservationHour}:00 - Room ${reservation.roomNumber} `;
 
-        if (reservationDate < today || (reservationDate.getTime() === today.getTime() && reservationHour <= today.getHours())) {
-            listItem.style.color = '#999'; // Zmień kolor na szary dla przeszłych rezerwacji
-            listItem.textContent += ' - Termin już się odbył';
-        }
 
         listItem.dataset.reservationId = reservation.id;
 
@@ -547,6 +543,26 @@ function loadReservations(roomNumber) {
     });
 }
 
+    function removePastReservations() {
+    var now = new Date(); // Aktualna data i godzina
+
+    reservations.forEach(function(reservation, index) {
+        var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Data zarezerwowanego bloku
+        var reservationHour = parseInt(reservation.timeSlotId.split('-')[3]); // Godzina zarezerwowanego bloku
+
+        // Sprawdź, czy zarezerwowany blok jest przeszły
+        if (reservationDate < now || (reservationDate.getTime() === now.getTime() && reservationHour <= now.getHours())) {
+            // Jeśli tak, usuń rezerwację z tablicy
+            reservations.splice(index, 1);
+        }
+    });
+
+    // Aktualizuj listę rezerwacji
+    updateReservationList();
+}
+
+// Uruchom funkcję usuwającą przeszłe rezerwacje co minutę
+setInterval(removePastReservations, 60000);
 
 
 function saveReservationToFirestore(reservation) {
