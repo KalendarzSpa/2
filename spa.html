@@ -511,22 +511,22 @@ function loadReservations(roomNumber) {
 
 
 
-    function updateReservationList(roomNumber) {
+   function updateReservationList(roomNumber) {
     var reservationList = document.getElementById('reservationList');
     reservationList.innerHTML = '';
 
     var today = new Date(); // Deklaracja zmiennej today tutaj
 
     var myReservations = reservations.filter(function(reservation) {
-        var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Data zarezerwowanego bloku
-        var reservationHour = parseInt(reservation.timeSlotId.split('-')[3]); // Godzina zarezerwowanego bloku
-
-        // Zwróć tylko rezerwacje na przyszłość
-        return reservation.roomNumber === roomNumber && (reservationDate > today || (reservationDate.getTime() === today.getTime() && reservationHour > today.getHours()));
+        return reservation.roomNumber === roomNumber;
     });
 
     myReservations.forEach(function(reservation) {
         var listItem = document.createElement('li');
+
+        var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Przeniesienie deklaracji do odpowiedniego miejsca
+
+        var reservationHour = parseInt(reservation.timeSlotId.split('-')[3]); // Godzina zarezerwowanego bloku
 
         listItem.textContent = `${reservationDate.toLocaleDateString()}, ${reservationHour}:00 - Room ${reservation.roomNumber} `;
 
@@ -546,6 +546,7 @@ function loadReservations(roomNumber) {
         reservationList.appendChild(listItem);
     });
 }
+
 
 
 function saveReservationToFirestore(reservation) {
