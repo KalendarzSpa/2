@@ -148,40 +148,48 @@
 </select>
 
 
-<div>
-    <label for="roomNumber">Wprowadź numer pokoju:</label>
-    <input type="text" id="roomNumber">
-    <label for="password">Wprowadź hasło:</label>
-    <input type="password" id="password">
-    <br>
-    <input type="checkbox" id="acceptCheckbox">
-    <label for="acceptCheckbox">Akceptuję regulamin</label>
-    <br>
-    <button onclick="authenticate()">Zaloguj</button>
+<div class="container">
+    <h2>Spa Zone Reservation Calendar</h2>
+
+    <!-- Formularz logowania -->
+    <form id="loginForm">
+        <label for="roomNumber">Enter room number:</label>
+        <input type="text" id="roomNumber" required>
+        <label for="password">Enter password:</label>
+        <input type="password" id="password" required>
+        <br>
+        <input type="checkbox" id="acceptCheckbox" required>
+        <label for="acceptCheckbox">I accept the terms and conditions</label>
+        <br>
+        <button type="submit">Log in</button>
+    </form>
+
+    <!-- Kalendarz -->
+    <div class="calendar" id="calendar">
+        <!-- Kalendarz będzie generowany tutaj -->
+    </div>
+
+    <!-- Sekcja rezerwacji -->
+    <div class="reservation-section" id="reservationSection">
+        <h3>Reservations:</h3>
+        <ul id="reservationList"></ul>
+    </div>
+
+    <!-- Modal potwierdzenia -->
+    <div class="modal" id="confirmationModal">
+        <span>Do you confirm the reservation?</span>
+        <button id="yesButton">Yes</button>
+        <button id="noButton">No</button>
+    </div>
+
+    <!-- Modal zajętości -->
+    <div class="modal" id="takenModal">
+        <span id="takenMessage"></span>
+    </div>
+
+    <!-- Overlay -->
+    <div id="overlay"></div>
 </div>
-
-
-<div class="calendar" id="calendar">
-    <!-- Kalendarz będzie generowany tutaj -->
-</div>
-
-<div class="reservation-section" id="reservationSection">
-    <h3 id="reservationTitle">Rezerwacje:</h3>
-    <ul id="reservationList"></ul>
-</div>
-
-<div class="modal" id="confirmationModal">
-    <span>Czy potwierdzasz rezerwację?</span>
-    <button onclick="confirmReservation()" id="yesButton">Tak</button>
-    <button onclick="cancelConfirmation()" id="noButton">Nie</button>
-</div>
-
-<div class="modal" id="takenModal">
-    <span id="takenMessage"></span>
-</div>
-
-<div id="overlay"></div>
-
 <!-- Firebase scripts -->
 <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-firestore.js"></script>
