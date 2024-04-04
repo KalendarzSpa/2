@@ -340,7 +340,7 @@ document.getElementById('login').addEventListener('click', function() {
             authenticate();
         });
 
-        function generateCalendar() {
+       function generateCalendar() {
     var calendar = document.getElementById('calendar');
     calendar.innerHTML = '';
 
@@ -359,10 +359,9 @@ document.getElementById('login').addEventListener('click', function() {
             month: 'numeric',
             year: 'numeric'
         });
-
-        dayElement.addEventListener('click', function () {
-            toggleDay(this);
-        });
+        dayElement.onclick = function () {
+            toggleDay(this); // Dodaj to wywołanie funkcji toggleDay
+        };
 
         var timeSlotsContainer = document.createElement('div');
         timeSlotsContainer.className = 'time-slots-container';
@@ -378,18 +377,17 @@ document.getElementById('login').addEventListener('click', function() {
             timeSlot.dataset.timeSlotId = timeSlotId;
 
             if (numReservations === 1) {
-                timeSlot.classList.add('orange');
+                timeSlot.classList.add('light');
             } else if (numReservations >= 2) {
                 timeSlot.classList.add('red');
             }
 
             timeSlot.addEventListener('click', function () {
                 selectedTimeSlot = this;
-                var numReservations = getReservationsForSlot(selectedTimeSlot.dataset.timeSlotId).length;
-                if (numReservations >= 2) {
-                    openTakenModal();
-                } else if (!selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken')) {
+                if (!selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken')) {
                     openConfirmationModal();
+                } else {
+                    openTakenModal();
                 }
             });
 
@@ -448,7 +446,6 @@ document.getElementById('login').addEventListener('click', function() {
                 return reservation.timeSlotId === timeSlotId;
             });
         }
-
 function openConfirmationModal() {
     var confirmationModal = document.getElementById('confirmationModal');
     var overlay = document.getElementById('overlay');
