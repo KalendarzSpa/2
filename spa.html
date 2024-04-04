@@ -175,14 +175,17 @@
         <h1>Spa Zone Reservation Calendar</h1>
 
         <!-- Strona logowania -->
-        <div class="login-form" id="loginPage">
-            <h2>Login</h2>
-            <label for="roomNumber">Room Number:</label>
-            <input type="text" id="roomNumber" placeholder="Enter room number">
-            <label for="password">Password:</label>
-            <input type="password" id="password" placeholder="Enter password">
-            <button id="login">Login</button>
-        </div>
+       <div class="login-form" id="loginPage">
+    <h2>Login</h2>
+    <label for="roomNumber">Room Number:</label>
+    <input type="text" id="roomNumber" placeholder="Enter room number">
+    <label for="password">Password:</label>
+    <input type="password" id="password" placeholder="Enter password">
+    <!-- Dodany input typu checkbox -->
+    <label for="acceptCheckbox">Accept terms:</label>
+    <input type="checkbox" id="acceptCheckbox">
+    <button id="login">Login</button>
+</div>
 
         <!-- Strona po zalogowaniu -->
         <div class="authenticated-page" id="authenticatedPage">
