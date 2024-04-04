@@ -239,40 +239,46 @@
         };
 
         var translations = {
-            'polish': {
-                'title': 'Kalendarz Rezerwacji Strefy Spa',
-                'roomNumberLabel': 'Wprowadź numer pokoju:',
-                'passwordLabel': 'Wprowadź hasło:',
-                'loginButton': 'Zaloguj',
-                'reservationTitle': 'Rezerwacje:',
-                'confirmReservationMessage': 'Czy potwierdzasz rezerwację?',
-                'yesButton': 'Tak',
-                'noButton': 'Nie',
-                'takenMessage': 'Ten slot czasowy jest już zajęty.'
-            },
-            'english': {
-                'title': 'Spa Zone Reservation Calendar',
-                'roomNumberLabel': 'Enter room number:',
-                'passwordLabel': 'Enter password:',
-                'loginButton': 'Log in',
-                'reservationTitle': 'Reservations:',
-                'confirmReservationMessage': 'Do you confirm the reservation?',
-                'yesButton': 'Yes',
-                'noButton': 'No',
-                'takenMessage': 'This time slot is already taken.'
-            },
-            'german': {
-                'title': 'Spa-Bereich Reservierungskalender',
-                'roomNumberLabel': 'Geben Sie die Raumnummer ein:',
-                'passwordLabel': 'Geben Sie das Passwort ein:',
-                'loginButton': 'Anmelden',
-                'reservationTitle': 'Reservierungen:',
-                'confirmReservationMessage': 'Bestätigen Sie die Reservierung?',
-                'yesButton': 'Ja',
-                'noButton': 'Nein',
-                'takenMessage': 'Dieser Zeitraum ist bereits belegt.'
-            }
-        };
+    'polish': {
+        'title': 'Kalendarz Rezerwacji Strefy Spa',
+        'roomNumberLabel': 'Wprowadź numer pokoju:',
+        'passwordLabel': 'Wprowadź hasło:',
+        'loginButton': 'Zaloguj',
+        'reservationTitle': 'Rezerwacje:',
+        'confirmReservationMessage': 'Czy potwierdzasz rezerwację?',
+        'yesButton': 'Tak',
+        'noButton': 'Nie',
+        'takenMessage': 'Ten slot czasowy jest już zajęty.',
+        'acceptTerms': 'Akceptuję regulamin'
+        // Dodaj inne tłumaczenia
+    },
+    'english': {
+        'title': 'Spa Zone Reservation Calendar',
+        'roomNumberLabel': 'Enter room number:',
+        'passwordLabel': 'Enter password:',
+        'loginButton': 'Log in',
+        'reservationTitle': 'Reservations:',
+        'confirmReservationMessage': 'Do you confirm the reservation?',
+        'yesButton': 'Yes',
+        'noButton': 'No',
+        'takenMessage': 'This time slot is already taken.',
+        'acceptTerms': 'Accept terms'
+        // Add other translations
+    },
+    'german': {
+        'title': 'Spa-Bereich Reservierungskalender',
+        'roomNumberLabel': 'Geben Sie die Raumnummer ein:',
+        'passwordLabel': 'Geben Sie das Passwort ein:',
+        'loginButton': 'Anmelden',
+        'reservationTitle': 'Reservierungen:',
+        'confirmReservationMessage': 'Bestätigen Sie die Reservierung?',
+        'yesButton': 'Ja',
+        'noButton': 'Nein',
+        'takenMessage': 'Dieser Zeitraum ist bereits belegt.',
+        'acceptTerms': 'Die Bedingungen akzeptieren'
+        // Fügen Sie andere Übersetzungen hinzu
+    }
+};
 
 
         function authenticate() {
@@ -375,20 +381,22 @@
 
 
         function changeLanguage() {
-            var selectedLanguage = document.getElementById('languageSelect').value;
-            var translation = translations[selectedLanguage];
+    var selectedLanguage = document.getElementById('language').value;
+    var translation = translations[selectedLanguage];
 
-            document.title = translation.title;
-            document.getElementById('calendarTitle').textContent = translation.title;
-            document.getElementById('roomNumberLabel').textContent = translation.roomNumberLabel;
-            document.getElementById('passwordLabel').textContent = translation.passwordLabel;
-            document.getElementById('loginButton').textContent = translation.loginButton;
-            document.getElementById('reservationTitle').textContent = translation.reservationTitle;
-            document.getElementById('confirmReservationMessage').textContent = translation.confirmReservationMessage;
-            document.getElementById('yesButton').textContent = translation.yesButton;
-            document.getElementById('noButton').textContent = translation.noButton;
-            document.getElementById('takenMessage').textContent = translation.takenMessage;
-        }
+    document.title = translation.title;
+    document.getElementById('calendarTitle').textContent = translation.title;
+    document.getElementById('roomNumberLabel').textContent = translation.roomNumberLabel;
+    document.getElementById('passwordLabel').textContent = translation.passwordLabel;
+    document.getElementById('loginButton').textContent = translation.loginButton;
+    document.getElementById('reservationTitle').textContent = translation.reservationTitle;
+    document.getElementById('confirmReservationMessage').textContent = translation.confirmReservationMessage;
+    document.getElementById('yesButton').textContent = translation.yesButton;
+    document.getElementById('noButton').textContent = translation.noButton;
+    document.getElementById('takenMessage').textContent = translation.takenMessage;
+    document.getElementById('acceptCheckbox').nextElementSibling.textContent = translation.acceptTerms;
+    // Dodaj inne elementy do tłumaczenia
+}
 
     function getReservationsForSlot(timeSlotId) {
     var reservationsForSlot = reservations.filter(function (reservation) {
@@ -519,12 +527,11 @@ function updateReservationList(roomNumber) {
     myReservations.forEach(function (reservation) {
         var listItem = document.createElement('li');
         listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
-        
         listItem.dataset.reservationId = reservation.id;
-   
+
         var cancelButton = document.createElement('button');
-        cancelButton.textContent = 'Anuluj';
-        cancelButton.onclick = function() {
+        cancelButton.textContent = translation.cancelButton;
+        cancelButton.onclick = function () {
             cancelReservation(reservation); // Przekazanie obiektu rezerwacji do funkcji cancelReservation()
         };
 
@@ -532,7 +539,6 @@ function updateReservationList(roomNumber) {
         reservationList.appendChild(listItem);
     });
 }
-
 
     function saveReservationToFirestore(reservation) {
     db.collection("reservations").doc(reservation.id).set(reservation)
