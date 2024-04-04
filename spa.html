@@ -399,7 +399,7 @@
         }
 
 
-        function changeLanguage() {
+       function changeLanguage() {
     var selectedLanguage = document.getElementById('language').value;
     var translation = translations[selectedLanguage];
 
@@ -416,6 +416,7 @@
     document.getElementById('acceptCheckbox').nextElementSibling.textContent = translation.acceptTerms;
     // Dodaj inne elementy do tłumaczenia
 }
+
 
     function getReservationsForSlot(timeSlotId) {
     var reservationsForSlot = reservations.filter(function (reservation) {
@@ -549,7 +550,7 @@ function updateReservationList(roomNumber) {
         listItem.dataset.reservationId = reservation.id;
 
         var cancelButton = document.createElement('button');
-        cancelButton.textContent = translation.cancelButton;
+        cancelButton.textContent = translations['english'].cancelButton; // Poprawka dostępu do tłumaczenia
         cancelButton.onclick = function () {
             cancelReservation(reservation); // Przekazanie obiektu rezerwacji do funkcji cancelReservation()
         };
