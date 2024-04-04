@@ -338,64 +338,66 @@ document.getElementById('login').addEventListener('click', function() {
         });
 
         function generateCalendar() {
-            var calendar = document.getElementById('calendar');
-            calendar.innerHTML = '';
+    var calendar = document.getElementById('calendar');
+    calendar.innerHTML = '';
 
-            var today = new Date();
-            today.setHours(0, 0, 0, 0);
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-            for (var dayOffset = 0; dayOffset < 2; dayOffset++) {
-                var currentDate = new Date(today);
-                currentDate.setDate(currentDate.getDate() + dayOffset);
+    for (var dayOffset = 0; dayOffset < 2; dayOffset++) {
+        var currentDate = new Date(today);
+        currentDate.setDate(currentDate.getDate() + dayOffset);
 
-                var dayElement = document.createElement('div');
-                dayElement.className = 'day';
-                dayElement.textContent = currentDate.toLocaleDateString(undefined, {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'numeric',
-                    year: 'numeric'
-                });
-                dayElement.onclick = function () {
-                    toggleDay(this);
-                };
+        var dayElement = document.createElement('div');
+        dayElement.className = 'day';
+        dayElement.textContent = currentDate.toLocaleDateString(undefined, {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'numeric',
+            year: 'numeric'
+        });
 
-                var timeSlotsContainer = document.createElement('div');
-                timeSlotsContainer.className = 'time-slots-container';
+        dayElement.addEventListener('click', function () {
+            toggleDay(this);
+        });
 
-                for (var i = 8; i <= 21; i++) {
-                    var timeSlotId = generateTimeSlotId(currentDate, i);
-                    var reservationsForSlot = getReservationsForSlot(timeSlotId);
-                    var numReservations = reservationsForSlot.length;
+        var timeSlotsContainer = document.createElement('div');
+        timeSlotsContainer.className = 'time-slots-container';
 
-                    var timeSlot = document.createElement('div');
-                    timeSlot.className = 'time-slot';
-                    timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
-                    timeSlot.dataset.timeSlotId = timeSlotId;
+        for (var i = 8; i <= 21; i++) {
+            var timeSlotId = generateTimeSlotId(currentDate, i);
+            var reservationsForSlot = getReservationsForSlot(timeSlotId);
+            var numReservations = reservationsForSlot.length;
 
-                    if (numReservations === 1) {
-                        timeSlot.classList.add('orange');
-                    } else if (numReservations >= 2) {
-                        timeSlot.classList.add('red');
-                    }
+            var timeSlot = document.createElement('div');
+            timeSlot.className = 'time-slot';
+            timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
+            timeSlot.dataset.timeSlotId = timeSlotId;
 
-                    timeSlot.addEventListener('click', function () {
-                        selectedTimeSlot = this;
-                        var numReservations = getReservationsForSlot(selectedTimeSlot.dataset.timeSlotId).length;
-                        if (numReservations >= 2) {
-                            openTakenModal();
-                        } else if (!selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken')) {
-                            openConfirmationModal();
-                        }
-                    });
-
-                    timeSlotsContainer.appendChild(timeSlot);
-                }
-
-                dayElement.appendChild(timeSlotsContainer);
-                calendar.appendChild(dayElement);
+            if (numReservations === 1) {
+                timeSlot.classList.add('orange');
+            } else if (numReservations >= 2) {
+                timeSlot.classList.add('red');
             }
+
+            timeSlot.addEventListener('click', function () {
+                selectedTimeSlot = this;
+                var numReservations = getReservationsForSlot(selectedTimeSlot.dataset.timeSlotId).length;
+                if (numReservations >= 2) {
+                    openTakenModal();
+                } else if (!selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken')) {
+                    openConfirmationModal();
+                }
+            });
+
+            timeSlotsContainer.appendChild(timeSlot);
         }
+
+        dayElement.appendChild(timeSlotsContainer);
+        calendar.appendChild(dayElement);
+    }
+}
+
 
 
         function toggleDay(dayElement) {
@@ -576,18 +578,17 @@ function updateReservationList(roomNumber) {
             console.error("Błąd podczas zapisywania rezerwacji do Firestore: ", error);
         });
 }
-  function openTakenModal() {
-      document.getElementById('takenMessage').textContent = 'Ten slot czasowy jest już zajęty.';
+function openTakenModal() {
+    document.getElementById('takenMessage').textContent = 'Ten slot czasowy jest już zajęty.';
     var takenModal = document.getElementById('takenModal');
     var overlay = document.getElementById('overlay');
     takenModal.style.display = 'block';
     overlay.style.display = 'block';
-
     setTimeout(function () {
         takenModal.style.display = 'none';
         overlay.style.display = 'none';
     }, 2000);
-}   
+}
 
  
     document.addEventListener('DOMContentLoaded', function() {
