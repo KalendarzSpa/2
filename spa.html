@@ -197,7 +197,6 @@ body {
     
 
 <script>
-    // Konfiguracja Firebase
     var firebaseConfig = {
         apiKey: "AIzaSyCz7gGBCSi9pXaDvbrBDELvZOIRWgAutjs",
         authDomain: "strefaspa-7aaaa.firebaseapp.com",
@@ -211,7 +210,6 @@ body {
      var reservations = [];
      var selectedTimeSlot;
    
-    // Mapa numeru pokoju do hasła
     var roomPasswords = {
         "0": "8572",
         "1": "3491",
@@ -375,7 +373,6 @@ for (var i = 8; i <= 21; i++) {
 
 
     function getReservationsForSlot(timeSlotId) {
-    // Filtrujemy listę rezerwacji, aby znaleźć te, które odpowiadają podanemu identyfikatorowi slotu czasowego
     var reservationsForSlot = reservations.filter(function (reservation) {
         return reservation.timeSlotId === timeSlotId;
     });
@@ -383,8 +380,6 @@ for (var i = 8; i <= 21; i++) {
 }
 
        
-    
-    // Funkcja generująca identyfikator slotu czasowego
     function generateTimeSlotId(date, hour) {
         return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + '-' + hour;
     }
@@ -396,7 +391,6 @@ for (var i = 8; i <= 21; i++) {
             });
         }
 
-    // Funkcja otwierająca modal potwierdzenia rezerwacji
 function openConfirmationModal() {
     var confirmationModal = document.getElementById('confirmationModal');
     var overlay = document.getElementById('overlay');
@@ -405,20 +399,18 @@ function openConfirmationModal() {
 }
 
 
-// Funkcja potwierdzająca rezerwację
-  
-// Funkcja potwierdzająca rezerwację
 function confirmReservation() {
     if (selectedTimeSlot) {
         console.log("Confirming Reservation:", selectedTimeSlot.dataset.timeSlotId);
         selectedTimeSlot.classList.add('reserved');
         selectedTimeSlot.style.backgroundColor = '#ff6666';
-        var currentDate = new Date();
         var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
+        
+        var timeSlotDate = new Date(timeSlotId.split('-').slice(0, 3).join('-'));
 
         var reservation = {
             id: generateReservationId(), // Generuj unikalny identyfikator rezerwacji
-            date: currentDate.toLocaleDateString(), // Dodaj bieżącą datę jako datę rezerwacji
+            date: timeSlotDate.toLocaleDateString(), // Użyj daty slotu czasowego jako datę rezerwacji
             timeSlotId: timeSlotId,
             roomNumber: document.getElementById('roomNumber').value,
         };
@@ -427,14 +419,12 @@ function confirmReservation() {
         var listItem = document.createElement('li');
         listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
         
-        // Dodaj atrybut dataset z identyfikatorem rezerwacji
         listItem.dataset.reservationId = reservation.id;
         
         reservationList.appendChild(listItem); // Dodaj rezerwację do listy
 
         reservations.push(reservation); // Dodaj rezerwację do lokalnej tablicy rezerwacji
         
-        // Sprawdź, czy obiekt rezerwacji jest zdefiniowany i czy posiada właściwość 'id'
         if (reservation && reservation.id) {
             saveReservationToFirestore(reservation); // Zapisz rezerwację do Firestore
         } else {
@@ -447,12 +437,10 @@ function confirmReservation() {
     }
 }
 
-// Obsługa przycisku "Nie" w oknie modalnym
 function cancelConfirmation() {
     closeConfirmationModal();
 }
 
-// Funkcja zamykająca okno modalne potwierdzenia rezerwacji
 function closeConfirmationModal() {
     var confirmationModal = document.getElementById('confirmationModal');
     var overlay = document.getElementById('overlay');
@@ -460,8 +448,6 @@ function closeConfirmationModal() {
     overlay.style.display = 'none';
 }
 
-
-// Funkcja generująca unikalny identyfikator rezerwacji
 function generateReservationId() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         var r = Math.random() * 16 | 0,
@@ -472,13 +458,11 @@ function generateReservationId() {
 
 
 function cancelReservation(reservation) {
-    // Usunięcie rezerwacji z listy "Moje rezerwacje"
     reservations = reservations.filter(r => r.id !== reservation.id);
     var reservationList = document.getElementById('reservationList');
     var listItem = reservationList.querySelector(`[data-reservation-id="${reservation.id}"]`);
     reservationList.removeChild(listItem);
 
-    // Usunięcie rezerwacji z bazy danych Firestore
     db.collection("reservations").doc(reservation.id).delete().then(function() {
         console.log("Rezerwacja pomyślnie usunięta z Firestore");
         console.log(reservation.id)
@@ -505,32 +489,31 @@ function cancelReservation(reservation) {
 
 
 function updateReservationList(roomNumber) {
-  var reservationList = document.getElementById('reservationList');
-  reservationList.innerHTML = '';
+    var reservationList = document.getElementById('reservationList');
+    reservationList.innerHTML = '';
 
-  var myReservations = reservations.filter(function (reservation) {
-    return reservation.roomNumber === roomNumber;
-  });
+    var myReservations = reservations.filter(function (reservation) {
+        return reservation.roomNumber === roomNumber;
+    });
 
-  myReservations.forEach(function (reservation) {
-    var listItem = document.createElement('li');
-    listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
-    
-    // Dodaj atrybut dataset z identyfikatorem rezerwacji
-    listItem.dataset.reservationId = reservation.id;
+    myReservations.forEach(function (reservation) {
+        var listItem = document.createElement('li');
+        listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+        
+        // Dodaj atrybut dataset z identyfikatorem rezerwacji
+        listItem.dataset.reservationId = reservation.id;
 
-    // Stwórz przycisk Anuluj
-    var cancelButton = document.createElement('button');
-    cancelButton.textContent = 'Anuluj';
-    cancelButton.onclick = function() {
-        cancelReservation(reservation); // Przekazanie obiektu rezerwacji do funkcji cancelReservation()
-    };
+        // Stwórz przycisk Anuluj
+        var cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Anuluj';
+        cancelButton.onclick = function() {
+            cancelReservation(reservation); // Przekazanie obiektu rezerwacji do funkcji cancelReservation()
+        };
 
-    listItem.appendChild(cancelButton); // Dodaj przycisk Anuluj do elementu listy
-    reservationList.appendChild(listItem);
-  });
+        listItem.appendChild(cancelButton); // Dodaj przycisk Anuluj do elementu listy
+        reservationList.appendChild(listItem);
+    });
 }
-
 
 
     function saveReservationToFirestore(reservation) {
