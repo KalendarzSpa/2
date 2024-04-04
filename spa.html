@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kalendarz Rezerwacji Strefy Spa</title>
     <style>
-        /* Resetowanie styli */
-        *,
         *::before,
         *::after {
             margin: 0;
@@ -19,13 +17,19 @@
             background-color: #f5f5dc;
             margin: 0;
             padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
         /* Kontener główny */
         .container {
             max-width: 600px;
-            margin: 0 auto;
             padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         /* Nagłówek */
@@ -33,6 +37,7 @@
             margin-bottom: 20px;
             font-size: 24px;
             text-align: center;
+            color: #007bff;
         }
 
         /* Formularz logowania */
@@ -105,7 +110,8 @@
         }
 
         .reserved {
-            background-color: #ff6666;
+            background-color: #007bff;
+            color: #fff;
         }
 
         .taken {
@@ -139,29 +145,20 @@
 </head>
 <body>
 
-<h2 id="calendarTitle">Kalendarz Rezerwacji Strefy Spa</h2>
-
-<select id="languageSelect" onchange="changeLanguage()">
-    <option value="polish">Polish</option>
-    <option value="english">English</option>
-    <option value="german">German</option>
-</select>
-
-
 <div class="container">
-    <h2>Spa Zone Reservation Calendar</h2>
+    <h2>Kalendarz Rezerwacji Strefy Spa</h2>
 
     <!-- Formularz logowania -->
     <form id="loginForm">
-        <label for="roomNumber">Enter room number:</label>
+        <label for="roomNumber">Wprowadź numer pokoju:</label>
         <input type="text" id="roomNumber" required>
-        <label for="password">Enter password:</label>
+        <label for="password">Wprowadź hasło:</label>
         <input type="password" id="password" required>
         <br>
         <input type="checkbox" id="acceptCheckbox" required>
-        <label for="acceptCheckbox">I accept the terms and conditions</label>
+        <label for="acceptCheckbox">Akceptuję regulamin</label>
         <br>
-        <button type="submit">Log in</button>
+        <button type="submit">Zaloguj</button>
     </form>
 
     <!-- Kalendarz -->
@@ -171,15 +168,15 @@
 
     <!-- Sekcja rezerwacji -->
     <div class="reservation-section" id="reservationSection">
-        <h3>Reservations:</h3>
+        <h3>Rezerwacje:</h3>
         <ul id="reservationList"></ul>
     </div>
 
     <!-- Modal potwierdzenia -->
     <div class="modal" id="confirmationModal">
-        <span>Do you confirm the reservation?</span>
-        <button id="yesButton">Yes</button>
-        <button id="noButton">No</button>
+        <span>Czy potwierdzasz rezerwację?</span>
+        <button id="yesButton">Tak</button>
+        <button id="noButton">Nie</button>
     </div>
 
     <!-- Modal zajętości -->
