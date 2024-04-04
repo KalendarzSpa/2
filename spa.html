@@ -492,18 +492,18 @@ function updateReservationList(roomNumber) {
     var reservationList = document.getElementById('reservationList');
     reservationList.innerHTML = '';
 
+    var currentDate = new Date(); // Pobierz bieżącą datę
+
     var myReservations = reservations.filter(function (reservation) {
-        return reservation.roomNumber === roomNumber;
+        return reservation.roomNumber === roomNumber && new Date(reservation.date) > currentDate;
     });
 
     myReservations.forEach(function (reservation) {
         var listItem = document.createElement('li');
         listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
         
-        // Dodaj atrybut dataset z identyfikatorem rezerwacji
         listItem.dataset.reservationId = reservation.id;
-
-        // Stwórz przycisk Anuluj
+   
         var cancelButton = document.createElement('button');
         cancelButton.textContent = 'Anuluj';
         cancelButton.onclick = function() {
