@@ -154,13 +154,13 @@ body {
 </head>
 <body>
 
-<h2 id="calendarTitle">Kalendarz Rezerwacji Strefy Spa</h2>
-
 <select id="languageSelect" onchange="changeLanguage()">
     <option value="polish">Polish</option>
     <option value="english">English</option>
     <option value="german">German</option>
 </select>
+    
+<h2 id="calendarTitle">Kalendarz Rezerwacji Strefy Spa</h2>
 
 
 <div>
@@ -418,10 +418,6 @@ for (var i = 8; i <= 21; i++) {
 
     timeSlotsContainer.appendChild(timeSlot);
 }
-    document.addEventListener('DOMContentLoaded', function() {
-        changeLanguage(); // Wywołaj funkcję zmiany języka przy załadowaniu strony
-    });
-
 
     function changeLanguage() {
     var selectedLanguage = document.getElementById('languageSelect').value;
@@ -606,6 +602,12 @@ function updateReservationList(roomNumber) {
         overlay.style.display = 'none';
     }, 2000);
 }   
+
+ 
+    document.addEventListener('DOMContentLoaded', function() {
+        changeLanguage(); // Wywołaj funkcję zmiany języka przy załadowaniu strony
+    });
+   
 </script>
 </body>
 </html>
