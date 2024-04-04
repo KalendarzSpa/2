@@ -1,72 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalendarz Rezerwacji Strefy Spa</title>
+    <title>Spa Zone Reservation Calendar</title>
     <style>
-        *::before,
-        *::after {
+        /* Resetowanie styli */
+        body, h1, h2, h3, p, ul, li, input, button {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        /* Globalne style */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f5f5dc;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            background-image: url('background-image.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #333;
+            line-height: 1.6;
+            overflow: hidden;
         }
 
-        /* Kontener główny */
         .container {
-            max-width: 600px;
+            max-width: 800px;
+            margin: 20px auto;
             padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Nagłówek */
-        h2 {
+        h1, h2, h3 {
             margin-bottom: 20px;
-            font-size: 24px;
+        }
+
+        h1 {
+            font-size: 36px;
             text-align: center;
             color: #007bff;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #333;
+        }
+
+        p {
+            margin-bottom: 10px;
         }
 
         /* Formularz logowania */
-        form {
+        .login-form {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 8px;
             margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
-        label {
+        .login-form label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+            margin-bottom: 10px;
         }
 
-        input[type="text"],
-        input[type="password"],
-        select {
+        .login-form input {
             width: 100%;
             padding: 10px;
             margin-bottom: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            background-color: #f9f9f9;
         }
 
-        input[type="checkbox"] {
-            margin-right: 5px;
-        }
-
-        /* Przycisk */
-        button {
+        .login-form button {
             width: 100%;
             padding: 10px;
             background-color: #007bff;
@@ -77,214 +92,201 @@
             transition: background-color 0.3s ease;
         }
 
-        button:hover {
+        .login-form button:hover {
             background-color: #0056b3;
         }
 
         /* Kalendarz */
         .calendar {
-            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .day {
-            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            border-radius: 8px;
             padding: 10px;
-            cursor: pointer;
-            text-align: center;
-            margin-bottom: 5px;
         }
 
-        .time-slots-container {
-            display: none;
+        .day:hover {
+            background-color: #e9e9e9;
         }
 
-        .day.active .time-slots-container {
-            display: block;
-        }
-
-        .time-slot {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 5px;
-            cursor: pointer;
-        }
-
-        .reserved {
+        .day.active {
             background-color: #007bff;
             color: #fff;
         }
 
-        .taken {
-            background-color: #ff9999;
+        .time-slot {
+            padding: 5px;
+            border-radius: 5px;
+            cursor: pointer;
         }
 
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 20px;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            z-index: 1000;
+        .time-slot.orange {
+            background-color: orange;
         }
 
-        #overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 999;
+        .time-slot.red {
+            background-color: red;
+        }
+
+        /* Wybór języka */
+        .language-select {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .language-select select {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            cursor: pointer;
         }
     </style>
 </head>
+
 <body>
-
-<div class="container">
-    <h2>Kalendarz Rezerwacji Strefy Spa</h2>
-
-    <!-- Formularz logowania -->
-    <form id="loginForm">
-        <label for="roomNumber">Wprowadź numer pokoju:</label>
-        <input type="text" id="roomNumber" required>
-        <label for="password">Wprowadź hasło:</label>
-        <input type="password" id="password" required>
-        <br>
-        <input type="checkbox" id="acceptCheckbox" required>
-        <label for="acceptCheckbox">Akceptuję regulamin</label>
-        <br>
-        <button type="submit">Zaloguj</button>
-    </form>
-
-    <!-- Kalendarz -->
-    <div class="calendar" id="calendar">
-        <!-- Kalendarz będzie generowany tutaj -->
+    <div class="language-select">
+        <label for="language">Language:</label>
+        <select id="language" onchange="changeLanguage()">
+            <option value="english">English</option>
+            <option value="polish">Polish</option>
+            <option value="german">German</option>
+        </select>
     </div>
 
-    <!-- Sekcja rezerwacji -->
-    <div class="reservation-section" id="reservationSection">
-        <h3>Rezerwacje:</h3>
+    <div class="container">
+        <h1 id="calendarTitle">Spa Zone Reservation Calendar</h1>
+
+        <div class="container" id="loginContainer">
+            <h2>Login</h2>
+            <label for="roomNumber" id="roomNumberLabel">Room Number:</label>
+            <input type="text" id="roomNumber" placeholder="Enter room number">
+            <label for="password" id="passwordLabel">Password:</label>
+            <input type="password" id="password" placeholder="Enter password">
+            <input type="checkbox" id="acceptCheckbox">
+            <label for="acceptCheckbox">I accept the terms and conditions</label>
+            <button onclick="authenticate()" id="loginButton">Login</button>
+        </div>
+
+        <div class="container" id="calendarContainer" style="display: none;">
+            <div class="calendar" id="calendar">
+                <!-- Tutaj będzie generowany kalendarz -->
+            </div>
+        </div>
+
         <ul id="reservationList"></ul>
     </div>
 
-    <!-- Modal potwierdzenia -->
-    <div class="modal" id="confirmationModal">
-        <span>Czy potwierdzasz rezerwację?</span>
-        <button id="yesButton">Tak</button>
-        <button id="noButton">Nie</button>
-    </div>
-
-    <!-- Modal zajętości -->
-    <div class="modal" id="takenModal">
-        <span id="takenMessage"></span>
-    </div>
-
-    <!-- Overlay -->
     <div id="overlay"></div>
-</div>
-<!-- Firebase scripts -->
-<script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-auth.js"></script>
-    
 
-<script>
-    var firebaseConfig = {
-        apiKey: "AIzaSyCz7gGBCSi9pXaDvbrBDELvZOIRWgAutjs",
-        authDomain: "strefaspa-7aaaa.firebaseapp.com",
-        projectId: "strefaspa-7aaaa",
-        storageBucket: "strefaspa-7aaaa.appspot.com",
-        messagingSenderId: "899188726768",
-    };
-    firebase.initializeApp(firebaseConfig);
-    var db = firebase.firestore();
-    var auth = firebase.auth();
-     var reservations = [];
-     var selectedTimeSlot;
-   
-    var roomPasswords = {
-        "0": "8572",
-        "1": "3491",
-        "2": "6004",
-        "3": "7284",
-        "4": "9548",
-        "5": "1729",
-        "6": "4093",
-        "7": "6251",
-        "8": "5038",
-        "9": "3617",
-        "10": "1425",
-        "11": "2389",
-        "12": "5719",
-        "13": "8473",
-        "14": "9205",
-        "15": "3852",
-        "16": "7163",
-        "17": "2004",
-        "18": "5901",
-        "19": "9372",
-        "20": "4681",
-        "21": "3297",
-        "22": "8024",
-        "23": "5541",
-        "24": "1468",
-        "25": "6901",
-        "26": "2190",
-        "27": "7530"
-    };
+    <!-- Firebase scripts -->
+    <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-auth.js"></script>
 
-var translations = {
-    'polish': {
-        'title': 'Kalendarz Rezerwacji Strefy Spa',
-        'roomNumberLabel': 'Wprowadź numer pokoju:',
-        'passwordLabel': 'Wprowadź hasło:',
-        'loginButton': 'Zaloguj',
-        'reservationTitle': 'Rezerwacje:',
-        'confirmReservationMessage': 'Czy potwierdzasz rezerwację?',
-        'yesButton': 'Tak',
-        'noButton': 'Nie',
-        'takenMessage': 'Ten slot czasowy jest już zajęty.'
-        // Dodaj inne tłumaczenia
-    },
-    'english': {
-        'title': 'Spa Zone Reservation Calendar',
-        'roomNumberLabel': 'Enter room number:',
-        'passwordLabel': 'Enter password:',
-        'loginButton': 'Log in',
-        'reservationTitle': 'Reservations:',
-        'confirmReservationMessage': 'Do you confirm the reservation?',
-        'yesButton': 'Yes',
-        'noButton': 'No',
-        'takenMessage': 'This time slot is already taken.'
-        // Add other translations
-    },
-    'german': {
-        'title': 'Spa-Bereich Reservierungskalender',
-        'roomNumberLabel': 'Geben Sie die Raumnummer ein:',
-        'passwordLabel': 'Geben Sie das Passwort ein:',
-        'loginButton': 'Anmelden',
-        'reservationTitle': 'Reservierungen:',
-        'confirmReservationMessage': 'Bestätigen Sie die Reservierung?',
-        'yesButton': 'Ja',
-        'noButton': 'Nein',
-        'takenMessage': 'Dieser Zeitraum ist bereits belegt.'
-        // Fügen Sie andere Übersetzungen hinzu
-    }
-};
 
-    
+    <script>
+        var firebaseConfig = {
+            apiKey: "AIzaSyCz7gGBCSi9pXaDvbrBDELvZOIRWgAutjs",
+            authDomain: "strefaspa-7aaaa.firebaseapp.com",
+            projectId: "strefaspa-7aaaa",
+            storageBucket: "strefaspa-7aaaa.appspot.com",
+            messagingSenderId: "899188726768",
+        };
+        firebase.initializeApp(firebaseConfig);
+        var db = firebase.firestore();
+        var auth = firebase.auth();
+        var reservations = [];
+        var selectedTimeSlot;
+
+        var roomPasswords = {
+            "0": "8572",
+            "1": "3491",
+            "2": "6004",
+            "3": "7284",
+            "4": "9548",
+            "5": "1729",
+            "6": "4093",
+            "7": "6251",
+            "8": "5038",
+            "9": "3617",
+            "10": "1425",
+            "11": "2389",
+            "12": "5719",
+            "13": "8473",
+            "14": "9205",
+            "15": "3852",
+            "16": "7163",
+            "17": "2004",
+            "18": "5901",
+            "19": "9372",
+            "20": "4681",
+            "21": "3297",
+            "22": "8024",
+            "23": "5541",
+            "24": "1468",
+            "25": "6901",
+            "26": "2190",
+            "27": "7530"
+        };
+
+        var translations = {
+            'polish': {
+                'title': 'Kalendarz Rezerwacji Strefy Spa',
+                'roomNumberLabel': 'Wprowadź numer pokoju:',
+                'passwordLabel': 'Wprowadź hasło:',
+                'loginButton': 'Zaloguj',
+                'reservationTitle': 'Rezerwacje:',
+                'confirmReservationMessage': 'Czy potwierdzasz rezerwację?',
+                'yesButton': 'Tak',
+                'noButton': 'Nie',
+                'takenMessage': 'Ten slot czasowy jest już zajęty.'
+            },
+            'english': {
+                'title': 'Spa Zone Reservation Calendar',
+                'roomNumberLabel': 'Enter room number:',
+                'passwordLabel': 'Enter password:',
+                'loginButton': 'Log in',
+                'reservationTitle': 'Reservations:',
+                'confirmReservationMessage': 'Do you confirm the reservation?',
+                'yesButton': 'Yes',
+                'noButton': 'No',
+                'takenMessage': 'This time slot is already taken.'
+            },
+            'german': {
+                'title': 'Spa-Bereich Reservierungskalender',
+                'roomNumberLabel': 'Geben Sie die Raumnummer ein:',
+                'passwordLabel': 'Geben Sie das Passwort ein:',
+                'loginButton': 'Anmelden',
+                'reservationTitle': 'Reservierungen:',
+                'confirmReservationMessage': 'Bestätigen Sie die Reservierung?',
+                'yesButton': 'Ja',
+                'noButton': 'Nein',
+                'takenMessage': 'Dieser Zeitraum ist bereits belegt.'
+            }
+        };
+
 function authenticate() {
     var roomNumber = document.getElementById('roomNumber').value;
     var password = document.getElementById('password').value;
     var acceptCheckbox = document.getElementById('acceptCheckbox');
 
     if (!acceptCheckbox.checked) {
-        alert("Musisz zaakceptować regulamin, aby kontynuować.");
+        alert("You must accept the terms and conditions to continue.");
         return;
     }
 
@@ -292,144 +294,110 @@ function authenticate() {
         if (roomPasswords[roomNumber] === password) {
             loadReservations(roomNumber).then(function () {
                 generateCalendar();
-                updateReservationList(roomNumber); // Dodaj przekazanie numeru pokoju
+                updateReservationList(roomNumber);
+                document.getElementById('loginContainer').style.display = 'none'; // Hide login container
+                document.getElementById('calendarContainer').style.display = 'block'; // Show calendar container
             }).catch(function (error) {
                 console.error("Error loading reservations:", error);
             });
         } else {
+            alert("Invalid password for room number.");
             console.error("Invalid password for room number:", roomNumber);
         }
     } else {
+        alert("Invalid room number.");
         console.error("Invalid room number:", roomNumber);
     }
 }
 
 
 
-function generateCalendar() {
-    var calendar = document.getElementById('calendar');
-    calendar.innerHTML = '';
+        function generateCalendar() {
+            var calendar = document.getElementById('calendar');
+            calendar.innerHTML = '';
 
-    var today = new Date();
-    today.setHours(0, 0, 0, 0);
+            var today = new Date();
+            today.setHours(0, 0, 0, 0);
 
-    for (var dayOffset = 0; dayOffset < 2; dayOffset++) {
-        var currentDate = new Date(today);
-        currentDate.setDate(currentDate.getDate() + dayOffset);
+            for (var dayOffset = 0; dayOffset < 2; dayOffset++) {
+                var currentDate = new Date(today);
+                currentDate.setDate(currentDate.getDate() + dayOffset);
 
-        var dayElement = document.createElement('div');
-        dayElement.className = 'day';
-        dayElement.textContent = currentDate.toLocaleDateString(undefined, {
-            weekday: 'long',
-            day: 'numeric',
-            month: 'numeric',
-            year: 'numeric'
-        });
-        dayElement.onclick = function () {
-            toggleDay(this); // Dodaj to wywołanie funkcji toggleDay
-        };
+                var dayElement = document.createElement('div');
+                dayElement.className = 'day';
+                dayElement.textContent = currentDate.toLocaleDateString(undefined, {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'numeric',
+                    year: 'numeric'
+                });
+                dayElement.onclick = function () {
+                    toggleDay(this);
+                };
 
-        var timeSlotsContainer = document.createElement('div');
-        timeSlotsContainer.className = 'time-slots-container';
+                var timeSlotsContainer = document.createElement('div');
+                timeSlotsContainer.className = 'time-slots-container';
 
-        for (var i = 8; i <= 21; i++) {
-            var timeSlotId = generateTimeSlotId(currentDate, i);
-            var reservationsForSlot = getReservationsForSlot(timeSlotId);
-            var numReservations = reservationsForSlot.length;
+                for (var i = 8; i <= 21; i++) {
+                    var timeSlotId = generateTimeSlotId(currentDate, i);
+                    var reservationsForSlot = getReservationsForSlot(timeSlotId);
+                    var numReservations = reservationsForSlot.length;
 
-            var timeSlot = document.createElement('div');
-            timeSlot.className = 'time-slot';
-            timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
-            timeSlot.dataset.timeSlotId = timeSlotId;
+                    var timeSlot = document.createElement('div');
+                    timeSlot.className = 'time-slot';
+                    timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
+                    timeSlot.dataset.timeSlotId = timeSlotId;
 
-            if (numReservations === 1) {
-                timeSlot.classList.add('orange');
-            } else if (numReservations >= 2) {
-                timeSlot.classList.add('red');
-            }
+                    if (numReservations === 1) {
+                        timeSlot.classList.add('orange');
+                    } else if (numReservations >= 2) {
+                        timeSlot.classList.add('red');
+                    }
 
-            timeSlot.addEventListener('click', function () {
-                selectedTimeSlot = this;
-                var numReservations = getReservationsForSlot(selectedTimeSlot.dataset.timeSlotId).length;
-                if (numReservations >= 2) {
-                    openTakenModal();
-                } else if (!selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken')) {
-                    openConfirmationModal();
+                    timeSlot.addEventListener('click', function () {
+                        selectedTimeSlot = this;
+                        var numReservations = getReservationsForSlot(selectedTimeSlot.dataset.timeSlotId).length;
+                        if (numReservations >= 2) {
+                            openTakenModal();
+                        } else if (!selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken')) {
+                            openConfirmationModal();
+                        }
+                    });
+
+                    timeSlotsContainer.appendChild(timeSlot);
                 }
-            });
 
-            timeSlotsContainer.appendChild(timeSlot);
+                dayElement.appendChild(timeSlotsContainer);
+                calendar.appendChild(dayElement);
+            }
         }
 
-        dayElement.appendChild(timeSlotsContainer);
-        calendar.appendChild(dayElement);
-    }
-}
 
-        
-function toggleDay(dayElement) {
-    var timeSlotsContainer = dayElement.querySelector('.time-slots-container');
-    if (timeSlotsContainer.style.display === 'block') {
-        timeSlotsContainer.style.display = 'none';
-    } else {
-        timeSlotsContainer.style.display = 'block';
-    }
-}
-
-        var timeSlotsContainer = document.createElement('div');
-        timeSlotsContainer.className = 'time-slots-container';
-
-for (var i = 8; i <= 21; i++) {
-    var timeSlotId = generateTimeSlotId(currentDate, i);
-    var reservationsForSlot = getReservationsForSlot(timeSlotId);
-    var numReservations = reservationsForSlot.length;
-
-    var timeSlot = document.createElement('div');
-    timeSlot.className = 'time-slot';
-    timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
-    timeSlot.dataset.timeSlotId = timeSlotId;
-
-    if (numReservations === 1) {
-        timeSlot.classList.add('light');
-    } else if (numReservations >= 2) {
-        timeSlot.classList.add('red');
-    }
-
-    timeSlot.addEventListener('click', function () {
-    selectedTimeSlot = this;
-    var numReservations = getReservationsForSlot(selectedTimeSlot.dataset.timeSlotId).length;
-    if (numReservations >= 2) {
-        openTakenModal();
-    } else if (!selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken')) {
-        openConfirmationModal();
-    }
-});
+        function toggleDay(dayElement) {
+            var timeSlotsContainer = dayElement.querySelector('.time-slots-container');
+            if (timeSlotsContainer.style.display === 'block') {
+                timeSlotsContainer.style.display = 'none';
+            } else {
+                timeSlotsContainer.style.display = 'block';
+            }
+        }
 
 
-    timeSlotsContainer.appendChild(timeSlot);
-}
-    document.addEventListener('DOMContentLoaded', function() {
-        changeLanguage(); // Wywołaj funkcję zmiany języka przy załadowaniu strony
-    });
+        function changeLanguage() {
+            var selectedLanguage = document.getElementById('languageSelect').value;
+            var translation = translations[selectedLanguage];
 
-
-    function changeLanguage() {
-    var selectedLanguage = document.getElementById('languageSelect').value;
-    var translation = translations[selectedLanguage];
-
-    document.title = translation.title;
-    document.getElementById('calendarTitle').textContent = translation.title;
-    document.getElementById('roomNumberLabel').textContent = translation.roomNumberLabel;
-    document.getElementById('passwordLabel').textContent = translation.passwordLabel;
-    document.getElementById('loginButton').textContent = translation.loginButton;
-    document.getElementById('reservationTitle').textContent = translation.reservationTitle;
-    document.getElementById('confirmReservationMessage').textContent = translation.confirmReservationMessage;
-    document.getElementById('yesButton').textContent = translation.yesButton;
-    document.getElementById('noButton').textContent = translation.noButton;
-    document.getElementById('takenMessage').textContent = translation.takenMessage;
-    // Dodaj inne elementy do tłumaczenia
-}
-
+            document.title = translation.title;
+            document.getElementById('calendarTitle').textContent = translation.title;
+            document.getElementById('roomNumberLabel').textContent = translation.roomNumberLabel;
+            document.getElementById('passwordLabel').textContent = translation.passwordLabel;
+            document.getElementById('loginButton').textContent = translation.loginButton;
+            document.getElementById('reservationTitle').textContent = translation.reservationTitle;
+            document.getElementById('confirmReservationMessage').textContent = translation.confirmReservationMessage;
+            document.getElementById('yesButton').textContent = translation.yesButton;
+            document.getElementById('noButton').textContent = translation.noButton;
+            document.getElementById('takenMessage').textContent = translation.takenMessage;
+        }
 
     function getReservationsForSlot(timeSlotId) {
     var reservationsForSlot = reservations.filter(function (reservation) {
@@ -596,6 +564,12 @@ function updateReservationList(roomNumber) {
         overlay.style.display = 'none';
     }, 2000);
 }   
+
+ 
+    document.addEventListener('DOMContentLoaded', function() {
+        changeLanguage(); // Wywołaj funkcję zmiany języka przy załadowaniu strony
+    });
+   
 </script>
 </body>
 </html>
