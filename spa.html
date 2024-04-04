@@ -185,7 +185,7 @@
         <!-- Strona logowania -->
        <div class="login-form" id="loginPage">
     <h2>Login</h2>
-    <form id="loginForm" onsubmit="event.preventDefault(); authenticate();">
+   <form id="loginForm" onsubmit="event.preventDefault(); authenticate();">
     <label for="roomNumber">Room Number:</label>
     <input type="text" id="roomNumber" placeholder="Enter room number">
     <label for="password">Password:</label>
@@ -194,14 +194,16 @@
     <label for="acceptCheckbox">Accept terms:</label>
     <input type="checkbox" id="acceptCheckbox">
     <button id="login">Login</button>
+</form> <!-- Dodaj zamknięcie formularza -->
+
            
 </div>
 
-        <!-- Strona po zalogowaniu -->
-        <div class="authenticated-page" id="authenticatedPage">
-            <div class="calendar" id="calendar">
-                <!-- Kalendarz będzie generowany tutaj -->
-            </div>
+<div class="authenticated-page" id="authenticatedPage">
+    <h2 id="calendarTitle">Reservation Calendar</h2> <!-- Dodaj identyfikator "calendarTitle" -->
+    <div class="calendar" id="calendar">
+        <!-- Kalendarz będzie generowany tutaj -->
+    </div>
 
             <h2 id="reservationTitle">Reservations:</h2>
             <ul id="reservationList">
@@ -423,36 +425,19 @@ document.getElementById('login').addEventListener('click', function() {
 
       function changeLanguage() {
     var selectedLanguage = document.getElementById('language').value;
-    var translation = translations[selectedLanguage];
+    var translation = translations[selectedLanguage]; // Dodaj tę linię
 
     document.title = translation.title;
-    
-    var roomNumberLabel = document.getElementById('roomNumberLabel');
-    if (roomNumberLabel) roomNumberLabel.textContent = translation.roomNumberLabel;
-    
-    var passwordLabel = document.getElementById('passwordLabel');
-    if (passwordLabel) passwordLabel.textContent = translation.passwordLabel;
-    
-    var loginButton = document.getElementById('loginButton');
-    if (loginButton) loginButton.textContent = translation.loginButton;
-    
-    var reservationTitle = document.getElementById('reservationTitle');
-    if (reservationTitle) reservationTitle.textContent = translation.reservationTitle;
-    
-    var confirmReservationMessage = document.getElementById('confirmReservationMessage');
-    if (confirmReservationMessage) confirmReservationMessage.textContent = translation.confirmReservationMessage;
-    
-    var yesButton = document.getElementById('yesButton');
-    if (yesButton) yesButton.textContent = translation.yesButton;
-    
-    var noButton = document.getElementById('noButton');
-    if (noButton) noButton.textContent = translation.noButton;
-    
-    var takenMessage = document.getElementById('takenMessage');
-    if (takenMessage) takenMessage.textContent = translation.takenMessage;
-    
-    var acceptCheckbox = document.getElementById('acceptCheckbox');
-    if (acceptCheckbox && acceptCheckbox.nextElementSibling) acceptCheckbox.nextElementSibling.textContent = translation.acceptTerms;
+    document.getElementById('calendarTitle').textContent = translation.title;
+    document.getElementById('roomNumberLabel').textContent = translation.roomNumberLabel;
+    document.getElementById('passwordLabel').textContent = translation.passwordLabel;
+    document.getElementById('loginButton').textContent = translation.loginButton;
+    document.getElementById('reservationTitle').textContent = translation.reservationTitle;
+    document.getElementById('confirmReservationMessage').textContent = translation.confirmReservationMessage;
+    document.getElementById('yesButton').textContent = translation.yesButton;
+    document.getElementById('noButton').textContent = translation.noButton;
+    document.getElementById('takenMessage').textContent = translation.takenMessage;
+    document.getElementById('acceptCheckbox').nextElementSibling.textContent = translation.acceptTerms;
 }
 
 
