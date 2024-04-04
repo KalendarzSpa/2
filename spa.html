@@ -393,15 +393,10 @@ function openConfirmationModal() {
 }
 
 
-      function closeConfirmationModal() {
-    var confirmationModal = document.getElementById('confirmationModal');
-    var overlay = document.getElementById('overlay');
-    confirmationModal.style.display = 'none';
-    overlay.style.display = 'none';
-}
-
 // Funkcja potwierdzająca rezerwację
-  function confirmReservation() {
+  
+// Funkcja potwierdzająca rezerwację
+function confirmReservation() {
     if (selectedTimeSlot) {
         console.log("Confirming Reservation:", selectedTimeSlot.dataset.timeSlotId);
         selectedTimeSlot.classList.add('reserved');
@@ -411,7 +406,7 @@ function openConfirmationModal() {
 
         var reservation = {
             id: generateReservationId(), // Generuj unikalny identyfikator rezerwacji
-            date: currentDate.toLocaleDateString(),
+            date: currentDate.toLocaleDateString(), // Dodaj bieżącą datę jako datę rezerwacji
             timeSlotId: timeSlotId,
             roomNumber: document.getElementById('roomNumber').value,
         };
@@ -439,6 +434,20 @@ function openConfirmationModal() {
         console.error("Nie wybrano slotu czasowego do potwierdzenia rezerwacji.");
     }
 }
+
+// Obsługa przycisku "Nie" w oknie modalnym
+function cancelConfirmation() {
+    closeConfirmationModal();
+}
+
+// Funkcja zamykająca okno modalne potwierdzenia rezerwacji
+function closeConfirmationModal() {
+    var confirmationModal = document.getElementById('confirmationModal');
+    var overlay = document.getElementById('overlay');
+    confirmationModal.style.display = 'none';
+    overlay.style.display = 'none';
+}
+
 
 // Funkcja generująca unikalny identyfikator rezerwacji
 function generateReservationId() {
