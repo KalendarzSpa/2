@@ -438,6 +438,7 @@ document.getElementById('login').addEventListener('click', function() {
     document.getElementById('acceptCheckbox').nextElementSibling.textContent = translation.acceptTerms;
 }
 
+
     function getReservationsForSlot(timeSlotId) {
     var reservationsForSlot = reservations.filter(function (reservation) {
         return reservation.timeSlotId === timeSlotId;
