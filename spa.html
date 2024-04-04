@@ -333,7 +333,9 @@
             }
         }
 
-
+document.getElementById('login').addEventListener('click', function() {
+            authenticate();
+        });
 
         function generateCalendar() {
             var calendar = document.getElementById('calendar');
@@ -406,7 +408,7 @@
         }
 
 
-        function changeLanguage() {
+       function changeLanguage() {
     var selectedLanguage = document.getElementById('language').value;
     var translation = translations[selectedLanguage];
 
@@ -421,7 +423,6 @@
     document.getElementById('noButton').textContent = translation.noButton;
     document.getElementById('takenMessage').textContent = translation.takenMessage;
     document.getElementById('acceptCheckbox').nextElementSibling.textContent = translation.acceptTerms;
-    // Dodaj inne elementy do tłumaczenia
 }
 
     function getReservationsForSlot(timeSlotId) {
