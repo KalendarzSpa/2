@@ -573,18 +573,26 @@ function updateReservationList(roomNumber) {
     var reservationList = document.getElementById('reservationList');
     reservationList.innerHTML = '';
 
-    var currentDate = new Date(); // Obecna data
+    var currentDate = new Date(); // Obecna data i godzina
 
     var myReservations = reservations.filter(function (reservation) {
         var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Data bloku rezerwacji
-        return reservation.roomNumber === roomNumber && reservationDate >= currentDate; // Filtrowanie przyszłych rezerwacji
+        var reservationHour = parseInt(reservation.timeSlotId.split('-')[3]); // Godzina bloku rezerwacji
+        var currentTime = currentDate.getHours(); // Aktualna godzina
+
+        if (reservationDate > currentDate) { // Jeśli data rezerwacji jest po obecnej dacie
+            return true;
+        } else if (reservationDate.getTime() === currentDate.getTime() && reservationHour > currentTime) { // Jeśli data rezerwacji jest dzisiaj i godzina rezerwacji jest późniejsza niż aktualna godzina
+            return true;
+        }
+        return false; // W przeciwnym razie, jeśli rezerwacja jest przeszła
     });
 
     myReservations.forEach(function (reservation) {
         var listItem = document.createElement('li');
         var timeSlot = reservation.timeSlotId.split('-')[3]; // Pobierz godzinę bloku
         var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Data bloku rezerwacji
-        var formattedDate = reservationDate.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }); // Sformatuj datę
+        var formattedDate = reservationDate.toLocaleDateString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' }); // Sformatuj datę
 
         listItem.textContent = `${formattedDate}, ${timeSlot}:00 - Room ${reservation.roomNumber} `;
 
@@ -602,6 +610,7 @@ function updateReservationList(roomNumber) {
         reservationList.appendChild(listItem);
     });
 }
+
 
 
     function saveReservationToFirestore(reservation) {
