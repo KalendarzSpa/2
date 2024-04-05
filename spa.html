@@ -43,8 +43,7 @@
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
-
-        .language-selector {
+          .language-selector {
             position: absolute;
             top: 10px;
             right: 10px;
@@ -164,70 +163,105 @@
             align-items: center;
             justify-content: space-between;
             padding: 10px;
-            border: 1px solid #ccc;
             border-radius: 5px;
+            font-size: 16px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            color: #000;
+            font-weight: normal;
         }
 
         .time-slot:hover {
             background-color: #f0f0f0;
         }
 
-        .time-slot.selected {
-            background-color: #007bff;
-            color: #fff;
+        .time-slot i {
+            color: #007bff;
         }
 
-        .time-slot.selected:hover {
-            background-color: #0056b3;
+        .time-slot.reserved {
+            background-color: #ffc107;
         }
 
-        .reserve-button {
-            margin-top: 20px;
+        .time-slot.taken {
+            background-color: #dc3545;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            padding: 15px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            font-size: 18px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .reserve-button:hover {
-            background-color: #0056b3;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
         }
     </style>
 </head>
 <body>
-
-<header>
-    <h1>{{language.headerTitle}}</h1>
-    <div class="language-selector">
-        <select id="languageSelect" onchange="changeLanguage()">
-            <option value="en">{{language.english}}</option>
-            <option value="pl">{{language.polish}}</option>
-        </select>
-    </div>
-</header>
-
 <div class="container">
-    <div class="login-form">
-        <h2>{{language.loginTitle}}</h2>
-        <label for="username">{{language.username}}</label>
-        <input type="text" id="username" placeholder="{{language.usernamePlaceholder}}">
-        <label for="password">{{language.password}}</label>
-        <input type="password" id="password" placeholder="{{language.passwordPlaceholder}}">
-        <button onclick="login()">{{language.loginButton}}</button>
-        <label><input type="checkbox" class="accept-checkbox"> {{language.acceptTerms}}</label>
+    <header>
+        <h1 id="headerTitle">Spa Zone Reservation Calendar</h1>
+        <select onchange="changeLanguage(this.value)">
+            <option value="en">English</option>
+            <option value="pl">Polski</option>
+            <option value="de">Deutsch</option>
+        </select>
+    </header>
+    <section class="login-section">
+        <div class="login-form">
+            <h2 id="loginTitle">Login</h2>
+            <form id="loginForm" onsubmit="event.preventDefault(); authenticate();">
+                <label for="roomNumber" id="roomNumberLabel">Room Number:</label>
+                <input type="text" id="roomNumber" placeholder="Enter room number">
+                <label for="password" id="passwordLabel">Password:</label>
+                <input type="password" id="password" placeholder="Enter password">
+                <div class="accept-checkbox">
+                    <input type="checkbox" id="acceptCheckbox">
+                    <label for="acceptCheckbox" id="acceptLabel">Accept terms</label>
+                </div>
+                <button id="loginButton" onclick="authenticate()">Login</button>
+            </form>
+        </div>
+    </section>
+    <section class="calendar-section" style="display: none;">
+        <div class="authenticated-page" id="authenticatedPage">
+            <h2 id="calendarTitle">Reservation Calendar</h2>
+            <div class="calendar" id="calendar">
+                <!-- Calendar content will be generated here -->
+            </div>
+            <h2 id="reservationTitle">Reservations:</h2>
+            <ul id="reservationList">
+                <!-- Reservation list will be generated here -->
+            </ul>
+        </div>
+    </section>
+    <div class="modal" id="confirmationModal">
+        <span id="confirmationMessage">Are you sure you want to confirm the reservation?</span>
+        <button onclick="confirmReservation()" id="yesButton">Yes</button>
+        <button onclick="cancelConfirmation()" id="noButton">No</button>
     </div>
-
-    <div class="calendar">
-        <div id="reservationCalendar"></div>
-        <ul id="reservationList"></ul>
+    <div class="modal" id="takenModal">
+        <span id="takenMessage"></span>
     </div>
+    <div class="overlay" id="overlay"></div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-app.js"></script>
@@ -237,14 +271,9 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/i18next/21.6.3/i18next.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/i18next-browser-languagedetector/6.1.0/i18nextBrowserLanguageDetector.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/i18next-xhr-backend/3.2.2/i18nextXHRBackend.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/i18next-browser-languagedetector/6.1.0/i18nextBrowserLanguageDetector.min.js"></script>
+    
 
-    
 <script>
-    
     // Konfiguracja Firebase
     var firebaseConfig = {
         apiKey: "AIzaSyCz7gGBCSi9pXaDvbrBDELvZOIRWgAutjs",
@@ -290,105 +319,59 @@
         "26": "2190",
         "27": "7530"
     };
-
-    const language = {
-        english: 'English',
-        polish: 'Polish',
-        headerTitle: 'Spa Zone Reservation Calendar',
-        loginTitle: 'Login',
-        username: 'Username',
-        usernamePlaceholder: 'Enter your username',
-        password: 'Password',
-        passwordPlaceholder: 'Enter your password',
-        loginButton: 'Login',
-        acceptTerms: 'I accept the terms and conditions'
-    };
-
-    const changeLanguage = () => {
-        const selectedLanguage = document.getElementById('languageSelect').value;
-        if (selectedLanguage === 'pl') {
-            language.english = 'Angielski';
-            language.polish = 'Polski';
-            language.headerTitle = 'Kalendarz rezerwacji w Spa Zone';
-            language.loginTitle = 'Zaloguj się';
-            language.username = 'Nazwa użytkownika';
-            language.usernamePlaceholder = 'Wpisz swoją nazwę użytkownika';
-            language.password = 'Hasło';
-            language.passwordPlaceholder = 'Wpisz swoje hasło';
-            language.loginButton = 'Zaloguj';
-            language.acceptTerms = 'Akceptuję regulamin';
-        } else {
-            language.english = 'English';
-            language.polish = 'Polish';
-            language.headerTitle = 'Spa Zone Reservation Calendar';
-            language.loginTitle = 'Login';
-            language.username = 'Username';
-            language.usernamePlaceholder = 'Enter your username';
-            language.password = 'Password';
-            language.passwordPlaceholder = 'Enter your password';
-            language.loginButton = 'Login';
-            language.acceptTerms = 'I accept the terms and conditions';
+     var language = {
+        'pl': {
+            'headerTitle': 'Kalendarz rezerwacji Spa Zone',
+            'loginTitle': 'Zaloguj się',
+            'roomNumberLabel': 'Numer pokoju:',
+            'passwordLabel': 'Hasło:',
+            'acceptLabel': 'Akceptuję warunki',
+            'calendarTitle': 'Kalendarz rezerwacji',
+            'reservationTitle': 'Rezerwacje:',
+            'confirmationMessage': 'Czy na pewno chcesz potwierdzić rezerwację?',
+            'takenMessage': 'Ten slot czasowy jest już zajęty.'
+        },
+        'de': {
+            'headerTitle': 'Spa Zone Reservierungskalender',
+            'loginTitle': 'Anmelden',
+            'roomNumberLabel': 'Zimmernummer:',
+            'passwordLabel': 'Passwort:',
+            'acceptLabel': 'AGBs akzeptieren',
+            'calendarTitle': 'Reservierungskalender',
+            'reservationTitle': 'Reservierungen:',
+            'confirmationMessage': 'Möchten Sie die Reservierung wirklich bestätigen?',
+            'takenMessage': 'Dieser Zeitblock ist bereits belegt.'
+        },
+        'en': {
+            'headerTitle': 'Spa Zone Reservation Calendar',
+            'loginTitle': 'Login',
+            'roomNumberLabel': 'Room Number:',
+            'passwordLabel': 'Password:',
+            'acceptLabel': 'Accept terms',
+            'calendarTitle': 'Reservation Calendar',
+            'reservationTitle': 'Reservations:',
+            'confirmationMessage': 'Are you sure you want to confirm the reservation?',
+            'takenMessage': 'This time slot is already taken.'
         }
-        updateTexts();
     };
 
-    const updateTexts = () => {
-        document.querySelector('header h1').textContent = language.headerTitle;
-        document.querySelector('.login-form h2').textContent = language.loginTitle;
-        document.querySelector('.login-form label[for="username"]').textContent = language.username;
-        document.querySelector('.login-form input[type="text"]').setAttribute('placeholder', language.usernamePlaceholder);
-        document.querySelector('.login-form label[for="password"]').textContent = language.password;
-        document.querySelector('.login-form input[type="password"]').setAttribute('placeholder', language.passwordPlaceholder);
-        document.querySelector('.login-form button').textContent = language.loginButton;
-        document.querySelector('.login-form label .accept-checkbox').textContent = language.acceptTerms;
-    };
+    // Set default language
+    var currentLanguage = 'en';
 
-    const login = () => {
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        // Your login logic here
-    };
+    // Function to change language
+    function changeLanguage(lang) {
+        currentLanguage = lang;
+        var translations = language[lang];
+        for (var key in translations) {
+            if (translations.hasOwnProperty(key)) {
+                var element = document.getElementById(key);
+                if (element) {
+                    element.textContent = translations[key];
+                }
+            }
+        }
+    }    
 
-    // Placeholder function to simulate a login
-    const simulateLogin = () => {
-        document.getElementById('username').value = 'example_user';
-        document.getElementById('password').value = 'example_password';
-    };
-
-    // Placeholder function to simulate changing the language
-    const simulateLanguageChange = () => {
-        document.getElementById('languageSelect').value = 'pl';
-        changeLanguage();
-    };
-
-    // Placeholder function to simulate reservation
-    const simulateReservation = () => {
-        const selectedDay = document.querySelector('.day.selected .day-header').textContent;
-        const selectedTimeSlot = document.querySelector('.time-slot.selected').textContent;
-        alert(`Reservation confirmed for ${selectedDay}, ${selectedTimeSlot}`);
-    };
-
-    // Placeholder function to simulate generating the reservation list
-    const simulateReservationList = () => {
-        const reservationList = document.getElementById('reservationList');
-        reservationList.innerHTML = '';
-        const reservations = [
-            { day: 'Monday', time: '10:00 AM' },
-            { day: 'Wednesday', time: '1:00 PM' },
-            { day: 'Friday', time: '3:00 PM' }
-        ];
-        reservations.forEach(reservation => {
-            const li = document.createElement('li');
-            li.textContent = `Day: ${reservation.day}, Time: ${reservation.time}`;
-            reservationList.appendChild(li);
-        });
-    };
-
-    window.onload = () => {
-        simulateLogin();
-        simulateLanguageChange();
-        simulateReservationList();
-    };
     
 function authenticate() {
     var roomNumber = document.getElementById('roomNumber').value;
@@ -647,7 +630,7 @@ function updateReservationList(roomNumber) {
         var listItem = document.createElement('li');
         var timeSlot = reservation.timeSlotId.split('-')[3]; // Pobierz godzinę bloku
         var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Data bloku rezerwacji
-        var formattedDate = reservationDate.toLocaleDateString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' }); // Sformatuj datę
+        var formattedDate = reservationDate.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }); // Sformatuj datę
 
         listItem.textContent = `${formattedDate}, ${timeSlot}:00 - Room ${reservation.roomNumber} `;
 
