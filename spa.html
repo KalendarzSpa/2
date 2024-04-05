@@ -563,7 +563,6 @@ function cancelReservation(reservation) {
     });
 }
 
-
 function updateReservationList(roomNumber) {
     var reservationList = document.getElementById('reservationList');
     reservationList.innerHTML = '';
@@ -576,7 +575,11 @@ function updateReservationList(roomNumber) {
 
     myReservations.forEach(function (reservation) {
         var listItem = document.createElement('li');
-        listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+        var timeSlot = reservation.timeSlotId.split('-')[3]; // Pobierz godzinę bloku
+        var date = new Date(reservation.date); // Pobierz datę rezerwacji
+        var formattedDate = date.toLocaleDateString(); // Sformatuj datę
+
+        listItem.textContent = `${formattedDate}, ${timeSlot}:00 - Room ${reservation.roomNumber} `;
 
         // Dodaj atrybut dataset z identyfikatorem rezerwacji
         listItem.dataset.reservationId = reservation.id;
@@ -592,6 +595,7 @@ function updateReservationList(roomNumber) {
         reservationList.appendChild(listItem);
     });
 }
+
 
     function saveReservationToFirestore(reservation) {
     db.collection("reservations").doc(reservation.id).set(reservation)
