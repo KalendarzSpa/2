@@ -546,37 +546,31 @@ function canMakeReservation(roomNumber, selectedTimeSlot) {
     if (existingReservation) {
         return false;
     } else {
-        // Sprawdź, czy użytkownik już zrobił rezerwację na dzisiaj
-        var today = new Date();
-        today.setHours(0, 0, 0, 0);
-        var todayReservation = reservations.find(function (reservation) {
-            var reservationDate = new Date(reservation.timeSlotId);
-            return reservation.roomNumber === roomNumber && reservationDate.toDateString() === today.toDateString();
-        });
+        // Sprawdź, czy wybrany blok czasowy jest na jutro
+        var tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setHours(0, 0, 0, 0);
+        var selectedTimeSlotDateTomorrow = new Date(selectedTimeSlotDate);
+        selectedTimeSlotDateTomorrow.setHours(0, 0, 0, 0);
 
-        // Jeśli użytkownik już zrobił rezerwację na dzisiaj, sprawdź, czy jest już rezerwacja na jutro
-        if (todayReservation) {
-            var tomorrow = new Date(today);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            var tomorrowReservation = reservations.find(function (reservation) {
-                var reservationDate = new Date(reservation.timeSlotId);
-                return reservation.roomNumber === roomNumber && reservationDate.toDateString() === tomorrow.toDateString();
+        if (selectedTimeSlotDateTomorrow.getTime() === tomorrow.getTime()) {
+            return true;
+        } else {
+            // Sprawdź, czy jest już rezerwacja na dzisiaj
+            var todayReservations = reservations.filter(function (reservation) {
+                var reservationDate = new Date(reservation.timeSlotId); // Pobierz datę i godzinę rezerwacji
+                return reservation.roomNumber === roomNumber && reservationDate.toDateString() === selectedTimeSlotDate.toDateString();
             });
 
-            // Jeśli jest już rezerwacja na jutro, zwróć false
-            if (tomorrowReservation) {
+            // Jeśli istnieje już rezerwacja na dzisiaj, zwróć false
+            if (todayReservations.length > 0) {
                 return false;
             } else {
                 return true;
             }
-        } else {
-            return true;
         }
     }
 }
-
-
-      
 
      function closeConfirmationModal() {
     var confirmationModal = document.getElementById('confirmationModal');
