@@ -349,9 +349,9 @@ function generateCalendar() {
             timeSlot.dataset.timeSlotId = timeSlotId;
 
             if (numReservations === 1) {
-                timeSlot.classList.add('orange');
+                timeSlot.classList.add('reserved');
             } else if (numReservations >= 2) {
-                timeSlot.classList.add('red');
+                timeSlot.classList.add('taken');
             }
 
             timeSlot.addEventListener('click', function () {
