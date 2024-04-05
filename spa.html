@@ -463,28 +463,37 @@ function cancelReservation(reservation) {
     });
 }
 
-
 function updateReservationList(roomNumber) {
-  var reservationList = document.getElementById('reservationList');
-  reservationList.innerHTML = '';
+    var reservationList = document.getElementById('reservationList');
+    reservationList.innerHTML = '';
 
-  myReservations.forEach(function (reservation) {
-    var listItem = document.createElement('li');
-    listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+    // Pobierz aktualną datę
+    var currentDate = new Date();
 
-    // Dodaj przycisk anulowania
-    var cancelButton = document.createElement('button');
-    cancelButton.textContent = 'Anuluj';
-    cancelButton.className = 'cancel-button'; // Dodaj klasę do przycisku
-    cancelButton.onclick = function () {
-        cancelReservation(reservation); // Przekaż obiekt rezerwacji do funkcji cancelReservation()
-    };
+    reservations.forEach(function (reservation) {
+        // Konwertuj datę rezerwacji na obiekt Date
+        var reservationDate = new Date(reservation.date);
+        
+        // Sprawdź, czy rezerwacja jest przyszła
+        if (reservationDate > currentDate) {
+            var listItem = document.createElement('li');
+            listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
 
-    // Dodaj przycisk anulowania do elementu listy
-    listItem.appendChild(cancelButton);
-    reservationList.appendChild(listItem);
-});
+            // Dodaj przycisk anulowania
+            var cancelButton = document.createElement('button');
+            cancelButton.textContent = 'Anuluj';
+            cancelButton.className = 'cancel-button'; // Dodaj klasę do przycisku
+            cancelButton.onclick = function () {
+                cancelReservation(reservation); // Przekaż obiekt rezerwacji do funkcji cancelReservation()
+            };
+
+            // Dodaj przycisk anulowania do elementu listy
+            listItem.appendChild(cancelButton);
+            reservationList.appendChild(listItem);
+        }
+    });
 }
+
 
     function saveReservationToFirestore(reservation) {
     db.collection("reservations").doc(reservation.id).set(reservation)
