@@ -213,11 +213,8 @@ body {
 }
 
 .cancel-button {
-    cursor: pointer;
-    color: #007bff;
-    text-decoration: underline;
-    display: inline; /* Ustawienie na "inline", aby wyświetlał się obok tekstu */
-    margin-left: 10px; /* Dodatkowy margines po lewej stronie */
+    float: right; /* Przesunięcie przycisku w prawo */
+    margin-left: 10px; /* Odstęp między przyciskiem a rezerwacją */
 }
     </style>
 </head>
@@ -605,30 +602,23 @@ function updateReservationList(roomNumber) {
   var reservationList = document.getElementById('reservationList');
   reservationList.innerHTML = '';
 
-  var myReservations = reservations.filter(function (reservation) {
-    return reservation.roomNumber === roomNumber;
-  });
-
   myReservations.forEach(function (reservation) {
     var listItem = document.createElement('li');
     listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
-    
-    // Dodaj atrybut dataset z identyfikatorem rezerwacji
-    listItem.dataset.reservationId = reservation.id;
 
-    // Stwórz przycisk Anuluj
+    // Dodaj przycisk anulowania
     var cancelButton = document.createElement('button');
     cancelButton.textContent = 'Anuluj';
-    cancelButton.onclick = function() {
-        cancelReservation(reservation); // Przekazanie obiektu rezerwacji do funkcji cancelReservation()
+    cancelButton.className = 'cancel-button'; // Dodaj klasę do przycisku
+    cancelButton.onclick = function () {
+        cancelReservation(reservation); // Przekaż obiekt rezerwacji do funkcji cancelReservation()
     };
 
-    listItem.appendChild(cancelButton); // Dodaj przycisk Anuluj do elementu listy
+    // Dodaj przycisk anulowania do elementu listy
+    listItem.appendChild(cancelButton);
     reservationList.appendChild(listItem);
-  });
+});
 }
-
-
 
     function saveReservationToFirestore(reservation) {
     db.collection("reservations").doc(reservation.id).set(reservation)
