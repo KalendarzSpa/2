@@ -36,13 +36,13 @@
             font-size: 36px;
         }
 
-                   .login-form {
-                background-color: #fff;
-                padding: 40px;
-                border-radius: 10px;
-                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-                text-align: center; /* Wyśrodkowanie zawartości formularza */
-            }
+        .login-form {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
 
         .login-form h2 {
             margin-top: 0;
@@ -96,19 +96,19 @@
             font-size: 16px;
         }
 
-      .calendar {
-    max-width: 900px; /* Ograniczamy szerokość kolumn */
-    margin: 0 auto; /* Wyśrodkowujemy kolumny na stronie */
-    display: flex;
-    justify-content: space-between; /* Rozłożenie kolumn równomiernie po lewej i prawej stronie */
-    gap: 20px; /* Odstęp między kolumnami */
-}
+        .calendar {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
         @media screen and (max-width: 600px) {
-    #reservationList li {
-        font-size: 14px; /* Zmniejszamy rozmiar czcionki */
-    }
-}
-        
+            #reservationList li {
+                font-size: 14px;
+            }
+        }
 
         .day-header {
             background-color: #007bff;
@@ -121,57 +121,56 @@
 
         .day-content {
             padding: 20px;
-    padding-bottom: 20px; /* Dodajemy większy odstęp na dole */
-}
+            padding-bottom: 20px;
+        }
 
         .day .day-header {
-    font-weight: bold;
-}
+            font-weight: bold;
+        }
 
-/* Stylowanie pierwszego wiersza w sekcji treści */
-.day .day-content > .time-slot:first-child {
-    font-weight: bold;
-}
+        .day .day-content > .time-slot:first-child {
+            font-weight: bold;
+        }
 
-                .day {
-    border: 1px solid #ccc;
-    padding: 10px;
-    cursor: pointer;
-    text-align: center;
-    margin-bottom: 10px;
-    transition: max-height 0.5s ease;
-    overflow: hidden;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-color: #f0f0f0; /* Ustawienie tła dla dat */
-    color: #333; /* Kolor tekstu dla dat */
-    font-weight: bold; /* Pogrubienie tekstu dat */
-}
+        .day {
+            border: 1px solid #ccc;
+            padding: 10px;
+            cursor: pointer;
+            text-align: center;
+            margin-bottom: 10px;
+            transition: max-height 0.5s ease;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #f0f0f0;
+            color: #333;
+            font-weight: bold;
+        }
 
-.time-slots-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
+        .time-slots-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-.time-slot {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    background-color: #fff; /* Ustawienie tła dla godzin */
-    color: #000; /* Kolor tekstu dla godzin */
-    font-weight: normal; /* Normalna waga tekstu dla godzin */
-}
-.time-slot:hover {
-    background-color: #f0f0f0;
-}
+        .time-slot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            color: #000;
+            font-weight: normal;
+        }
 
-        
+        .time-slot:hover {
+            background-color: #f0f0f0;
+        }
+
         .time-slot i {
             color: #007bff;
         }
@@ -211,50 +210,46 @@
     </style>
 </head>
 <body>
-
 <div class="container">
-        <header>
-            <h1>Spa Zone Reservation Calendar</h1>
-        </header>
-        <section class="login-section">
-            <div class="login-form">
-                <h2>Login</h2>
-                <form id="loginForm" onsubmit="event.preventDefault(); authenticate();">
-                    <label for="roomNumber">Room Number:</label>
-                    <input type="text" id="roomNumber" placeholder="Enter room number">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" placeholder="Enter password">
-                    <div class="accept-checkbox">
-                        <input type="checkbox" id="acceptCheckbox">
-                        <label for="acceptCheckbox">Accept terms</label>
-                    </div>
-                    <button id="loginButton" onclick="authenticate()">Login</button>
-                </form>
-            </div>
-        </section>
-        <section class="calendar-section" style="display: none;">
-            <div class="authenticated-page" id="authenticatedPage">
-                <h2 id="calendarTitle">Reservation Calendar</h2>
-                <div class="calendar" id="calendar">
-                    <!-- Kalendarz -->
+    <header>
+        <h1 id="headerTitle">Spa Zone Reservation Calendar</h1>
+    </header>
+    <section class="login-section">
+        <div class="login-form">
+            <h2 id="loginTitle">Login</h2>
+            <form id="loginForm" onsubmit="event.preventDefault(); authenticate();">
+                <label for="roomNumber" id="roomNumberLabel">Room Number:</label>
+                <input type="text" id="roomNumber" placeholder="Enter room number">
+                <label for="password" id="passwordLabel">Password:</label>
+                <input type="password" id="password" placeholder="Enter password">
+                <div class="accept-checkbox">
+                    <input type="checkbox" id="acceptCheckbox">
+                    <label for="acceptCheckbox" id="acceptLabel">Accept terms</label>
                 </div>
-                <h2 id="reservationTitle">Reservations:</h2>
-                <ul id="reservationList">
-                    <!-- Lista rezerwacji -->
-                </ul>
+                <button id="loginButton" onclick="authenticate()">Login</button>
+            </form>
+        </div>
+    </section>
+    <section class="calendar-section" style="display: none;">
+        <div class="authenticated-page" id="authenticatedPage">
+            <h2 id="calendarTitle">Reservation Calendar</h2>
+            <div class="calendar" id="calendar">
+                <!-- Calendar content will be generated here -->
             </div>
-        </section>
-
+            <h2 id="reservationTitle">Reservations:</h2>
+            <ul id="reservationList">
+                <!-- Reservation list will be generated here -->
+            </ul>
+        </div>
+    </section>
     <div class="modal" id="confirmationModal">
-        <span>Are you sure you want to confirm the reservation?</span>
+        <span id="confirmationMessage">Are you sure you want to confirm the reservation?</span>
         <button onclick="confirmReservation()" id="yesButton">Yes</button>
         <button onclick="cancelConfirmation()" id="noButton">No</button>
     </div>
-
     <div class="modal" id="takenModal">
         <span id="takenMessage"></span>
     </div>
-
     <div class="overlay" id="overlay"></div>
 </div>
 
@@ -313,6 +308,60 @@
         "26": "2190",
         "27": "7530"
     };
+     var language = {
+        'pl': {
+            'headerTitle': 'Kalendarz rezerwacji Spa Zone',
+            'loginTitle': 'Zaloguj się',
+            'roomNumberLabel': 'Numer pokoju:',
+            'passwordLabel': 'Hasło:',
+            'acceptLabel': 'Akceptuję warunki',
+            'calendarTitle': 'Kalendarz rezerwacji',
+            'reservationTitle': 'Rezerwacje:',
+            'confirmationMessage': 'Czy na pewno chcesz potwierdzić rezerwację?',
+            'takenMessage': 'Ten slot czasowy jest już zajęty.'
+        },
+        'de': {
+            'headerTitle': 'Spa Zone Reservierungskalender',
+            'loginTitle': 'Anmelden',
+            'roomNumberLabel': 'Zimmernummer:',
+            'passwordLabel': 'Passwort:',
+            'acceptLabel': 'AGBs akzeptieren',
+            'calendarTitle': 'Reservierungskalender',
+            'reservationTitle': 'Reservierungen:',
+            'confirmationMessage': 'Möchten Sie die Reservierung wirklich bestätigen?',
+            'takenMessage': 'Dieser Zeitblock ist bereits belegt.'
+        },
+        'en': {
+            'headerTitle': 'Spa Zone Reservation Calendar',
+            'loginTitle': 'Login',
+            'roomNumberLabel': 'Room Number:',
+            'passwordLabel': 'Password:',
+            'acceptLabel': 'Accept terms',
+            'calendarTitle': 'Reservation Calendar',
+            'reservationTitle': 'Reservations:',
+            'confirmationMessage': 'Are you sure you want to confirm the reservation?',
+            'takenMessage': 'This time slot is already taken.'
+        }
+    };
+
+    // Set default language
+    var currentLanguage = 'en';
+
+    // Function to change language
+    function changeLanguage(lang) {
+        currentLanguage = lang;
+        var translations = language[lang];
+        for (var key in translations) {
+            if (translations.hasOwnProperty(key)) {
+                var element = document.getElementById(key);
+                if (element) {
+                    element.textContent = translations[key];
+                }
+            }
+        }
+    }    
+
+    
 function authenticate() {
     var roomNumber = document.getElementById('roomNumber').value;
     var password = document.getElementById('password').value;
