@@ -527,12 +527,7 @@ function openConfirmationModal() {
     if (!existingReservation) {
         return true;
     } else {
-        // Jeśli istnieje rezerwacja, sprawdź, czy pozostało mniej niż 10 minut do rozpoczęcia bloku czasowego
-        var currentTime = new Date();
-        var timeDifference = currentDate.getTime() - currentTime.getTime(); // Różnica czasu w milisekundach
-        var minutesDifference = Math.floor(timeDifference / (1000 * 60)); // Różnica czasu w minutach
-
-        return minutesDifference <= 10; // Zwróć true, jeśli pozostało mniej niż 10 minut
+        return false; // Jeśli istnieje już rezerwacja, zwróć false
     }
 }
 
@@ -544,8 +539,7 @@ function openConfirmationModal() {
     overlay.style.display = 'none';
 }
 
-// Funkcja potwierdzająca rezerwację
- function confirmReservation() {
+function confirmReservation() {
     if (selectedTimeSlot) {
         var currentDate = new Date();
         var roomNumber = document.getElementById('roomNumber').value;
@@ -584,12 +578,13 @@ function openConfirmationModal() {
 
             closeConfirmationModal();
         } else {
-            console.log("Nie można dokonać rezerwacji. Upewnij się, że pozostało mniej niż 10 minut do rozpoczęcia bloku czasowego.");
+            console.log("Nie można dokonać rezerwacji. Upewnij się, że pozostało mniej niż 10 minut do rozpoczęcia bloku czasowego lub istnieje już rezerwacja dla tego pokoju w tym dniu.");
         }
     } else {
         console.error("Nie wybrano slotu czasowego do potwierdzenia rezerwacji.");
     }
 }
+
 
 
 // Funkcja generująca unikalny identyfikator rezerwacji
