@@ -323,19 +323,20 @@ function generateCalendar() {
         var currentDate = new Date(today);
         currentDate.setDate(currentDate.getDate() + dayOffset);
 
-        var dayColumn = document.createElement('div');
-        dayColumn.className = 'day-column';
-
         var dayElement = document.createElement('div');
-        dayElement.className = 'day-header';
-        dayElement.textContent = currentDate.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' });
+        dayElement.className = 'day';
+        dayElement.textContent = currentDate.toLocaleDateString(undefined, {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'numeric',
+            year: 'numeric'
+        });
         dayElement.onclick = function () {
-            toggleDay(this.nextElementSibling); // Rozwiń lub zwijaj bloki godzinowe po kliknięciu na nagłówek dnia
+            toggleDay(this); // Dodaj to wywołanie funkcji toggleDay
         };
 
         var timeSlotsContainer = document.createElement('div');
         timeSlotsContainer.className = 'time-slots-container';
-        timeSlotsContainer.style.display = 'none'; // Początkowo wszystkie bloki godzinowe są ukryte
 
         for (var i = 8; i <= 21; i++) {
             var timeSlotId = generateTimeSlotId(currentDate, i);
@@ -366,20 +367,20 @@ function generateCalendar() {
             timeSlotsContainer.appendChild(timeSlot);
         }
 
-        dayColumn.appendChild(dayElement);
-        dayColumn.appendChild(timeSlotsContainer);
-        calendar.appendChild(dayColumn);
+        dayElement.appendChild(timeSlotsContainer);
+        calendar.appendChild(dayElement);
     }
 }
 
-function toggleDay(timeSlotsContainer) {
+        
+function toggleDay(dayElement) {
+    var timeSlotsContainer = dayElement.querySelector('.time-slots-container');
     if (timeSlotsContainer.style.display === 'block') {
         timeSlotsContainer.style.display = 'none';
     } else {
         timeSlotsContainer.style.display = 'block';
     }
 }
-
 
         var timeSlotsContainer = document.createElement('div');
         timeSlotsContainer.className = 'time-slots-container';
@@ -572,28 +573,18 @@ function updateReservationList(roomNumber) {
     var reservationList = document.getElementById('reservationList');
     reservationList.innerHTML = '';
 
-    var currentDate = new Date(); // Obecna data i godzina
+    var currentDate = new Date(); // Obecna data
 
     var myReservations = reservations.filter(function (reservation) {
         var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Data bloku rezerwacji
-        var reservationHour = parseInt(reservation.timeSlotId.split('-')[3]); // Godzina bloku rezerwacji
-        var currentTime = currentDate.getHours(); // Aktualna godzina
-
-        if (reservation.roomNumber === roomNumber) { // Sprawdź, czy numer pokoju rezerwacji odpowiada numerowi pokoju użytkownika
-            if (reservationDate > currentDate) { // Jeśli data rezerwacji jest po obecnej dacie
-                return true;
-            } else if (reservationDate.getTime() === currentDate.getTime() && reservationHour > currentTime) { // Jeśli data rezerwacji jest dzisiaj i godzina rezerwacji jest późniejsza niż aktualna godzina
-                return true;
-            }
-        }
-        return false; // W przeciwnym razie, jeśli rezerwacja jest przeszła lub nie jest dla tego pokoju
+        return reservation.roomNumber === roomNumber && reservationDate >= currentDate; // Filtrowanie przyszłych rezerwacji
     });
 
     myReservations.forEach(function (reservation) {
         var listItem = document.createElement('li');
         var timeSlot = reservation.timeSlotId.split('-')[3]; // Pobierz godzinę bloku
         var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Data bloku rezerwacji
-        var formattedDate = reservationDate.toLocaleDateString(undefined, { day: 'numeric', month: 'numeric', year: 'numeric' }); // Sformatuj datę
+        var formattedDate = reservationDate.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }); // Sformatuj datę
 
         listItem.textContent = `${formattedDate}, ${timeSlot}:00 - Room ${reservation.roomNumber} `;
 
@@ -611,7 +602,6 @@ function updateReservationList(roomNumber) {
         reservationList.appendChild(listItem);
     });
 }
-
 
 
     function saveReservationToFirestore(reservation) {
