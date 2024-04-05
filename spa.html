@@ -44,12 +44,15 @@ main {
     transform: translate(-50%, -50%);
 }
         
-.calendar-section {
-    display: none; /* Ukrycie sekcji kalendarza i rezerwacji */
-}
+        .calendar-section {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        margin-top: 20px; /* Dodatkowy margines na górę */
+    }
 
 .login-form {
-    max-width: 300px; /* Maksymalna szerokość formularza logowania */
     margin: 0 auto; /* Wyśrodkowanie formularza na stronie */
     background-color: #fff;
     padding: 20px;
@@ -328,7 +331,7 @@ function authenticate() {
         if (roomPasswords[roomNumber] === password) {
             // Po poprawnym zalogowaniu ukryj formularz logowania i pokaż część z kalendarzem
              document.querySelector('.login-section').style.display = 'none';
-            document.querySelector('.calendar-section').style.display = 'block';
+            document.querySelector('.calendar-section').style.display = 'flex';
 
             loadReservations(roomNumber).then(function () {
                 generateCalendar();
