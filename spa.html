@@ -564,31 +564,32 @@ function cancelReservation(reservation) {
 
 
 function updateReservationList(roomNumber) {
-  var reservationList = document.getElementById('reservationList');
-  reservationList.innerHTML = '';
+    var reservationList = document.getElementById('reservationList');
+    reservationList.innerHTML = '';
 
-  var myReservations = reservations.filter(function (reservation) {
-    return reservation.roomNumber === roomNumber;
-  });
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-  myReservations.forEach(function (reservation) {
-    var listItem = document.createElement('li');
-    listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
-    
-    // Dodaj atrybut dataset z identyfikatorem rezerwacji
-    listItem.dataset.reservationId = reservation.id;
-
-    // Stwórz przycisk Anuluj
-    var cancelButton = document.createElement('button');
-    cancelButton.textContent = 'Anuluj';
-    cancelButton.onclick = function() {
-        cancelReservation(reservation); // Przekazanie obiektu rezerwacji do funkcji cancelReservation()
-    };
-
-    listItem.appendChild(cancelButton); // Dodaj przycisk Anuluj do elementu listy
-    reservationList.appendChild(listItem);
-  });
+    reservations.forEach(function (reservation) {
+        var reservationDate = moment(reservation.date, 'MM/DD/YYYY').toDate();
+        if (reservationDate >= today && reservation.roomNumber === roomNumber) {
+            var listItem = document.createElement('li');
+            var formattedDate = moment(reservation.date, 'MM/DD/YYYY').format('MMMM Do YYYY');
+            listItem.textContent = `Date: ${formattedDate}, Time: ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+            listItem.dataset.reservationId = reservation.id;
+            
+            var cancelButton = document.createElement('button');
+            cancelButton.textContent = 'Cancel';
+            cancelButton.onclick = function() {
+                cancelReservation(reservation);
+            };
+            listItem.appendChild(cancelButton);
+            
+            reservationList.appendChild(listItem);
+        }
+    });
 }
+
 
 
 
