@@ -1,136 +1,271 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kalendarz Rezerwacji Strefy Spa</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 0;
-        }
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+.container {
+    max-width: 600px; /* Maksymalna szerokość kontenera */
+    margin: 0 auto; /* Wyśrodkowanie kontenera na stronie */
+    padding: 20px;
+}
 
-        header {
-            background-color: #007bff;
-            color: #fff;
-            padding: 20px;
-            text-align: center;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Dodaj cień */
-        }
+header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    border-radius: 8px;
+}
 
-        h1 {
-            margin: 0;
-            font-size: 36px;
-            text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5); /* Dodaj cień */
-        }
+h1 {
+    margin: 0;
+    font-size: 36px;
+}
 
-        .login-section {
-            max-width: 400px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
+main {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
 
-        .login-form label {
-            display: block;
-            margin-bottom: 5px;
-        }
+.login-section {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 80%; /* Szerokość sekcji na małych ekranach */
+    margin: 0 auto;
+}
+        
+        .calendar-section {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        margin-top: 20px; /* Dodatkowy margines na górę */
+    }
 
-        .login-form input {
-            width: calc(100% - 22px);
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            outline: none;
-        }
+.login-form {
+    margin: 0 auto; /* Wyśrodkowanie formularza na stronie */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
 
-        .login-form input:focus {
-            border-color: #007bff;
-        }
+.login-section, .calendar-section {
+  transition: opacity 0.5s ease;
+}
 
-      .checkbox-container {
+.login-form label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.checkbox-container {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
 }
 
 .checkbox-container input[type="checkbox"] {
     margin-right: 10px;
 }
 
-.checkbox-container label {
-    font-size: 14px;
-    margin: 0;
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+button:hover {
+    background-color: #0056b3;
+}
+     
 
-        button:hover {
-            background-color: #0056b3;
-        }
+    /* Stylizacja formularza */
+    input[type="text"],
+    input[type="password"],
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc; /* Szary kolor obramowania */
+      border-radius: 5px; /* Zaokrąglone rogi */
+    }
 
-        .calendar-section {
-            display: none;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            margin-top: 20px;
-        }
+    /* Stylizacja kalendarza */
+    .day {
+      margin-bottom: 20px;
+    }
 
-        /* Reszta stylów bez zmian */
-        /* ... */
+    .reservation {
+      width: 50px;
+      height: 50px;
+      display: inline-block;
+      text-align: center;
+      line-height: 50px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .orange {
+      background-color: orange;
+    }
+
+    .red {
+      background-color: red;
+    }
+
+    /* Dodatkowe style dla responsywności */
+   @media only screen and (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+    .login-form {
+        max-width: 100%; /* Maksymalna szerokość formularza na urządzeniach o małej szerokości */
+    }
+}
+
+body {
+  background-color: #f5f5dc;
+  font-family: Arial, sans-serif;
+}
+
+.day {
+  border: 1px solid #ccc;
+  padding: 10px;
+  cursor: pointer;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.time-slots-container {
+  display: none; /* Ukryj początkowo bloki godzinowe */
+}
+
+.day.active .time-slots-container {
+  display: block; /* Wyświetl bloki godzinowe, jeśli dzień jest aktywny */
+}
+
+.time-slot {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.reserved {
+  background-color: #ffcccc;
+}
+
+.taken {
+  background-color: #ff9999;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  z-index: 1000;
+}
+
+#overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.reservation-section {
+  margin-top: 20px;
+}
+
+.cancel-button {
+  cursor: pointer;
+  color: #007bff;
+  text-decoration: underline;
+}
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header>
-        <h1>Spa Zone Reservation Calendar</h1>
-    </header>
-   <section class="login-section">
-    <div class="login-form">
-        <h2>Login</h2>
-        <form id="loginForm" onsubmit="event.preventDefault(); authenticate();">
-            <label for="roomNumber">Room Number:</label>
-            <input type="text" id="roomNumber" placeholder="Enter room number">
-            <label for="password">Password:</label>
-            <input type="password" id="password" placeholder="Enter password">
-            <div class="checkbox-container">
-                <input type="checkbox" id="acceptCheckbox">
-                <label for="acceptCheckbox">Akceptuję regulamin</label>
-            </div>
-            <button id="loginButton" onclick="authenticate()">Login</button>
-        </form>
-    </div>
-</section>
-    <section class="calendar-section">
-    <div id="calendar"></div>
-</section>
+        <header>
+            <h1>Spa Zone Reservation Calendar</h1>
+        </header>
+        <main>
+            <section class="login-section">
+                <div class="login-form">
+                    <h2>Login</h2>
+                    <form id="loginForm" onsubmit="event.preventDefault(); authenticate();">
+                        <label for="roomNumber">Room Number:</label>
+                        <input type="text" id="roomNumber" placeholder="Enter room number">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" placeholder="Enter password">
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="acceptCheckbox">
+                            <label for="acceptCheckbox">Accept terms</label>
+                        </div>
+                        <button id="loginButton" onclick="authenticate()">Login</button>
+                    </form> 
+                </div>
+            </section>
+            <section class="calendar-section">
+                <div class="authenticated-page" id="authenticatedPage">
+                    <h2 id="calendarTitle">Reservation Calendar</h2>
+                    <div class="calendar" id="calendar">
+                        <!-- Kalendarz -->
+                    </div>
+                    <h2 id="reservationTitle">Reservations:</h2>
+                    <ul id="reservationList">
+                        <!-- Lista rezerwacji -->
+                    </ul>
+                </div>
+
+<div class="modal" id="confirmationModal">
+    <span>Czy potwierdzasz rezerwację?</span>
+    <button onclick="confirmReservation()" id="yesButton">Tak</button>
+    <button onclick="cancelConfirmation()" id="noButton">Nie</button>
 </div>
 
+<div class="modal" id="takenModal">
+    <span id="takenMessage"></span>
+</div>
+
+<div id="overlay"></div>
 
 <!-- Firebase scripts -->
 <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-app.js"></script>
@@ -198,7 +333,7 @@ function authenticate() {
         if (roomPasswords[roomNumber] === password) {
             // Po poprawnym zalogowaniu ukryj formularz logowania i pokaż część z kalendarzem
              document.querySelector('.login-section').style.display = 'none';
-            document.querySelector('.calendar-section').style.display = 'block';
+            document.querySelector('.calendar-section').style.display = 'flex';
 
             loadReservations(roomNumber).then(function () {
                 generateCalendar();
@@ -465,36 +600,34 @@ function cancelReservation(reservation) {
     });
 }
 
+
 function updateReservationList(roomNumber) {
-    var reservationList = document.getElementById('reservationList');
-    reservationList.innerHTML = '';
+  var reservationList = document.getElementById('reservationList');
+  reservationList.innerHTML = '';
 
-    // Pobierz aktualną datę
-    var currentDate = new Date();
+  var myReservations = reservations.filter(function (reservation) {
+    return reservation.roomNumber === roomNumber;
+  });
 
-    reservations.forEach(function (reservation) {
-        // Konwertuj datę rezerwacji na obiekt Date
-        var reservationDate = new Date(reservation.date);
-        
-        // Sprawdź, czy rezerwacja jest przyszła
-        if (reservationDate > currentDate) {
-            var listItem = document.createElement('li');
-            listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+  myReservations.forEach(function (reservation) {
+    var listItem = document.createElement('li');
+    listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+    
+    // Dodaj atrybut dataset z identyfikatorem rezerwacji
+    listItem.dataset.reservationId = reservation.id;
 
-            // Dodaj przycisk anulowania
-            var cancelButton = document.createElement('button');
-            cancelButton.textContent = 'Anuluj';
-            cancelButton.className = 'cancel-button'; // Dodaj klasę do przycisku
-            cancelButton.onclick = function () {
-                cancelReservation(reservation); // Przekaż obiekt rezerwacji do funkcji cancelReservation()
-            };
+    // Stwórz przycisk Anuluj
+    var cancelButton = document.createElement('button');
+    cancelButton.textContent = 'Anuluj';
+    cancelButton.onclick = function() {
+        cancelReservation(reservation); // Przekazanie obiektu rezerwacji do funkcji cancelReservation()
+    };
 
-            // Dodaj przycisk anulowania do elementu listy
-            listItem.appendChild(cancelButton);
-            reservationList.appendChild(listItem);
-        }
-    });
+    listItem.appendChild(cancelButton); // Dodaj przycisk Anuluj do elementu listy
+    reservationList.appendChild(listItem);
+  });
 }
+
 
 
     function saveReservationToFirestore(reservation) {
