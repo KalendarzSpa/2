@@ -580,12 +580,14 @@ function updateReservationList(roomNumber) {
         var reservationHour = parseInt(reservation.timeSlotId.split('-')[3]); // Godzina bloku rezerwacji
         var currentTime = currentDate.getHours(); // Aktualna godzina
 
-        if (reservationDate > currentDate) { // Jeśli data rezerwacji jest po obecnej dacie
-            return true;
-        } else if (reservationDate.getTime() === currentDate.getTime() && reservationHour > currentTime) { // Jeśli data rezerwacji jest dzisiaj i godzina rezerwacji jest późniejsza niż aktualna godzina
-            return true;
+        if (reservation.roomNumber === roomNumber) { // Sprawdź, czy numer pokoju rezerwacji odpowiada numerowi pokoju użytkownika
+            if (reservationDate > currentDate) { // Jeśli data rezerwacji jest po obecnej dacie
+                return true;
+            } else if (reservationDate.getTime() === currentDate.getTime() && reservationHour > currentTime) { // Jeśli data rezerwacji jest dzisiaj i godzina rezerwacji jest późniejsza niż aktualna godzina
+                return true;
+            }
         }
-        return false; // W przeciwnym razie, jeśli rezerwacja jest przeszła
+        return false; // W przeciwnym razie, jeśli rezerwacja jest przeszła lub nie jest dla tego pokoju
     });
 
     myReservations.forEach(function (reservation) {
