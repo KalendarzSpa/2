@@ -36,6 +36,15 @@ main {
     justify-content: space-between;
     margin-top: 20px;
 }
+
+.login-section {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 80%; /* Szerokość sekcji na małych ekranach */
+    margin: 0 auto;
+}
         
         .calendar-section {
         display: none;
@@ -44,6 +53,14 @@ main {
         text-align: center;
         margin-top: 20px; /* Dodatkowy margines na górę */
     }
+
+.login-form {
+    margin: 0 auto; /* Wyśrodkowanie formularza na stronie */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
 
 .login-section, .calendar-section {
   transition: opacity 0.5s ease;
@@ -58,48 +75,6 @@ main {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.checkbox-container {
-    display: flex;
-    align-items: center;
-}
-
-.checkbox-container input[type="checkbox"] {
-    margin-right: 10px;
-}
-
-.login-section {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 80%; /* Szerokość sekcji na małych ekranach */
-    margin: 0 auto;
-}
-
-.login-form {
-    background-color: white; /* Białe tło formularza */
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.input-group {
-    margin-bottom: 20px; /* Odstęp między grupami pól */
-}
-
-.input-group label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-.input-group input[type="text"],
-.input-group input[type="password"] {
-    width: 100%;
-    padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
@@ -165,13 +140,12 @@ button:hover {
       background-color: red;
     }
 
-    /* Dodatkowe style dla responsywności */
-   @media only screen and (max-width: 600px) {
+ @media only screen and (max-width: 600px) {
     .container {
         padding: 10px;
     }
-    .login-form {
-        max-width: 100%; /* Maksymalna szerokość formularza na urządzeniach o małej szerokości */
+    .login-section, .calendar-section {
+        max-width: 100%;
     }
 }
 
@@ -248,30 +222,25 @@ body {
 <body>
 
 <div class="container">
-        <header>
-            <h1>Spa Zone Reservation Calendar</h1>
-        </header>
-        <main>
-            <div class="login-section">
-    <div class="login-form">
-        <h2>Login</h2>
-        <form id="loginForm" onsubmit="event.preventDefault(); authenticate();">
-            <div class="input-group">
+    <header>
+        <h1>Spa Zone Reservation Calendar</h1>
+    </header>
+    <section class="login-section">
+        <div class="login-form">
+            <h2>Login</h2>
+            <form id="loginForm" onsubmit="event.preventDefault(); authenticate();">
                 <label for="roomNumber">Room Number:</label>
                 <input type="text" id="roomNumber" placeholder="Enter room number">
-            </div>
-            <div class="input-group">
                 <label for="password">Password:</label>
                 <input type="password" id="password" placeholder="Enter password">
-            </div>
-            <div class="input-group checkbox-container">
-                <input type="checkbox" id="acceptCheckbox">
-                <label for="acceptCheckbox">Accept terms</label>
-            </div>
-            <button id="loginButton" onclick="authenticate()">Login</button>
-        </form> 
-    </div>
-</div>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="acceptCheckbox">
+                    <label for="acceptCheckbox">Accept terms</label>
+                </div>
+                <button id="loginButton" onclick="authenticate()">Login</button>
+            </form>
+        </div>
+    </section>
             <section class="calendar-section">
                 <div class="authenticated-page" id="authenticatedPage">
                     <h2 id="calendarTitle">Reservation Calendar</h2>
