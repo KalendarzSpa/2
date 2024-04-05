@@ -533,6 +533,7 @@ function openConfirmationModal() {
 }
 
 function canMakeReservation(roomNumber, selectedTimeSlot) {
+    console.log(selectedTimeSlot); // Sprawdzenie, co jest przekazywane jako selectedTimeSlot
     // Pobranie daty wybranego bloku czasowego
     var selectedTimeSlotDate = new Date(selectedTimeSlot.dataset.timeSlotId.split('-').slice(0, 3).join('-'));
 
@@ -549,6 +550,7 @@ function canMakeReservation(roomNumber, selectedTimeSlot) {
         return true;
     }
 }
+
 
 
      function closeConfirmationModal() {
