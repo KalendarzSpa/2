@@ -369,8 +369,6 @@
     // Set default language
     var currentLanguage = 'pl';
  
-
-    
 function authenticate() {
     var roomNumber = document.getElementById('roomNumber').value;
     var password = document.getElementById('password').value;
@@ -518,11 +516,20 @@ function openConfirmationModal() {
     };
 }
 
-   function canMakeReservation(roomNumber, currentDate) {
+  function canMakeReservation(roomNumber, currentDate) {
     // Sprawdź, czy istnieje rezerwacja dla danego dnia i pokoju
-    var existingReservation = reservations.find(function(reservation) {
+    var existingReservation = reservations.find(function (reservation) {
         return reservation.roomNumber === roomNumber && reservation.date === currentDate.toLocaleDateString();
     });
+
+    // Sprawdź, czy nie przekroczono limitu jednej rezerwacji na dzień dla danego pokoju
+    var reservationsForDay = reservations.filter(function (reservation) {
+        return reservation.date === currentDate.toLocaleDateString() && reservation.roomNumber === roomNumber;
+    });
+
+    if (reservationsForDay.length >= 1) {
+        return false; // Jeśli przekroczono limit, zwróć false
+    }
 
     // Jeśli nie ma żadnej rezerwacji dla danego dnia i pokoju, zwróć true
     if (!existingReservation) {
@@ -531,8 +538,6 @@ function openConfirmationModal() {
         return false; // Jeśli istnieje już rezerwacja, zwróć false
     }
 }
-
-
 
      function closeConfirmationModal() {
     var confirmationModal = document.getElementById('confirmationModal');
@@ -582,13 +587,13 @@ function confirmReservation() {
             closeConfirmationModal();
         } else {
             // Jeśli nie można dokonać rezerwacji dla danego pokoju i daty, informujemy użytkownika
-            console.log("Nie można dokonać rezerwacji.");
+            alert('Wykorzystałeś limit jednej rezerwacji na dzień dla tego pokoju.');
         }
     } else {
         console.error("Nie wybrano slotu czasowego do potwierdzenia rezerwacji.");
     }
 }
-
+    
 // Funkcja generująca unikalny identyfikator rezerwacji
 function generateReservationId() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
