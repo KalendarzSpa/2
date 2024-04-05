@@ -119,6 +119,15 @@
             padding: 20px;
         }
 
+        .day .day-header {
+    font-weight: bold;
+}
+
+/* Stylowanie pierwszego wiersza w sekcji treści */
+.day .day-content > .time-slot:first-child {
+    font-weight: bold;
+}
+
                 .day {
     border: 1px solid #ccc;
     padding: 10px;
@@ -128,10 +137,6 @@
     transition: max-height 0.5s ease;
     overflow: hidden;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.day:first-child {
-    font-weight: bold; /* Pogrubienie pierwszego elementu */
 }
 
 .time-slots-container {
@@ -573,6 +578,7 @@ function updateReservationList(roomNumber) {
         reservationList.appendChild(listItem);
     });
 }
+
 
 
     function saveReservationToFirestore(reservation) {
