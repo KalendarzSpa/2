@@ -518,7 +518,7 @@ function openConfirmationModal() {
     };
 }
 
-    function canMakeReservation(roomNumber, currentDate) {
+   function canMakeReservation(roomNumber, currentDate) {
     // Sprawdź, czy istnieje rezerwacja dla danego dnia i pokoju
     var existingReservation = reservations.find(function(reservation) {
         return reservation.roomNumber === roomNumber && reservation.date === currentDate.toLocaleDateString();
@@ -533,6 +533,7 @@ function openConfirmationModal() {
 }
 
 
+
      function closeConfirmationModal() {
     var confirmationModal = document.getElementById('confirmationModal');
     var overlay = document.getElementById('overlay');
@@ -545,11 +546,12 @@ function confirmReservation() {
         var currentDate = new Date();
         var roomNumber = document.getElementById('roomNumber').value;
 
+        // Sprawdzamy, czy można dokonać rezerwacji dla danego pokoju i daty
         if (canMakeReservation(roomNumber, currentDate)) {
             console.log("Confirming Reservation:", selectedTimeSlot.dataset.timeSlotId);
             selectedTimeSlot.classList.add('reserved');
             selectedTimeSlot.style.backgroundColor = '#ff6666';
-            
+
             var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
 
             var reservation = {
@@ -563,10 +565,10 @@ function confirmReservation() {
             var listItem = document.createElement('li');
             listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
             listItem.dataset.reservationId = reservation.id;
-            
+
             var cancelButton = document.createElement('button');
             cancelButton.textContent = 'Anuluj';
-            cancelButton.onclick = function() {
+            cancelButton.onclick = function () {
                 cancelReservation(reservation);
             };
 
@@ -579,14 +581,13 @@ function confirmReservation() {
 
             closeConfirmationModal();
         } else {
-            console.log("Nie można dokonać rezerwacji. Upewnij się, że pozostało mniej niż 10 minut do rozpoczęcia bloku czasowego lub istnieje już rezerwacja dla tego pokoju w tym dniu.");
+            // Jeśli nie można dokonać rezerwacji dla danego pokoju i daty, informujemy użytkownika
+            console.log("Nie można dokonać rezerwacji.");
         }
     } else {
         console.error("Nie wybrano slotu czasowego do potwierdzenia rezerwacji.");
     }
 }
-
-
 
 // Funkcja generująca unikalny identyfikator rezerwacji
 function generateReservationId() {
