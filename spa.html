@@ -238,24 +238,34 @@ body {
         "27": "7530"
     };
 function authenticate() {
-  var roomNumber = document.getElementById('roomNumber').value;
-  var password = document.getElementById('password').value;
+    var roomNumber = document.getElementById('roomNumber').value;
+    var password = document.getElementById('password').value;
+    var acceptCheckbox = document.getElementById('acceptCheckbox');
 
-  if (roomPasswords.hasOwnProperty(roomNumber)) {
-    if (roomPasswords[roomNumber] === password) {
-      loadReservations(roomNumber).then(function () {
-        generateCalendar();
-        updateReservationList(roomNumber); // Dodaj przekazanie numeru pokoju
-      }).catch(function (error) {
-        console.error("Error loading reservations:", error);
-      });
-    } else {
-      console.error("Invalid password for room number:", roomNumber);
+    if (!acceptCheckbox.checked) {
+        alert("Musisz zaakceptować regulamin, aby kontynuować.");
+        return;
     }
-  } else {
-    console.error("Invalid room number:", roomNumber);
-  }
+
+    if (roomPasswords.hasOwnProperty(roomNumber)) {
+        if (roomPasswords[roomNumber] === password) {
+            // Po poprawnym zalogowaniu ukryj formularz logowania i pokaż część z kalendarzem
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('authenticatedPage').style.display = 'block';
+            loadReservations(roomNumber).then(function () {
+                generateCalendar();
+                updateReservationList(roomNumber);
+            }).catch(function (error) {
+                console.error("Error loading reservations:", error);
+            });
+        } else {
+            console.error("Invalid password for room number:", roomNumber);
+        }
+    } else {
+        console.error("Invalid room number:", roomNumber);
+    }
 }
+
 
 
 function generateCalendar() {
