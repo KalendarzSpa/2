@@ -532,11 +532,11 @@ function openConfirmationModal() {
     };
 }
 
-  function canMakeReservation(roomNumber, currentDate) {
+ function canMakeReservation(roomNumber, currentDate, selectedTimeSlot) {
     // Sprawdź, czy istnieje rezerwacja dla danego dnia i pokoju
     var existingReservationsForDay = reservations.filter(function (reservation) {
         var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Pobierz datę rezerwacji
-        return reservation.roomNumber === roomNumber && reservationDate.toDateString() === currentDate.toDateString();
+        return reservation.roomNumber === roomNumber && reservationDate.toDateString() === currentDate.toDateString() && reservation.timeSlotId !== selectedTimeSlot.dataset.timeSlotId; // Filtrowanie rezerwacji dla tego samego pokoju i daty, ale innych slotów czasowych
     });
 
     // Sprawdź, czy liczba rezerwacji na ten dzień dla danego pokoju jest większa niż zero
@@ -546,7 +546,6 @@ function openConfirmationModal() {
         return true; // Jeśli nie ma żadnej rezerwacji dla danego dnia i pokoju, zwróć true
     }
 }
-
 
      function closeConfirmationModal() {
     var confirmationModal = document.getElementById('confirmationModal');
