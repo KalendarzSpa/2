@@ -198,7 +198,7 @@ function authenticate() {
         if (roomPasswords[roomNumber] === password) {
             // Po poprawnym zalogowaniu ukryj formularz logowania i pokaż część z kalendarzem
              document.querySelector('.login-section').style.display = 'none';
-            document.querySelector('.calendar-section').style.display = 'flex';
+            document.querySelector('.calendar-section').style.display = 'block';
 
             loadReservations(roomNumber).then(function () {
                 generateCalendar();
