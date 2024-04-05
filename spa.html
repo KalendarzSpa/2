@@ -103,12 +103,13 @@
             justify-content: space-between;
         }
 
-        .day {
-            width: calc(50% - 10px);
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
+         .day {
+            border: 1px solid #ccc;
+            padding: 10px;
+            cursor: pointer;
+            text-align: center;
+            margin-bottom: 10px;
+            transition: max-height 0.5s ease;
             overflow: hidden;
         }
 
@@ -567,31 +568,30 @@ function updateReservationList(roomNumber) {
     var reservationList = document.getElementById('reservationList');
     reservationList.innerHTML = '';
 
-    var today = new Date();
-    today.setHours(0, 0, 0, 0);
+    var currentDate = new Date(); // Obecna data
 
-    reservations.forEach(function (reservation) {
-        var reservationDate = moment(reservation.date, 'MM/DD/YYYY').toDate();
-        if (reservationDate >= today && reservation.roomNumber === roomNumber) {
-            var listItem = document.createElement('li');
-            var formattedDate = moment(reservation.date, 'MM/DD/YYYY').format('MMMM Do YYYY');
-            listItem.textContent = `Date: ${formattedDate}, Time: ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
-            listItem.dataset.reservationId = reservation.id;
-            
-            var cancelButton = document.createElement('button');
-            cancelButton.textContent = 'Cancel';
-            cancelButton.onclick = function() {
-                cancelReservation(reservation);
-            };
-            listItem.appendChild(cancelButton);
-            
-            reservationList.appendChild(listItem);
-        }
+    var myReservations = reservations.filter(function (reservation) {
+        return reservation.roomNumber === roomNumber && new Date(reservation.date) >= currentDate; // Filtrowanie przyszłych rezerwacji
+    });
+
+    myReservations.forEach(function (reservation) {
+        var listItem = document.createElement('li');
+        listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+
+        // Dodaj atrybut dataset z identyfikatorem rezerwacji
+        listItem.dataset.reservationId = reservation.id;
+
+        // Stwórz przycisk Anuluj
+        var cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Anuluj';
+        cancelButton.onclick = function () {
+            cancelReservation(reservation); // Przekazanie obiektu rezerwacji do funkcji cancelReservation()
+        };
+
+        listItem.appendChild(cancelButton); // Dodaj przycisk Anuluj do elementu listy
+        reservationList.appendChild(listItem);
     });
 }
-
-
-
 
     function saveReservationToFirestore(reservation) {
     db.collection("reservations").doc(reservation.id).set(reservation)
