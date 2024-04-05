@@ -556,8 +556,11 @@ function confirmReservation() {
         var currentDate = new Date();
         var roomNumber = document.getElementById('roomNumber').value;
 
+        // Pobierz datę bloku czasowego wybranego przez użytkownika
+        var selectedTimeSlotDate = new Date(selectedTimeSlot.dataset.timeSlotId.split('-').slice(0, 3).join('-'));
+
         // Sprawdzamy, czy można dokonać rezerwacji dla danego pokoju i daty
-            if (canMakeReservation(roomNumber, selectedTimeSlotDate)) {
+        if (canMakeReservation(roomNumber, selectedTimeSlotDate)) {
             console.log("Confirming Reservation:", selectedTimeSlot.dataset.timeSlotId);
             selectedTimeSlot.classList.add('reserved');
             selectedTimeSlot.style.backgroundColor = '#ff6666';
@@ -577,7 +580,7 @@ function confirmReservation() {
             listItem.dataset.reservationId = reservation.id;
 
             var cancelButton = document.createElement('button');
-            cancelButton.textContent = 'Anuluj';
+            cancelButton.textContent = 'Cancel';
             cancelButton.onclick = function () {
                 cancelReservation(reservation);
             };
@@ -592,13 +595,13 @@ function confirmReservation() {
             closeConfirmationModal();
         } else {
             // Jeśli nie można dokonać rezerwacji dla danego pokoju i daty, informujemy użytkownika
-            alert('Wykorzystałeś limit jednej rezerwacji na dzień dla tego pokoju.');
+            alert('You have already made a reservation for this room and day.');
         }
     } else {
-        console.error("Nie wybrano slotu czasowego do potwierdzenia rezerwacji.");
+        console.error("No time slot selected to confirm reservation.");
     }
 }
-    
+ 
 // Funkcja generująca unikalny identyfikator rezerwacji
 function generateReservationId() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
