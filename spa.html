@@ -507,6 +507,19 @@ function generateCalendar() {
 
     // Funkcja otwierająca modal potwierdzenia rezerwacji
 function openConfirmationModal() {
+    var currentDate = new Date();
+    var roomNumber = document.getElementById('roomNumber').value;
+
+    // Sprawdź, czy dla danego dnia jest już zarezerwowany pokój
+    var isRoomReservedForCurrentDay = reservations.some(function (reservation) {
+        return reservation.roomNumber === roomNumber && reservation.date === currentDate.toLocaleDateString();
+    });
+
+    if (isRoomReservedForCurrentDay) {
+        alert('Możesz dokonać tylko jednej rezerwacji na dzień.');
+        return;
+    }
+
     var confirmationModal = document.getElementById('confirmationModal');
     var overlay = document.getElementById('overlay');
     confirmationModal.style.display = 'block';
