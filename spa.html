@@ -553,7 +553,7 @@ function updateReservationList(roomNumber) {
 
     var myReservations = reservations.filter(function (reservation) {
         var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Data bloku rezerwacji
-        return reservation.roomNumber === roomNumber && reservationDate >= currentDate; // Filtrowanie przyszłych rezerwacji
+        return reservation.roomNumber === roomNumber && (reservationDate >= currentDate || reservationDate.toDateString() === currentDate.toDateString()); // Filtrowanie przyszłych rezerwacji lub dzisiejszych
     });
 
     myReservations.forEach(function (reservation) {
@@ -578,6 +578,7 @@ function updateReservationList(roomNumber) {
         reservationList.appendChild(listItem);
     });
 }
+
 
 
 
