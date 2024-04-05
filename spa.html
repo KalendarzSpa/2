@@ -361,21 +361,8 @@
     };
 
     // Set default language
-    var currentLanguage = 'en';
-
-    // Function to change language
-    function changeLanguage(lang) {
-        currentLanguage = lang;
-        var translations = language[lang];
-        for (var key in translations) {
-            if (translations.hasOwnProperty(key)) {
-                var element = document.getElementById(key);
-                if (element) {
-                    element.textContent = translations[key];
-                }
-            }
-        }
-    }    
+    var currentLanguage = 'pl';
+ 
 
     
 function authenticate() {
@@ -406,6 +393,27 @@ function authenticate() {
     } else {
         console.error("Invalid room number:", roomNumber);
     }
+}
+
+function translatePlaceholders(lang) {
+    var placeholders = language[lang];
+    document.getElementById('roomNumber').placeholder = placeholders['roomNumberPlaceholder'];
+    document.getElementById('password').placeholder = placeholders['passwordPlaceholder'];
+}
+
+    function changeLanguage(lang) {
+    currentLanguage = lang;
+    var translations = language[lang];
+    for (var key in translations) {
+        if (translations.hasOwnProperty(key)) {
+            var element = document.getElementById(key);
+            if (element) {
+                element.textContent = translations[key];
+            }
+        }
+    }
+    // Dodaj wywołanie funkcji translatePlaceholders
+    translatePlaceholders(lang);
 }
 
 function generateCalendar() {
