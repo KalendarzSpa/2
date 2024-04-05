@@ -531,8 +531,7 @@ function openConfirmationModal() {
         closeConfirmationModal(); // Zamknij okno modalne
     };
 }
-
-function canMakeReservation(roomNumber, selectedTimeSlot) {
+function canMakeReservation(roomNumber, selectedTimeSlotDate) {
     console.log(selectedTimeSlot); // Sprawdzenie, co jest przekazywane jako selectedTimeSlot
     // Pobranie daty wybranego bloku czasowego
     var selectedTimeSlotDate = new Date(selectedTimeSlot.dataset.timeSlotId.split('-').slice(0, 3).join('-'));
@@ -566,7 +565,7 @@ function confirmReservation() {
         var roomNumber = document.getElementById('roomNumber').value;
 
         // Sprawdzamy, czy można dokonać rezerwacji dla danego pokoju i daty
-        if (canMakeReservation(roomNumber, currentDate)) {
+            if (canMakeReservation(roomNumber, selectedTimeSlotDate)) {
             console.log("Confirming Reservation:", selectedTimeSlot.dataset.timeSlotId);
             selectedTimeSlot.classList.add('reserved');
             selectedTimeSlot.style.backgroundColor = '#ff6666';
