@@ -401,13 +401,7 @@ function authenticate() {
     }
 }
 
-function translatePlaceholders(lang) {
-    var placeholders = language[lang];
-    document.getElementById('roomNumber').placeholder = placeholders['roomNumberPlaceholder'];
-    document.getElementById('password').placeholder = placeholders['passwordPlaceholder'];
-}
-
-    function changeLanguage(lang) {
+function changeLanguage(lang) {
     currentLanguage = lang;
     var translations = language[lang];
     for (var key in translations) {
@@ -421,6 +415,13 @@ function translatePlaceholders(lang) {
     // Dodaj wywołanie funkcji translatePlaceholders
     translatePlaceholders(lang);
 }
+
+function translatePlaceholders(lang) {
+    var placeholders = language[lang];
+    document.getElementById('roomNumber').placeholder = placeholders['roomNumberPlaceholder'];
+    document.getElementById('password').placeholder = placeholders['passwordPlaceholder'];
+}
+
 
 function generateCalendar() {
     var calendar = document.getElementById('calendar');
@@ -663,9 +664,6 @@ function updateReservationList(roomNumber) {
         reservationList.appendChild(listItem);
     });
 }
-
-
-
 
     function saveReservationToFirestore(reservation) {
     db.collection("reservations").doc(reservation.id).set(reservation)
