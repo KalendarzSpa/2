@@ -311,8 +311,9 @@ function authenticate() {
 
     if (roomPasswords.hasOwnProperty(roomNumber)) {
         if (roomPasswords[roomNumber] === password) {
-            // Po poprawnym zalogowaniu pokaż część z kalendarzem
-            document.getElementById('authenticatedPage').style.display = 'block';
+            // Po poprawnym zalogowaniu ukryj formularz logowania i pokaż część z kalendarzem
+            document.querySelector('.login-section').style.display = 'none';
+            document.querySelector('.calendar-section').style.display = 'block';
             loadReservations(roomNumber).then(function () {
                 generateCalendar();
                 updateReservationList(roomNumber);
@@ -326,7 +327,6 @@ function authenticate() {
         console.error("Invalid room number:", roomNumber);
     }
 }
-
 
 function generateCalendar() {
     var calendar = document.getElementById('calendar');
