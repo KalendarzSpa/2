@@ -38,10 +38,10 @@ main {
 }
 
 .login-section {
-    display: flex; /* Ustawienie rodzica na flex container */
-    justify-content: center; /* Wyśrodkowanie elementów na osi poziomej */
-    align-items: center; /* Wyśrodkowanie elementów na osi pionowej */
-    height: 100vh; /* Ustawienie wysokości na 100% wysokości widoku */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
         
 .calendar-section {
@@ -64,14 +64,6 @@ main {
 .login-form label {
     display: block;
     margin-bottom: 10px;
-}
-.login-section.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-.calendar-section.visible {
-  opacity: 1;
-  pointer-events: auto;
 }
 
 .login-form input {
@@ -335,8 +327,8 @@ function authenticate() {
     if (roomPasswords.hasOwnProperty(roomNumber)) {
         if (roomPasswords[roomNumber] === password) {
             // Po poprawnym zalogowaniu ukryj formularz logowania i pokaż część z kalendarzem
-             document.querySelector('.login-section').classList.add('hidden');
-  document.querySelector('.calendar-section').classList.add('visible');
+             document.querySelector('.login-section').style.display = 'none';
+            document.querySelector('.calendar-section').style.display = 'block';
 
             loadReservations(roomNumber).then(function () {
                 generateCalendar();
