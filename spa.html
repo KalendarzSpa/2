@@ -444,6 +444,12 @@ function openConfirmationModal() {
     var overlay = document.getElementById('overlay');
     confirmationModal.style.display = 'block';
     overlay.style.display = 'block';
+
+    // Dodaj obsługę kliknięcia na przycisk "Nie"
+    var noButton = document.getElementById('noButton');
+    noButton.onclick = function () {
+        closeConfirmationModal(); // Zamknij okno modalne
+    };
 }
 
     function canMakeReservation(roomNumber, currentDate) {
@@ -466,7 +472,7 @@ function openConfirmationModal() {
 }
 
 
-      function closeConfirmationModal() {
+     function closeConfirmationModal() {
     var confirmationModal = document.getElementById('confirmationModal');
     var overlay = document.getElementById('overlay');
     confirmationModal.style.display = 'none';
