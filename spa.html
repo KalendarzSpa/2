@@ -331,13 +331,11 @@ function generateCalendar() {
             month: 'numeric',
             year: 'numeric'
         });
-        dayElement.onclick = function () {
-            toggleDay(this); // Dodaj to wywołanie funkcji toggleDay
-        };
 
         var timeSlotsContainer = document.createElement('div');
         timeSlotsContainer.className = 'time-slots-container';
 
+        // Dodaj bloki godzinowe
         for (var i = 8; i <= 21; i++) {
             var timeSlotId = generateTimeSlotId(currentDate, i);
             var reservationsForSlot = getReservationsForSlot(timeSlotId);
@@ -349,9 +347,9 @@ function generateCalendar() {
             timeSlot.dataset.timeSlotId = timeSlotId;
 
             if (numReservations === 1) {
-                timeSlot.classList.add('orange');
+                timeSlot.classList.add('reserved');
             } else if (numReservations >= 2) {
-                timeSlot.classList.add('red');
+                timeSlot.classList.add('taken');
             }
 
             timeSlot.addEventListener('click', function () {
@@ -370,49 +368,6 @@ function generateCalendar() {
         dayElement.appendChild(timeSlotsContainer);
         calendar.appendChild(dayElement);
     }
-}
-
-        
-function toggleDay(dayElement) {
-    var timeSlotsContainer = dayElement.querySelector('.time-slots-container');
-    if (timeSlotsContainer.style.display === 'block') {
-        timeSlotsContainer.style.display = 'none';
-    } else {
-        timeSlotsContainer.style.display = 'block';
-    }
-}
-
-        var timeSlotsContainer = document.createElement('div');
-        timeSlotsContainer.className = 'time-slots-container';
-
-for (var i = 8; i <= 21; i++) {
-    var timeSlotId = generateTimeSlotId(currentDate, i);
-    var reservationsForSlot = getReservationsForSlot(timeSlotId);
-    var numReservations = reservationsForSlot.length;
-
-    var timeSlot = document.createElement('div');
-    timeSlot.className = 'time-slot';
-    timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
-    timeSlot.dataset.timeSlotId = timeSlotId;
-
-    if (numReservations === 1) {
-        timeSlot.classList.add('light');
-    } else if (numReservations >= 2) {
-        timeSlot.classList.add('red');
-    }
-
-    timeSlot.addEventListener('click', function () {
-    selectedTimeSlot = this;
-    var numReservations = getReservationsForSlot(selectedTimeSlot.dataset.timeSlotId).length;
-    if (numReservations >= 2) {
-        openTakenModal();
-    } else if (!selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken')) {
-        openConfirmationModal();
-    }
-});
-
-
-    timeSlotsContainer.appendChild(timeSlot);
 }
 
 
