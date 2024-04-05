@@ -3,220 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalendarz Rezerwacji Strefy Spa</title>
+    <title>Spa Zone Reservation Calendar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-    body {
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    margin: 0;
-    padding: 0;
-}
+        /* Global styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
 
-.container {
-    max-width: 600px; /* Maksymalna szerokość kontenera */
-    margin: 0 auto; /* Wyśrodkowanie kontenera na stronie */
-    padding: 20px;
-}
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-header {
-    background-color: #007bff;
-    color: #fff;
-    padding: 20px;
-    text-align: center;
-    border-radius: 8px;
-}
+        /* Header styles */
+        header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
 
-h1 {
-    margin: 0;
-    font-size: 36px;
-}
+        h1 {
+            margin: 0;
+            font-size: 36px;
+        }
 
-main {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-}
+        /* Form styles */
+        .login-form {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
 
-.login-section {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 80%; /* Szerokość sekcji na małych ekranach */
-    margin: 0 auto;
-}
-        
-        .calendar-section {
-        display: none;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        margin-top: 20px; /* Dodatkowy margines na górę */
-    }
+        .login-form h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 28px;
+            color: #007bff;
+            text-align: center;
+        }
 
-.login-form {
-    margin: 0 auto; /* Wyśrodkowanie formularza na stronie */
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
+        .login-form label {
+            display: block;
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+        }
 
-.login-section, .calendar-section {
-  transition: opacity 0.5s ease;
-}
+        .login-form input[type="text"],
+        .login-form input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
 
-.login-form label {
-    display: block;
-    margin-bottom: 10px;
-}
+        .login-form input[type="text"]:focus,
+        .login-form input[type="password"]:focus {
+            border-color: #007bff;
+        }
 
-.login-form input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
+        .login-form button {
+            width: 100%;
+            padding: 15px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
 
-.checkbox-container {
-    display: flex;
-    align-items: center;
-}
+        .login-form button:hover {
+            background-color: #0056b3;
+        }
 
-.checkbox-container input[type="checkbox"] {
-    margin-right: 10px;
-}
+        .login-form .accept-checkbox {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
 
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
+        /* Calendar styles */
+        .calendar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
 
-button:hover {
-    background-color: #0056b3;
-}
-     
+        .day {
+            width: calc(50% - 10px);
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
 
-    /* Stylizacja formularza */
-    input[type="text"],
-    input[type="password"],
-    select {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc; /* Szary kolor obramowania */
-      border-radius: 5px; /* Zaokrąglone rogi */
-    }
+        .day-header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
 
-    /* Stylizacja kalendarza */
-    .day {
-      margin-bottom: 20px;
-    }
+        .day-content {
+            padding: 20px;
+        }
 
-    .reservation {
-      width: 50px;
-      height: 50px;
-      display: inline-block;
-      text-align: center;
-      line-height: 50px;
-      font-size: 18px;
-      font-weight: bold;
-      border-radius: 50%;
-      cursor: pointer;
-    }
+        .time-slot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
 
-    .orange {
-      background-color: orange;
-    }
+        .time-slot:hover {
+            background-color: #f8f9fa;
+        }
 
-    .red {
-      background-color: red;
-    }
+        .time-slot i {
+            color: #007bff;
+        }
 
- @media only screen and (max-width: 600px) {
-    .container {
-        padding: 10px;
-    }
-    .login-section, .calendar-section {
-        max-width: 100%;
-    }
-}
+        .time-slot.reserved {
+            background-color: #ffc107;
+        }
 
-body {
-  background-color: #f5f5dc;
-  font-family: Arial, sans-serif;
-}
+        .time-slot.taken {
+            background-color: #dc3545;
+        }
 
-.day {
-  border: 1px solid #ccc;
-  padding: 10px;
-  cursor: pointer;
-  text-align: center;
-  margin-bottom: 5px;
-}
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
 
-.time-slots-container {
-  display: none; /* Ukryj początkowo bloki godzinowe */
-}
-
-.day.active .time-slots-container {
-  display: block; /* Wyświetl bloki godzinowe, jeśli dzień jest aktywny */
-}
-
-.time-slot {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin: 5px;
-  cursor: pointer;
-}
-
-.reserved {
-  background-color: #ffcccc;
-}
-
-.taken {
-  background-color: #ff9999;
-}
-
-.modal {
-  display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 20px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  z-index: 1000;
-}
-
-#overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-}
-
-.reservation-section {
-  margin-top: 20px;
-}
-
-.cancel-button {
-  cursor: pointer;
-  color: #007bff;
-  text-decoration: underline;
-}
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
     </style>
 </head>
 <body>
@@ -233,7 +192,7 @@ body {
                 <input type="text" id="roomNumber" placeholder="Enter room number">
                 <label for="password">Password:</label>
                 <input type="password" id="password" placeholder="Enter password">
-                <div class="checkbox-container">
+                <div class="accept-checkbox">
                     <input type="checkbox" id="acceptCheckbox">
                     <label for="acceptCheckbox">Accept terms</label>
                 </div>
@@ -241,34 +200,39 @@ body {
             </form>
         </div>
     </section>
-            <section class="calendar-section">
-                <div class="authenticated-page" id="authenticatedPage">
-                    <h2 id="calendarTitle">Reservation Calendar</h2>
-                    <div class="calendar" id="calendar">
-                        <!-- Kalendarz -->
-                    </div>
-                    <h2 id="reservationTitle">Reservations:</h2>
-                    <ul id="reservationList">
-                        <!-- Lista rezerwacji -->
-                    </ul>
-                </div>
+    <section class="calendar-section">
+        <div class="authenticated-page" id="authenticatedPage">
+            <h2 id="calendarTitle">Reservation Calendar</h2>
+            <div class="calendar" id="calendar">
+                <!-- Calendar content goes here -->
+            </div>
+            <h2 id="reservationTitle">Reservations:</h2>
+            <ul id="reservationList">
+                <!-- Reservation list goes here -->
+            </ul>
+        </div>
+    </section>
 
-<div class="modal" id="confirmationModal">
-    <span>Czy potwierdzasz rezerwację?</span>
-    <button onclick="confirmReservation()" id="yesButton">Tak</button>
-    <button onclick="cancelConfirmation()" id="noButton">Nie</button>
+    <div class="modal" id="confirmationModal">
+        <span>Are you sure you want to confirm the reservation?</span>
+        <button onclick="confirmReservation()" id="yesButton">Yes</button>
+        <button onclick="cancelConfirmation()" id="noButton">No</button>
+    </div>
+
+    <div class="modal" id="takenModal">
+        <span id="takenMessage"></span>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
 </div>
 
-<div class="modal" id="takenModal">
-    <span id="takenMessage"></span>
-</div>
-
-<div id="overlay"></div>
-
-<!-- Firebase scripts -->
 <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-firestore.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-auth.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.min.js"></script>
     
 
 <script>
