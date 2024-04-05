@@ -4,218 +4,208 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kalendarz Rezerwacji Strefy Spa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
     <style>
-    body {
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    margin: 0;
-    padding: 0;
-}
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
 
-.container {
-    max-width: 600px; /* Maksymalna szerokość kontenera */
-    margin: 0 auto; /* Wyśrodkowanie kontenera na stronie */
-    padding: 20px;
-}
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-header {
-    background-color: #007bff;
-    color: #fff;
-    padding: 20px;
-    text-align: center;
-    border-radius: 8px;
-}
+        header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
 
-h1 {
-    margin: 0;
-    font-size: 36px;
-}
+        h1 {
+            margin: 0;
+            font-size: 36px;
+        }
 
-main {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-}
+        .login-section {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
 
-.login-section {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 80%; /* Szerokość sekcji na małych ekranach */
-    margin: 0 auto;
-}
-        
+        .login-form label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .login-form input {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .login-form input:focus {
+            border-color: #007bff;
+        }
+
+        .checkbox-container {
+            margin-bottom: 10px;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        .checkbox-container label {
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
         .calendar-section {
-        display: none;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        margin-top: 20px; /* Dodatkowy margines na górę */
-    }
+            display: none;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin-top: 20px;
+        }
 
-.login-form {
-    margin: 0 auto; /* Wyśrodkowanie formularza na stronie */
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
+        .calendar-section .calendar {
+            max-width: 600px;
+            margin: 0 auto;
+        }
 
-.login-section, .calendar-section {
-  transition: opacity 0.5s ease;
-}
+        .day {
+            border: 1px solid #ccc;
+            padding: 10px;
+            cursor: pointer;
+            text-align: center;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
 
-.login-form label {
-    display: block;
-    margin-bottom: 10px;
-}
+        .time-slots-container {
+            display: none;
+        }
 
-.login-form input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
+        .time-slots-container.active {
+            display: block;
+        }
 
-.checkbox-container {
-    display: flex;
-    align-items: center;
-}
+        .time-slot {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
 
-.checkbox-container input[type="checkbox"] {
-    margin-right: 10px;
-}
+        .time-slot:hover {
+            background-color: #f0f0f0;
+        }
 
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
+        .reserved {
+            background-color: #ffcccc;
+        }
 
-button:hover {
-    background-color: #0056b3;
-}
-     
+        .taken {
+            background-color: #ff9999;
+        }
 
-    /* Stylizacja formularza */
-    input[type="text"],
-    input[type="password"],
-    select {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc; /* Szary kolor obramowania */
-      border-radius: 5px; /* Zaokrąglone rogi */
-    }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
 
-    /* Stylizacja kalendarza */
-    .day {
-      margin-bottom: 20px;
-    }
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
 
-    .reservation {
-      width: 50px;
-      height: 50px;
-      display: inline-block;
-      text-align: center;
-      line-height: 50px;
-      font-size: 18px;
-      font-weight: bold;
-      border-radius: 50%;
-      cursor: pointer;
-    }
+        .modal span {
+            display: block;
+            margin-bottom: 10px;
+        }
 
-    .orange {
-      background-color: orange;
-    }
+        .modal button {
+            margin-top: 10px;
+        }
 
-    .red {
-      background-color: red;
-    }
+        .taken-modal {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            display: none;
+        }
 
- @media only screen and (max-width: 600px) {
-    .container {
-        padding: 10px;
-    }
-    .login-section, .calendar-section {
-        max-width: 100%;
-    }
-}
+        .taken-modal.active {
+            display: block;
+        }
 
-body {
-  background-color: #f5f5dc;
-  font-family: Arial, sans-serif;
-}
+        @media only screen and (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
 
-.day {
-  border: 1px solid #ccc;
-  padding: 10px;
-  cursor: pointer;
-  text-align: center;
-  margin-bottom: 5px;
-}
+            .login-section, .calendar-section {
+                max-width: 100%;
+            }
 
-.time-slots-container {
-  display: none; /* Ukryj początkowo bloki godzinowe */
-}
+            .day {
+                font-size: 14px;
+            }
 
-.day.active .time-slots-container {
-  display: block; /* Wyświetl bloki godzinowe, jeśli dzień jest aktywny */
-}
-
-.time-slot {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin: 5px;
-  cursor: pointer;
-}
-
-.reserved {
-  background-color: #ffcccc;
-}
-
-.taken {
-  background-color: #ff9999;
-}
-
-.modal {
-  display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 20px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  z-index: 1000;
-}
-
-#overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-}
-
-.reservation-section {
-  margin-top: 20px;
-}
-
-.cancel-button {
-    float: right; /* Przesunięcie przycisku w prawo */
-    margin-left: 10px; /* Odstęp między przyciskiem a rezerwacją */
-}
+            .time-slot {
+                font-size: 12px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -240,29 +230,28 @@ body {
             </form>
         </div>
     </section>
-            <section class="calendar-section">
-                <div class="authenticated-page" id="authenticatedPage">
-                    <h2 id="calendarTitle">Reservation Calendar</h2>
-                    <div class="calendar" id="calendar">
-                        <!-- Kalendarz -->
-                    </div>
-                    <h2 id="reservationTitle">Reservations:</h2>
-                    <ul id="reservationList">
-                        <!-- Lista rezerwacji -->
-                    </ul>
-                </div>
-
-<div class="modal" id="confirmationModal">
-    <span>Czy potwierdzasz rezerwację?</span>
-    <button onclick="confirmReservation()" id="yesButton">Tak</button>
-    <button onclick="cancelConfirmation()" id="noButton">Nie</button>
+    <section class="calendar-section">
+        <div class="authenticated-page" id="authenticatedPage">
+            <h2 id="calendarTitle">Reservation Calendar</h2>
+            <div class="calendar" id="calendar">
+                <!-- Calendar -->
+            </div>
+            <h2 id="reservationTitle">Reservations:</h2>
+            <ul id="reservationList">
+                <!-- Reservation List -->
+            </ul>
+        </div>
+        <div class="modal" id="confirmationModal">
+            <span>Czy potwierdzasz rezerwację?</span>
+            <button onclick="confirmReservation()" id="yesButton">Tak</button>
+            <button onclick="cancelConfirmation()" id="noButton">Nie</button>
+        </div>
+        <div class="modal" id="takenModal">
+            <span id="takenMessage"></span>
+        </div>
+        <div id="overlay"></div>
+    </section>
 </div>
-
-<div class="modal" id="takenModal">
-    <span id="takenMessage"></span>
-</div>
-
-<div id="overlay"></div>
 
 <!-- Firebase scripts -->
 <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-app.js"></script>
