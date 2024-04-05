@@ -57,9 +57,21 @@ main {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+.login-section, .calendar-section {
+  transition: opacity 0.5s ease;
+}
+
 .login-form label {
     display: block;
     margin-bottom: 10px;
+}
+.login-section.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.calendar-section.visible {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .login-form input {
@@ -323,8 +335,9 @@ function authenticate() {
     if (roomPasswords.hasOwnProperty(roomNumber)) {
         if (roomPasswords[roomNumber] === password) {
             // Po poprawnym zalogowaniu ukryj formularz logowania i pokaż część z kalendarzem
-            document.querySelector('.login-section').style.display = 'none';
-            document.querySelector('.calendar-section').style.display = 'block';
+             document.querySelector('.login-section').classList.add('hidden');
+  document.querySelector('.calendar-section').classList.add('visible');
+
             loadReservations(roomNumber).then(function () {
                 generateCalendar();
                 updateReservationList(roomNumber);
