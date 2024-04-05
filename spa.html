@@ -140,13 +140,12 @@ button:hover {
       background-color: red;
     }
 
-    /* Dodatkowe style dla responsywności */
-   @media only screen and (max-width: 600px) {
+ @media only screen and (max-width: 600px) {
     .container {
         padding: 10px;
     }
-    .login-form {
-        max-width: 100%; /* Maksymalna szerokość formularza na urządzeniach o małej szerokości */
+    .login-section, .calendar-section {
+        max-width: 100%;
     }
 }
 
@@ -223,26 +222,25 @@ body {
 <body>
 
 <div class="container">
-        <header>
-            <h1>Spa Zone Reservation Calendar</h1>
-        </header>
-        <main>
-            <section class="login-section">
-                <div class="login-form">
-                    <h2>Login</h2>
-                    <form id="loginForm" onsubmit="event.preventDefault(); authenticate();">
-                        <label for="roomNumber">Room Number:</label>
-                        <input type="text" id="roomNumber" placeholder="Enter room number">
-                        <label for="password">Password:</label>
-                        <input type="password" id="password" placeholder="Enter password">
-                        <div class="checkbox-container">
-                            <input type="checkbox" id="acceptCheckbox">
-                            <label for="acceptCheckbox">Accept terms</label>
-                        </div>
-                        <button id="loginButton" onclick="authenticate()">Login</button>
-                    </form> 
+    <header>
+        <h1>Spa Zone Reservation Calendar</h1>
+    </header>
+    <section class="login-section">
+        <div class="login-form">
+            <h2>Login</h2>
+            <form id="loginForm" onsubmit="event.preventDefault(); authenticate();">
+                <label for="roomNumber">Room Number:</label>
+                <input type="text" id="roomNumber" placeholder="Enter room number">
+                <label for="password">Password:</label>
+                <input type="password" id="password" placeholder="Enter password">
+                <div class="checkbox-container">
+                    <input type="checkbox" id="acceptCheckbox">
+                    <label for="acceptCheckbox">Accept terms</label>
                 </div>
-            </section>
+                <button id="loginButton" onclick="authenticate()">Login</button>
+            </form>
+        </div>
+    </section>
             <section class="calendar-section">
                 <div class="authenticated-page" id="authenticatedPage">
                     <h2 id="calendarTitle">Reservation Calendar</h2>
