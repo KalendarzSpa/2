@@ -38,9 +38,11 @@ main {
 }
 
 .login-section {
-        flex-basis: 48%;
-        text-align: center; /* Wyśrodkowanie zawartości w sekcji logowania */
-    }
+    display: flex; /* Ustawienie rodzica na flex container */
+    justify-content: center; /* Wyśrodkowanie elementów na osi poziomej */
+    align-items: center; /* Wyśrodkowanie elementów na osi pionowej */
+    height: 100vh; /* Ustawienie wysokości na 100% wysokości widoku */
+}
         
 .calendar-section {
     display: none; /* Ukrycie sekcji kalendarza i rezerwacji */
