@@ -420,7 +420,6 @@ function translatePlaceholders(lang) {
     document.getElementById('password').placeholder = placeholders['passwordPlaceholder'];
 }
 
-
 function generateCalendar() {
     var calendar = document.getElementById('calendar');
     calendar.innerHTML = '';
@@ -460,18 +459,17 @@ function generateCalendar() {
             } else if (numReservations >= 2) {
                 timeSlot.classList.add('taken');
             } else {
-                timeSlot.classList.add('available');
+                timeSlot.classList.add('available'); 
             }
 
             timeSlot.addEventListener('click', function () {
                 selectedTimeSlot = this;
                 if (selectedTimeSlot.classList.contains('taken')) {
                     openTakenModal();
-                } else if (selectedTimeSlot.classList.contains('available')) {
+                } else if (selectedTimeSlot.classList.contains('reserved')) {
                     openConfirmationModal();
-                } else {
-                    // Blok jest już zarezerwowany, ale można dodać tu inne działania w zależności od potrzeb
-                    alert("Ten slot czasowy jest już zajęty.");
+                } else (selectedTimeSlot.classList.contains('available')) {
+                    openConfirmationModal();
                 }
             });
 
@@ -482,6 +480,7 @@ function generateCalendar() {
         calendar.appendChild(dayElement);
     }
 }
+
 
     function getReservationsForSlot(timeSlotId) {
     // Filtrujemy listę rezerwacji, aby znaleźć te, które odpowiadają podanemu identyfikatorowi slotu czasowego
