@@ -62,17 +62,15 @@
             border-color: #007bff;
         }
 
-        .checkbox-container {
-            margin-bottom: 10px;
-        }
-
-        .checkbox-container input[type="checkbox"] {
-            margin-right: 5px;
-        }
-
-        .checkbox-container label {
-            font-size: 14px;
-        }
+       .accept-terms {
+          display: flex;
+          align-items: center;
+          margin-top: 10px;
+      }
+      
+      .accept-terms input[type="checkbox"] {
+          margin-right: 5px;
+         }
 
         button {
             width: 100%;
@@ -115,10 +113,10 @@
                 <input type="text" id="roomNumber" placeholder="Enter room number">
                 <label for="password">Password:</label>
                 <input type="password" id="password" placeholder="Enter password">
-                <div class="checkbox-container">
-                    <input type="checkbox" id="acceptCheckbox">
-                    <label for="acceptCheckbox">Accept terms</label>
-                </div>
+                <div class="accept-terms">
+               <input type="checkbox" id="acceptCheckbox">
+               <label for="acceptCheckbox">Accept terms</label>
+                 </div>
                 <button id="loginButton" onclick="authenticate()">Login</button>
             </form>
         </div>
