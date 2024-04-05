@@ -429,7 +429,7 @@ function generateCalendar() {
 
         var dayElement = document.createElement('div');
         dayElement.className = 'day';
-        dayElement.textContent = currentDate.toLocaleDateString(undefined, {
+        dayElement.textContent = currentDate.toLocaleDateString(currentLanguage, {
             weekday: 'long',
             day: 'numeric',
             month: 'numeric',
@@ -643,7 +643,7 @@ function updateReservationList(roomNumber) {
         var listItem = document.createElement('li');
         var timeSlot = reservation.timeSlotId.split('-')[3]; // Pobierz godzinę bloku
         var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Data bloku rezerwacji
-        var formattedDate = reservationDate.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }); // Sformatuj datę
+        var formattedDate = reservationDate.toLocaleDateString(currentLanguage, { day: 'numeric', month: 'long', year: 'numeric' }); // Sformatuj datę
 
         listItem.textContent = `${formattedDate}, ${timeSlot}:00 - Room ${reservation.roomNumber} `;
 
@@ -651,8 +651,9 @@ function updateReservationList(roomNumber) {
         listItem.dataset.reservationId = reservation.id;
 
         // Stwórz przycisk Anuluj
+
         var cancelButton = document.createElement('button');
-        cancelButton.textContent = 'Anuluj';
+        cancelButton.textContent = language[currentLanguage]['cancelButtonLabel']; // Tłumaczenie przycisku "Anuluj"
         cancelButton.onclick = function () {
             cancelReservation(reservation); // Przekazanie obiektu rezerwacji do funkcji cancelReservation()
         };
