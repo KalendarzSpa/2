@@ -62,15 +62,20 @@
             border-color: #007bff;
         }
 
-       .accept-terms {
-          display: flex;
-          align-items: center;
-          margin-top: 10px;
-      }
-      
-      .accept-terms input[type="checkbox"] {
-          margin-right: 5px;
-         }
+      .checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.checkbox-container label {
+    font-size: 14px;
+    margin: 0;
+}
 
         button {
             width: 100%;
@@ -105,22 +110,22 @@
     <header>
         <h1>Spa Zone Reservation Calendar</h1>
     </header>
-    <section class="login-section">
-        <div class="login-form">
-            <h2>Login</h2>
-            <form id="loginForm" onsubmit="event.preventDefault(); authenticate();">
-                <label for="roomNumber">Room Number:</label>
-                <input type="text" id="roomNumber" placeholder="Enter room number">
-                <label for="password">Password:</label>
-                <input type="password" id="password" placeholder="Enter password">
-                <div class="accept-terms">
-               <input type="checkbox" id="acceptCheckbox">
-               <label for="acceptCheckbox">Accept terms</label>
-                 </div>
-                <button id="loginButton" onclick="authenticate()">Login</button>
-            </form>
-        </div>
-    </section>
+   <section class="login-section">
+    <div class="login-form">
+        <h2>Login</h2>
+        <form id="loginForm" onsubmit="event.preventDefault(); authenticate();">
+            <label for="roomNumber">Room Number:</label>
+            <input type="text" id="roomNumber" placeholder="Enter room number">
+            <label for="password">Password:</label>
+            <input type="password" id="password" placeholder="Enter password">
+            <div class="checkbox-container">
+                <input type="checkbox" id="acceptCheckbox">
+                <label for="acceptCheckbox">Akceptuję regulamin</label>
+            </div>
+            <button id="loginButton" onclick="authenticate()">Login</button>
+        </form>
+    </div>
+</section>
     <section class="calendar-section">
     <div id="calendar"></div>
 </section>
