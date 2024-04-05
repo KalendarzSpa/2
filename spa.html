@@ -592,7 +592,7 @@ function updateReservationList(roomNumber) {
         var listItem = document.createElement('li');
         var timeSlot = reservation.timeSlotId.split('-')[3]; // Pobierz godzinę bloku
         var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Data bloku rezerwacji
-        var formattedDate = reservationDate.toLocaleDateString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' }); // Sformatuj datę
+        var formattedDate = reservationDate.toLocaleDateString(undefined, { day: 'numeric', month: 'numeric', year: 'numeric' }); // Sformatuj datę
 
         listItem.textContent = `${formattedDate}, ${timeSlot}:00 - Room ${reservation.roomNumber} `;
 
