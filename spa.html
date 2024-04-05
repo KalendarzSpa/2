@@ -237,7 +237,7 @@
                     <input type="checkbox" id="acceptCheckbox">
                     <label for="acceptCheckbox" id="acceptLabel">I accept the terms and conditions of Spa Zone</label>
                 </div>
-                <button id="loginButton" onclick="authenticate()">Login</button>
+                 <button id="loginButton" onclick="authenticate()"><span id="loginButtonText">Login</span></button>
             </form>
         </div>
     </section>
@@ -250,6 +250,12 @@
             <h2 id="reservationTitle">Reservations:</h2>
             <ul id="reservationList">
                 <!-- Reservation list will be generated here -->
+                <ul id="reservationList">
+    <li data-reservation-id="1"><span id="reservationDate1"></span>, <span id="reservationTime1"></span> - <span id="reservationRoom1"></span></li>
+    <li data-reservation-id="2"><span id="reservationDate2"></span>, <span id="reservationTime2"></span> - <span id="reservationRoom2"></span></li>
+    <li data-reservation-id="3"><span id="reservationDate3"></span>, <span id="reservationTime3"></span> - <span id="reservationRoom3"></span></li>
+</ul>
+
             </ul>
         </div>
     </section>
@@ -271,9 +277,24 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.min.js"></script>
-    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/i18next/21.6.3/i18next.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/i18next-browser-languagedetector/6.1.0/i18nextBrowserLanguageDetector.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/i18next-xhr-backend/3.2.2/i18nextXHRBackend.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/i18next-browser-languagedetector/6.1.0/i18nextBrowserLanguageDetector.min.js"></script>
 
+    
 <script>
+
+i18next.use(i18nextBrowserLanguageDetector).use(i18nextXHRBackend).init({
+        debug: true,
+        fallbackLng: 'en',
+        backend: {
+            loadPath: '/locales/{{lng}}/translation.json'
+        }
+    }, function(err, t) {
+        updateContent();
+    });
+    
     // Konfiguracja Firebase
     var firebaseConfig = {
         apiKey: "AIzaSyCz7gGBCSi9pXaDvbrBDELvZOIRWgAutjs",
@@ -358,19 +379,32 @@
     // Set default language
     var currentLanguage = 'en';
 
-    // Function to change language
-    function changeLanguage(lang) {
-        currentLanguage = lang;
-        var translations = language[lang];
-        for (var key in translations) {
-            if (translations.hasOwnProperty(key)) {
-                var element = document.getElementById(key);
-                if (element) {
-                    element.textContent = translations[key];
-                }
-            }
-        }
-    }    
+      function updateContent() {
+        document.getElementById('headerTitle').textContent = i18next.t('headerTitle');
+        document.getElementById('loginTitle').textContent = i18next.t('loginTitle');
+        document.getElementById('roomNumberLabel').textContent = i18next.t('roomNumberLabel');
+        document.getElementById('passwordLabel').textContent = i18next.t('passwordLabel');
+        document.getElementById('acceptLabel').textContent = i18next.t('acceptLabel');
+        document.getElementById('loginButtonText').textContent = i18next.t('loginButtonText');
+        document.getElementById('calendarTitle').textContent = i18next.t('calendarTitle');
+        document.getElementById('reservationTitle').textContent = i18next.t('reservationTitle');
+        // Teksty wewnątrz pól wpisywania i na liście rezerwacji
+        document.getElementById('roomNumber').setAttribute('placeholder', i18next.t('roomNumberPlaceholder'));
+        document.getElementById('password').setAttribute('placeholder', i18next.t('passwordPlaceholder'));
+        document.getElementById('reservationDate1').textContent = i18next.t('reservationDate1');
+        document.getElementById('reservationDate2').textContent = i18next.t('reservationDate2');
+        document.getElementById('reservationDate3').textContent = i18next.t('reservationDate3');
+        document.getElementById('reservationTime1').textContent = i18next.t('reservationTime1');
+        document.getElementById('reservationTime2').textContent = i18next.t('reservationTime2');
+        document.getElementById('reservationTime3').textContent = i18next.t('reservationTime3');
+        document.getElementById('reservationRoom1').textContent = i18next.t('reservationRoom1');
+        document.getElementById('reservationRoom2').textContent = i18next.t('reservationRoom2');
+        document.getElementById('reservationRoom3').textContent = i18next.t('reservationRoom3');
+    }
+
+     function changeLanguage(lang) {
+        i18next.changeLanguage(lang);
+    }
 
     
 function authenticate() {
