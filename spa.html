@@ -12,11 +12,12 @@
     padding: 0;
 }
 
-.container {
-    max-width: 600px; /* Maksymalna szerokość kontenera */
-    margin: 0 auto; /* Wyśrodkowanie kontenera na stronie */
-    padding: 20px;
-}
+ .container {
+            display: flex;
+            justify-content: center; /* Wyśrodkowanie kontenera na stronie */
+            align-items: center; /* Wyśrodkowanie zawartości pionowo */
+            height: 100vh; /* Ustawia kontener na całą wysokość okna przeglądarki */
+        }
 
 header {
     background-color: #007bff;
@@ -49,7 +50,6 @@ main {
 }
 
 .login-form {
-    max-width: 600px; /* Maksymalna szerokość formularza logowania */
     margin: 0 auto; /* Wyśrodkowanie formularza na stronie */
     background-color: #fff;
     padding: 20px;
@@ -223,21 +223,24 @@ body {
         </header>
         <main>
             <section class="login-section">
-                <div class="login-form">
-                    <h2>Login</h2>
-                    <form id="loginForm" onsubmit="event.preventDefault(); authenticate();">
-                        <label for="roomNumber">Room Number:</label>
-                        <input type="text" id="roomNumber" placeholder="Enter room number">
-                        <label for="password">Password:</label>
-                        <input type="password" id="password" placeholder="Enter password">
-                        <div class="checkbox-container">
-                            <input type="checkbox" id="acceptCheckbox">
-                            <label for="acceptCheckbox">Accept terms</label>
-                        </div>
-                        <button id="loginButton" onclick="authenticate()">Login</button>
-                    </form> 
+    <div class="container">
+        <div class="login-form">
+            <h2>Login</h2>
+            <form id="loginForm" onsubmit="event.preventDefault(); authenticate();">
+                <label for="roomNumber">Room Number:</label>
+                <input type="text" id="roomNumber" placeholder="Enter room number">
+                <label for="password">Password:</label>
+                <input type="password" id="password" placeholder="Enter password">
+                <div class="checkbox-container">
+                    <input type="checkbox" id="acceptCheckbox">
+                    <label for="acceptCheckbox">Accept terms</label>
                 </div>
-            </section>
+                <button id="loginButton" onclick="authenticate()">Login</button>
+            </form> 
+        </div>
+    </div>
+</section>
+         
             <section class="calendar-section">
                 <div class="authenticated-page" id="authenticatedPage">
                     <h2 id="calendarTitle">Reservation Calendar</h2>
