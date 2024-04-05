@@ -226,22 +226,28 @@ body {
             <h1>Spa Zone Reservation Calendar</h1>
         </header>
         <main>
-            <section class="login-section">
-    <div class="login-form">
-        <h2>Login</h2>
-        <form id="loginForm" onsubmit="event.preventDefault(); authenticate();">
-            <label for="roomNumber">Room Number:</label>
-            <input type="text" id="roomNumber" placeholder="Enter room number">
-            <label for="password">Password:</label>
-            <input type="password" id="password" placeholder="Enter password">
-            <div class="checkbox-container">
-                <input type="checkbox" id="acceptCheckbox">
-                <label for="acceptCheckbox">Accept terms</label>
-            </div>
-            <button id="loginButton" onclick="authenticate()">Login</button>
-        </form> 
-    </div>
-</section>
+            <div class="container">
+    <header>
+        <h1>Spa Zone Reservation Calendar</h1>
+    </header>
+    
+    <section class="login-section">
+        <div class="login-form">
+            <h2>Login</h2>
+            <form id="loginForm" onsubmit="event.preventDefault(); authenticate();">
+                <label for="roomNumber">Room Number:</label>
+                <input type="text" id="roomNumber" placeholder="Enter room number">
+                <label for="password">Password:</label>
+                <input type="password" id="password" placeholder="Enter password">
+                <div class="checkbox-container">
+                    <input type="checkbox" id="acceptCheckbox">
+                    <label for="acceptCheckbox">Accept terms</label>
+                </div>
+                <button id="loginButton" onclick="authenticate()">Login</button>
+            </form> 
+        </div>
+    </section>
+</div>
 
          
             <section class="calendar-section">
