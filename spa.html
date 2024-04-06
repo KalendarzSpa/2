@@ -519,26 +519,6 @@ function openConfirmationModal() {
     };
 }
 
-    function canMakeReservation(roomNumber, currentDate) {
-    // Sprawdź, czy istnieje rezerwacja dla danego dnia i pokoju
-    var existingReservation = reservations.find(function(reservation) {
-        return reservation.roomNumber === roomNumber && reservation.date === currentDate.toLocaleDateString();
-    });
-
-    // Jeśli nie ma żadnej rezerwacji dla danego dnia i pokoju, zwróć true
-    if (!existingReservation) {
-        return true;
-    } else {
-        // Jeśli istnieje rezerwacja, sprawdź, czy pozostało mniej niż 10 minut do rozpoczęcia bloku czasowego
-        var currentTime = new Date();
-        var timeDifference = currentDate.getTime() - currentTime.getTime(); // Różnica czasu w milisekundach
-        var minutesDifference = Math.floor(timeDifference / (1000 * 60)); // Różnica czasu w minutach
-
-        return minutesDifference <= 10; // Zwróć true, jeśli pozostało mniej niż 10 minut
-    }
-}
-
-
      function closeConfirmationModal() {
     var confirmationModal = document.getElementById('confirmationModal');
     var overlay = document.getElementById('overlay');
