@@ -538,7 +538,7 @@ function openConfirmationModal() {
 }
 
 function canMakeReservation(roomNumber, selectedTimeSlotDate) {
-    // Sprawdź, czy istnieje rezerwacja dla danego pokoju na tę samą datę (niezależnie od godziny)
+    // Sprawdź, czy istnieje już rezerwacja dla danego pokoju na tę samą datę
     var existingReservationsForRoomAndDate = reservations.some(function (reservation) {
         var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Pobierz datę rezerwacji
         return reservation.roomNumber === roomNumber && reservationDate.toDateString() === selectedTimeSlotDate.toDateString();
@@ -547,6 +547,7 @@ function canMakeReservation(roomNumber, selectedTimeSlotDate) {
     // Jeśli istnieje już rezerwacja dla danego pokoju na tę samą datę, zwróć false
     return !existingReservationsForRoomAndDate;
 }
+
 
 
 
