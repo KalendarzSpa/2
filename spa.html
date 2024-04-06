@@ -562,12 +562,20 @@ function confirmReservation() {
         var currentDate = new Date();
         var roomNumber = document.getElementById('roomNumber').value;
 
-        // Pobierz datę bloku czasowego wybranego przez użytkownika
-        var selectedTimeSlotDate = new Date(selectedTimeSlot.dataset.timeSlotId.split('-').slice(0, 3).join('-'));
+        // Pobierz datę i godzinę bloku czasowego wybranego przez użytkownika
+        var selectedTimeSlotId = selectedTimeSlot.dataset.timeSlotId;
+        var selectedTimeSlotDate = new Date(selectedTimeSlotId.split('-').slice(0, 3).join('-'));
 
-        // Sprawdzamy, czy można dokonać rezerwacji dla danego pokoju i daty
+        // Sprawdź, czy wybrana data jest dzisiejszą datą rezerwacji
+        var isToday = selectedTimeSlotDate.toDateString() === currentDate.toDateString();
+
+        // Sprawdź, czy można dokonać rezerwacji dla danego pokoju i daty
         if (canMakeReservation(roomNumber, selectedTimeSlotDate)) {
-            console.log("Confirming Reservation:", selectedTimeSlot.dataset.timeSlotId);
+            if (isToday) {
+                console.log("Rezerwacja dla dzisiejszego bloku czasowego:", selectedTimeSlotId);
+            } else {
+                console.log("Rezerwacja dla innego dnia:", selectedTimeSlotId);
+            }
             selectedTimeSlot.classList.add('reserved');
             selectedTimeSlot.style.backgroundColor = '#ff6666';
 
@@ -601,12 +609,13 @@ function confirmReservation() {
             closeConfirmationModal();
         } else {
             // Jeśli nie można dokonać rezerwacji dla danego pokoju i daty, informujemy użytkownika
-            alert('You have already made a reservation for this room and day.');
+            alert('Już zarezerwowałeś pokój na ten dzień.');
         }
     } else {
-        console.error("No time slot selected to confirm reservation.");
+        console.error("Nie wybrano bloku czasowego do potwierdzenia rezerwacji.");
     }
 }
+
  
 // Funkcja generująca unikalny identyfikator rezerwacji
 function generateReservationId() {
