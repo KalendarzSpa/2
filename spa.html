@@ -547,10 +547,10 @@ function canMakeReservation(roomNumber, selectedTimeSlotDate) {
     });
 
     // Sprawdź, czy istnieje już rezerwacja dla danego pokoju na inny dzień niż dzisiaj
-    var existingReservationForOtherDay = reservations.some(function (reservation) {
-        var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Pobierz datę rezerwacji
-        return reservation.roomNumber === roomNumber && reservationDate.toDateString() !== currentDate.toDateString();
-    });
+var existingReservationForOtherDay = reservations.some(function (reservation) {
+    var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Pobierz datę rezerwacji
+    return reservation.roomNumber === roomNumber && reservationDate.toDateString() !== currentDate.toDateString() && reservationDate > currentDate;
+});
 
     // Jeśli użytkownik próbuje zarezerwować na dzisiaj, sprawdź, czy istnieje już rezerwacja na dzisiaj
     if (selectedTimeSlotDate.toDateString() === currentDate.toDateString()) {
