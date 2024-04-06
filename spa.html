@@ -568,7 +568,8 @@ function openConfirmationModal() {
 
             var reservationList = document.getElementById('reservationList');
             var listItem = document.createElement('li');
-            listItem.textContent = `${reservation.date}, ${reservation.timeSlotId.split('-')[3]}:00 - Room ${reservation.roomNumber} `;
+            // Dodaj datę i godzinę bloku rezerwacji do elementu listy
+            listItem.textContent = `${currentDate.toLocaleDateString()}, ${timeSlotId.split('-')[3]}:00 - Room ${roomNumber}`;
             listItem.dataset.reservationId = reservation.id;
             
             var cancelButton = document.createElement('button');
