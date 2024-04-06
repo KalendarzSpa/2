@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
     <title>Spa Zone Reservation Calendar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -110,10 +111,14 @@
             gap: 20px;
             border-radius: 15px;
         }
-
-        @media screen and (max-width: 600px) {
+          @media screen and (max-width: 600px) {
             #reservationList li {
                 font-size: 14px;
+                margin: 5px 0;
+            }
+            #reservationList li button {
+                padding: 10px 20px;
+                font-size: 16px;
             }
         }
 
@@ -532,16 +537,17 @@ function openConfirmationModal() {
     };
 }
 
- function canMakeReservation(roomNumber, selectedTimeSlotDate) {
-    // Sprawdź, czy istnieje rezerwacja dla danego pokoju w danym dniu
-    var existingReservationsForRoomAndDay = reservations.filter(function (reservation) {
+function canMakeReservation(roomNumber, selectedTimeSlotDate) {
+    // Sprawdź, czy istnieje rezerwacja dla danego pokoju na tę samą datę (niezależnie od godziny)
+    var existingReservationsForRoomAndDate = reservations.some(function (reservation) {
         var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Pobierz datę rezerwacji
         return reservation.roomNumber === roomNumber && reservationDate.toDateString() === selectedTimeSlotDate.toDateString();
     });
 
-    // Jeśli istnieje już rezerwacja dla danego pokoju w danym dniu, zwróć false
-    return existingReservationsForRoomAndDay.length === 0;
+    // Jeśli istnieje już rezerwacja dla danego pokoju na tę samą datę, zwróć false
+    return !existingReservationsForRoomAndDate;
 }
+
 
 
      function closeConfirmationModal() {
