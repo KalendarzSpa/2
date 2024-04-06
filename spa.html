@@ -459,14 +459,17 @@ function generateCalendar() {
                 timeSlot.classList.add('reserved');
             } else if (numReservations >= 2) {
                 timeSlot.classList.add('taken');
+            } else {
+                timeSlot.classList.add('available'); 
             }
 
             timeSlot.addEventListener('click', function () {
                 selectedTimeSlot = this;
-                var numReservations = getReservationsForSlot(selectedTimeSlot.dataset.timeSlotId).length;
-                if (numReservations >= 2) {
+                if (selectedTimeSlot.classList.contains('taken')) {
                     openTakenModal();
-                } else if (!selectedTimeSlot.classList.contains('reserved') && !selectedTimeSlot.classList.contains('taken')) {
+                } else if (selectedTimeSlot.classList.contains('reserved')) {
+                    openConfirmationModal();
+                } else  {
                     openConfirmationModal();
                 }
             });
