@@ -540,28 +540,21 @@ function openConfirmationModal() {
 function canMakeReservation(roomNumber, selectedTimeSlotDate) {
     var currentDate = new Date(); // Obecna data
 
-    // Sprawdź, czy istnieje już rezerwacja dla danego pokoju na dzisiaj
-    var existingReservationForToday = reservations.some(function (reservation) {
+    // Sprawdź, czy istnieje już rezerwacja dla danego pokoju na wybrany dzień
+    var existingReservationForSelectedDay = reservations.some(function (reservation) {
         var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Pobierz datę rezerwacji
-        return reservation.roomNumber === roomNumber && reservationDate.toDateString() === currentDate.toDateString();
+        return reservation.roomNumber === roomNumber && reservationDate.toDateString() === selectedTimeSlotDate.toDateString();
     });
-
-    // Sprawdź, czy istnieje już rezerwacja dla danego pokoju na inny dzień niż dzisiaj
-var existingReservationForOtherDay = reservations.some(function (reservation) {
-    var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Pobierz datę rezerwacji
-    return reservation.roomNumber === roomNumber && reservationDate.toDateString() !== currentDate.toDateString() && reservationDate > currentDate;
-});
 
     // Jeśli użytkownik próbuje zarezerwować na dzisiaj, sprawdź, czy istnieje już rezerwacja na dzisiaj
     if (selectedTimeSlotDate.toDateString() === currentDate.toDateString()) {
-        return !existingReservationForToday;
+        return !existingReservationForSelectedDay;
     }
-    // Jeśli użytkownik próbuje zarezerwować na inny dzień, sprawdź, czy istnieje już rezerwacja na inny dzień
+    // Jeśli użytkownik próbuje zarezerwować na inny dzień, sprawdź, czy istnieje już rezerwacja na ten konkretny dzień
     else {
-        return !existingReservationForOtherDay;
+        return !existingReservationForSelectedDay;
     }
 }
-
 
 
      function closeConfirmationModal() {
