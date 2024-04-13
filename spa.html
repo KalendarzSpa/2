@@ -466,9 +466,9 @@
             }
 
             // Dodaj klasę room-reserved, jeśli blok czasowy jest zarezerwowany przez Twój pokój
-            if (isTimeSlotReservedByRoom(timeSlotId, roomId)) {
-                timeSlot.classList.add('confirmed');
-            }
+            if (isTimeSlotReservedByRoom(timeSlotId)) {
+    timeSlot.classList.add('confirmed');
+}
 
             timeSlot.addEventListener('click', function () {
                 selectedTimeSlot = this;
