@@ -423,7 +423,7 @@
             translatePlaceholders(lang);
         }
 
-      function generateCalendar(roomId) {
+     function generateCalendar(roomnumber) {
     var calendar = document.getElementById('calendar');
     calendar.innerHTML = '';
 
@@ -466,9 +466,9 @@
             }
 
             // Dodaj klasę room-reserved, jeśli blok czasowy jest zarezerwowany przez Twój pokój
-            if (isTimeSlotReservedByRoom(timeSlotId)) {
-    timeSlot.classList.add('confirmed');
-}
+            if (isTimeSlotReservedByRoom(timeSlotId, roomId)) {
+                timeSlot.classList.add('confirmed');
+            }
 
             timeSlot.addEventListener('click', function () {
                 selectedTimeSlot = this;
@@ -490,6 +490,13 @@
         calendar.appendChild(dayElement);
     }
 }
+
+function isTimeSlotReservedByRoom(timeSlotId, roomId) {
+    return reservations.some(function (reservation) {
+        return reservation.timeSlotId === timeSlotId && reservation.roomId === roomId;
+    });
+}
+
 
 function openCancelConfirmationModal() {
     var confirmationModal = document.getElementById('confirmationModal');
