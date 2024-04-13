@@ -467,7 +467,7 @@
             }
 
             // Dodaj klasę room-reserved, jeśli blok czasowy jest zarezerwowany przez Twój pokój
-            if (isTimeSlotReservedByRoom(timeSlotId)) {
+            if (isTimeSlotReservedByRoom(timeSlotId, roomId)) {
                 timeSlot.classList.add('confirmed');
             }
 
@@ -477,19 +477,20 @@
                     openTakenModal();
                 } else if (selectedTimeSlot.classList.contains('reserved')) {
                     openConfirmationModal();
-                  } else if (selectedTimeSlot.classList.contains('confirmed')) {
-            openCancelConfirmationModal();
+                } else if (selectedTimeSlot.classList.contains('confirmed')) {
+                    openCancelConfirmationModal();
                 } else {
                     openConfirmationModal();
                 }
             });
-}
+
             timeSlotsContainer.appendChild(timeSlot);
         }
 
         dayElement.appendChild(timeSlotsContainer);
         calendar.appendChild(dayElement);
     }
+}
 
 function openCancelConfirmationModal() {
     var confirmationModal = document.getElementById('confirmationModal');
