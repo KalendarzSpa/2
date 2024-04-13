@@ -490,7 +490,6 @@
         dayElement.appendChild(timeSlotsContainer);
         calendar.appendChild(dayElement);
     }
-}
 
 function openCancelConfirmationModal() {
     var confirmationModal = document.getElementById('confirmationModal');
@@ -503,7 +502,7 @@ function openCancelConfirmationModal() {
     yesButton.textContent = 'Tak';
     
     yesButton.onclick = function () {
-        cancelReservation(); // Wywołaj funkcję anulowania rezerwacji
+        cancelReservation(reservation); // Wywołaj funkcję anulowania rezerwacji
         closeConfirmationModal(); // Zamknij okno modalne
     };
     
@@ -515,11 +514,13 @@ function openCancelConfirmationModal() {
     confirmationModal.style.display = 'block';
     overlay.style.display = 'block';
 }
-function isTimeSlotReservedByRoom(timeSlotId, roomId) {
+function isTimeSlotReservedByRoom(timeSlotId) {
+    var roomId = document.getElementById('roomNumber').value;
     return reservations.some(function (reservation) {
         return reservation.timeSlotId === timeSlotId && reservation.roomId === roomId;
     });
 }
+
         function getReservationsForSlot(timeSlotId) {
             // Filtrujemy listę rezerwacji, aby znaleźć te, które odpowiadają podanemu identyfikatorowi slotu czasowego
             var reservationsForSlot = reservations.filter(function (reservation) {
