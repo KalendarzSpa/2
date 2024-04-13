@@ -383,7 +383,6 @@ function authenticate() {
 
             loadReservations(roomNumber).then(function () {
                 generateCalendar();
-                updateReservationList(roomNumber);
             }).catch(function (error) {
                 console.error("Error loading reservations:", error);
             });
