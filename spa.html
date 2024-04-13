@@ -95,6 +95,9 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
+        .time-slot.confirmed {
+          background-color: blue;
+            }
 
         .login-form button:hover {
             background-color: #0056b3;
@@ -530,7 +533,9 @@
         function confirmReservation() {
             if (selectedTimeSlot) {
                 selectedTimeSlot.classList.remove('available');
-                selectedTimeSlot.classList.add('reserved');
+                selectedTimeSlot.classList.add('confirmed');
+                selectedTimeSlot.style.backgroundColor = 'blue'; // Dodaj tę linię, aby zmienić kolor na niebieski
+
                 closeConfirmationModal();
                 var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
                 var roomId = document.getElementById('roomNumber').value;
