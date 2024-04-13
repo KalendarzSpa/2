@@ -390,8 +390,7 @@
                     document.querySelector('.calendar-section').style.display = 'flex';
 
                     loadReservations(roomNumber).then(function () {
-                        generateCalendar();
-                        updateReservationList(roomNumber);
+                        generateCalendar(roomNumber);
                     }).catch(function (error) {
                         console.error("Error loading reservations:", error);
                     });
@@ -424,7 +423,7 @@
             translatePlaceholders(lang);
         }
 
-      function generateCalendar() {
+      function generateCalendar(roomnumber) {
     var calendar = document.getElementById('calendar');
     calendar.innerHTML = '';
 
