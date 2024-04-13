@@ -468,7 +468,7 @@
 
             // Dodaj klasę room-reserved, jeśli blok czasowy jest zarezerwowany przez Twój pokój
             if (isTimeSlotReservedByRoom(timeSlotId)) {
-                timeSlot.classList.add('room-reserved');
+                timeSlot.classList.add('confirmed');
             }
 
             timeSlot.addEventListener('click', function () {
@@ -477,11 +477,13 @@
                     openTakenModal();
                 } else if (selectedTimeSlot.classList.contains('reserved')) {
                     openConfirmationModal();
+                  } else if (selectedTimeSlot.classList.contains('confirmed')) {
+            openCancelConfirmationModal();
                 } else {
                     openConfirmationModal();
                 }
             });
-
+}
             timeSlotsContainer.appendChild(timeSlot);
         }
 
@@ -490,6 +492,29 @@
     }
 }
 
+function openCancelConfirmationModal() {
+    var confirmationModal = document.getElementById('confirmationModal');
+    var overlay = document.getElementById('overlay');
+    var confirmationMessage = document.getElementById('confirmationMessage');
+    var yesButton = document.getElementById('yesButton');
+    var noButton = document.getElementById('noButton');
+    
+    confirmationMessage.textContent = 'Czy na pewno chcesz anulować rezerwację?';
+    yesButton.textContent = 'Tak';
+    
+    yesButton.onclick = function () {
+        cancelReservation(); // Wywołaj funkcję anulowania rezerwacji
+        closeConfirmationModal(); // Zamknij okno modalne
+    };
+    
+    noButton.textContent = 'Nie';
+    noButton.onclick = function () {
+        closeConfirmationModal(); // Zamknij okno modalne
+    };
+
+    confirmationModal.style.display = 'block';
+    overlay.style.display = 'block';
+}
 
         function getReservationsForSlot(timeSlotId) {
             // Filtrujemy listę rezerwacji, aby znaleźć te, które odpowiadają podanemu identyfikatorowi slotu czasowego
@@ -526,6 +551,21 @@
                 closeConfirmationModal(); // Zamknij okno modalne
             };
         }
+        function cancelReservation(reservation) {
+    // Usunięcie rezerwacji z listy "Moje rezerwacje"
+    reservations = reservations.filter(r => r.id !== reservation.id);
+    var reservationList = document.getElementById('reservationList');
+    var listItem = reservationList.querySelector(`[data-reservation-id="${reservation.id}"]`);
+    reservationList.removeChild(listItem);
+
+    // Usunięcie rezerwacji z bazy danych Firestore
+    db.collection("reservations").doc(reservation.id).delete().then(function() {
+        console.log("Rezerwacja pomyślnie usunięta z Firestore");
+        console.log(reservation.id)
+    }).catch(function(error) {
+        console.error("Błąd podczas usuwania rezerwacji z Firestore: ", error);
+    });
+}
 
         function closeConfirmationModal() {
             var confirmationModal = document.getElementById('confirmationModal');
