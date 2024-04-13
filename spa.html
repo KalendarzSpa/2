@@ -424,66 +424,71 @@
             translatePlaceholders(lang);
         }
 
-        function generateCalendar() {
-            var calendar = document.getElementById('calendar');
-            calendar.innerHTML = '';
+      function generateCalendar() {
+    var calendar = document.getElementById('calendar');
+    calendar.innerHTML = '';
 
-            var today = new Date();
-            today.setHours(0, 0, 0, 0);
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-            for (var dayOffset = 0; dayOffset < 2; dayOffset++) {
-                var currentDate = new Date(today);
-                currentDate.setDate(currentDate.getDate() + dayOffset);
+    for (var dayOffset = 0; dayOffset < 2; dayOffset++) {
+        var currentDate = new Date(today);
+        currentDate.setDate(currentDate.getDate() + dayOffset);
 
-                var dayElement = document.createElement('div');
-                dayElement.className = 'day';
-                dayElement.textContent = currentDate.toLocaleDateString(currentLanguage, {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'numeric',
-                    year: 'numeric'
-                });
+        var dayElement = document.createElement('div');
+        dayElement.className = 'day';
+        dayElement.textContent = currentDate.toLocaleDateString(currentLanguage, {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'numeric',
+            year: 'numeric'
+        });
 
-                var timeSlotsContainer = document.createElement('div');
-                timeSlotsContainer.className = 'time-slots-container';
+        var timeSlotsContainer = document.createElement('div');
+        timeSlotsContainer.className = 'time-slots-container';
 
-                // Dodaj bloki godzinowe
-                for (var i = 8; i <= 21; i++) {
-                    var timeSlotId = generateTimeSlotId(currentDate, i);
-                    var reservationsForSlot = getReservationsForSlot(timeSlotId);
-                    var numReservations = reservationsForSlot.length;
+        // Dodaj bloki godzinowe
+        for (var i = 8; i <= 21; i++) {
+            var timeSlotId = generateTimeSlotId(currentDate, i);
+            var reservationsForSlot = getReservationsForSlot(timeSlotId);
+            var numReservations = reservationsForSlot.length;
 
-                    var timeSlot = document.createElement('div');
-                    timeSlot.className = 'time-slot';
-                    timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
-                    timeSlot.dataset.timeSlotId = timeSlotId;
+            var timeSlot = document.createElement('div');
+            timeSlot.className = 'time-slot';
+            timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
+            timeSlot.dataset.timeSlotId = timeSlotId;
 
-                    if (numReservations === 1) {
-                        timeSlot.classList.add('reserved');
-                    } else if (numReservations >= 2) {
-                        timeSlot.classList.add('taken');
-                    } else {
-                        timeSlot.classList.add('available');
-                    }
-
-                    timeSlot.addEventListener('click', function () {
-                        selectedTimeSlot = this;
-                        if (selectedTimeSlot.classList.contains('taken')) {
-                            openTakenModal();
-                        } else if (selectedTimeSlot.classList.contains('reserved')) {
-                            openConfirmationModal();
-                        } else {
-                            openConfirmationModal();
-                        }
-                    });
-
-                    timeSlotsContainer.appendChild(timeSlot);
-                }
-
-                dayElement.appendChild(timeSlotsContainer);
-                calendar.appendChild(dayElement);
+            if (numReservations === 1) {
+                timeSlot.classList.add('reserved');
+            } else if (numReservations >= 2) {
+                timeSlot.classList.add('taken');
+            } else {
+                timeSlot.classList.add('available');
             }
+
+            // Dodaj klasę room-reserved, jeśli blok czasowy jest zarezerwowany przez Twój pokój
+            if (isTimeSlotReservedByRoom(timeSlotId)) {
+                timeSlot.classList.add('room-reserved');
+            }
+
+            timeSlot.addEventListener('click', function () {
+                selectedTimeSlot = this;
+                if (selectedTimeSlot.classList.contains('taken')) {
+                    openTakenModal();
+                } else if (selectedTimeSlot.classList.contains('reserved')) {
+                    openConfirmationModal();
+                } else {
+                    openConfirmationModal();
+                }
+            });
+
+            timeSlotsContainer.appendChild(timeSlot);
         }
+
+        dayElement.appendChild(timeSlotsContainer);
+        calendar.appendChild(dayElement);
+    }
+}
 
 
         function getReservationsForSlot(timeSlotId) {
