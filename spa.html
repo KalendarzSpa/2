@@ -419,10 +419,7 @@ function generateCalendar(roomNumber) {
     var calendar = document.getElementById('calendar');
     calendar.innerHTML = '';
 
-    if (!roomNumber) {
-        console.error('Nieprawidłowy numer pokoju.');
-        return;
-    }
+      var roomNumber = document.getElementById('roomNumber').value;
 
     var today = new Date();
     today.setHours(0, 0, 0, 0);
