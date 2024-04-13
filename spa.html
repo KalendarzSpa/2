@@ -112,12 +112,6 @@
             border-radius: 15px;
         }
 
-        @media screen and (max-width: 600px) {
-            #reservationList li {
-                font-size: 14px;
-            }
-        }
-
         .day-header {
             background-color: #007bff;
             color: #fff;
@@ -191,6 +185,9 @@
         .time-slot.taken {
             background-color: #dc3545;
         }
+        .my-reservation {
+    background-color: #0099ff; /* Niebieski kolor */
+}
 
         /* Modal styles */
         .modal {
@@ -250,9 +247,6 @@
                 <!-- Calendar content will be generated here -->
             </div>
             <h2 id="reservationTitle">Reservations:</h2>
-            <ul id="reservationList">
-                <!-- Reservation list will be generated here -->
-            </ul>
         </div>
     </section>
     <div class="modal" id="confirmationModal">
@@ -460,6 +454,8 @@ function generateCalendar() {
                 timeSlot.classList.add('reserved');
             } else if (numReservations >= 2) {
                 timeSlot.classList.add('taken');
+            } else if (reservationsForSlot[0].roomNumber === document.getElementById('roomNumber').value) {
+            timeSlot.classList.add('my-reservation'); 
             } else {
                 timeSlot.classList.add('available'); 
             }
@@ -483,7 +479,6 @@ function generateCalendar() {
     }
 }
 
-
     function getReservationsForSlot(timeSlotId) {
     // Filtrujemy listę rezerwacji, aby znaleźć te, które odpowiadają podanemu identyfikatorowi slotu czasowego
     var reservationsForSlot = reservations.filter(function (reservation) {
@@ -491,8 +486,6 @@ function generateCalendar() {
     });
     return reservationsForSlot;
 }
-
-       
     
     // Funkcja generująca identyfikator slotu czasowego
     function generateTimeSlotId(date, hour) {
@@ -537,32 +530,28 @@ function confirmReservation() {
 
         console.log("Confirming Reservation:", timeSlotId);
         selectedTimeSlot.classList.add('reserved');
-        selectedTimeSlot.style.backgroundColor = '#ff6666';
+        selectedTimeSlot.style.backgroundColor = '#0099ff'; // Niebieski kolor
+        selectedTimeSlot.dataset.reservationId = generateReservationId();
+
+        // Dodaj przycisk anulowania rezerwacji do bloku czasowego
+        var cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Anuluj rezerwację';
+        cancelButton.addEventListener('click', function () {
+            cancelReservation(selectedTimeSlot);
+        });
+        selectedTimeSlot.appendChild(cancelButton);
 
         var reservation = {
-            id: generateReservationId(),
+            id: selectedTimeSlot.dataset.reservationId,
             date: reservationDate.toLocaleDateString(),
             timeSlotId: timeSlotId,
             roomNumber: roomNumber,
         };
 
-        var reservationList = document.getElementById('reservationList');
-        var listItem = document.createElement('li');
-        // Dodaj datę i godzinę bloku rezerwacji do elementu listy
-        listItem.textContent = `${reservation.date}, ${timeSlotId.split('-')[3]}:00 - Room ${roomNumber}`;
-        listItem.dataset.reservationId = reservation.id;
-
-        var cancelButton = document.createElement('button');
-        cancelButton.textContent = 'Anuluj';
-        cancelButton.onclick = function() {
-            cancelReservation(reservation);
-        };
-
-        listItem.appendChild(cancelButton);
-        reservationList.appendChild(listItem);
-
+        // Dodaj rezerwację do tablicy rezerwacji
         reservations.push(reservation);
 
+        // Zapisz rezerwację w bazie danych Firestore
         saveReservationToFirestore(reservation);
 
         closeConfirmationModal();
@@ -571,7 +560,37 @@ function confirmReservation() {
     }
 }
 
+function cancelReservation(timeSlot) {
+    var confirmation = confirm("Czy na pewno chcesz anulować rezerwację?");
 
+    if (confirmation) {
+        // Usuń rezerwację z kalendarza
+        timeSlot.classList.remove('reserved');
+        timeSlot.style.backgroundColor = ''; // Usuń niestandardowy kolor
+        timeSlot.removeChild(timeSlot.querySelector('button'));
+
+        // Zmień klasę bloku w zależności od istniejących rezerwacji
+        var timeSlotId = timeSlot.dataset.timeSlotId;
+        var reservationsForSlot = getReservationsForSlot(timeSlotId);
+        if (reservationsForSlot.length === 0) {
+            timeSlot.classList.add('available');
+        } else if (reservationsForSlot.length === 1) {
+            timeSlot.classList.add('reserved');
+        } else {
+            timeSlot.classList.add('taken');
+        }
+
+        // Usuń rezerwację z tablicy rezerwacji
+        reservations = reservations.filter(r => r.id !== timeSlot.dataset.reservationId);
+
+        // Usuń rezerwację z bazy danych Firestore
+        db.collection("reservations").doc(timeSlot.dataset.reservationId).delete().then(function () {
+            console.log("Rezerwacja pomyślnie usunięta z Firestore");
+        }).catch(function (error) {
+            console.error("Błąd podczas usuwania rezerwacji z Firestore: ", error);
+        });
+    }
+}
 // Funkcja generująca unikalny identyfikator rezerwacji
 function generateReservationId() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -582,29 +601,12 @@ function generateReservationId() {
 }
 
 
-function cancelReservation(reservation) {
-    // Usunięcie rezerwacji z listy "Moje rezerwacje"
-    reservations = reservations.filter(r => r.id !== reservation.id);
-    var reservationList = document.getElementById('reservationList');
-    var listItem = reservationList.querySelector(`[data-reservation-id="${reservation.id}"]`);
-    reservationList.removeChild(listItem);
-
-    // Usunięcie rezerwacji z bazy danych Firestore
-    db.collection("reservations").doc(reservation.id).delete().then(function() {
-        console.log("Rezerwacja pomyślnie usunięta z Firestore");
-        console.log(reservation.id)
-    }).catch(function(error) {
-        console.error("Błąd podczas usuwania rezerwacji z Firestore: ", error);
-    });
-}
-
     function loadReservations(roomNumber) {
     return new Promise(function (resolve, reject) {
         db.collection("reservations")
             .get()
             .then(function (querySnapshot) {
                 reservations = querySnapshot.docs.map(doc => doc.data());
-                updateReservationList();
                 resolve();
             })
             .catch(function (error) {
@@ -613,44 +615,6 @@ function cancelReservation(reservation) {
             });
     });
 }
-
-function updateReservationList(roomNumber) {
-    var reservationList = document.getElementById('reservationList');
-    reservationList.innerHTML = '';
-
-    var currentDate = new Date(); // Obecna data
-
-    var myReservations = reservations.filter(function (reservation) {
-        var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Data bloku rezerwacji
-        return reservation.roomNumber === roomNumber && (reservationDate >= currentDate || reservationDate.toDateString() === currentDate.toDateString()); // Filtrowanie przyszłych rezerwacji lub dzisiejszych
-    });
-
-    myReservations.forEach(function (reservation) {
-        var listItem = document.createElement('li');
-        var timeSlot = reservation.timeSlotId.split('-')[3]; // Pobierz godzinę bloku
-        var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Data bloku rezerwacji
-        var formattedDate = reservationDate.toLocaleDateString(currentLanguage, { day: 'numeric', month: 'long', year: 'numeric' }); // Sformatuj datę
-
-        listItem.textContent = `${formattedDate}, ${timeSlot}:00 - Room ${reservation.roomNumber} `;
-
-        // Dodaj atrybut dataset z identyfikatorem rezerwacji
-        listItem.dataset.reservationId = reservation.id;
-
-        // Stwórz przycisk Anuluj
-
-        var cancelButton = document.createElement('button');
-        cancelButton.textContent = language[currentLanguage]['cancelButtonLabel']; // Tłumaczenie przycisku "Anuluj"
-        cancelButton.onclick = function () {
-            cancelReservation(reservation); // Przekazanie obiektu rezerwacji do funkcji cancelReservation()
-        };
-
-        listItem.appendChild(cancelButton); // Dodaj przycisk Anuluj do elementu listy
-        reservationList.appendChild(listItem);
-    });
-}
-
-
-
 
     function saveReservationToFirestore(reservation) {
     db.collection("reservations").doc(reservation.id).set(reservation)
