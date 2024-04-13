@@ -378,14 +378,11 @@ function authenticate() {
     if (roomPasswords.hasOwnProperty(roomNumber)) {
         if (roomPasswords[roomNumber] === password) {
             // Po poprawnym zalogowaniu ukryj formularz logowania i pokaż część z kalendarzem
-             document.querySelector('.login-section').style.display = 'none';
+            document.querySelector('.login-section').style.display = 'none';
             document.querySelector('.calendar-section').style.display = 'flex';
 
-            loadReservations(roomNumber).then(function () {
-                generateCalendar();
-            }).catch(function (error) {
-                console.error("Error loading reservations:", error);
-            });
+            // Przekaż roomNumber do funkcji generateCalendar
+            generateCalendar(roomNumber);
         } else {
             console.error("Invalid password for room number:", roomNumber);
         }
@@ -393,6 +390,7 @@ function authenticate() {
         console.error("Invalid room number:", roomNumber);
     }
 }
+
 
 function translatePlaceholders(lang) {
     var placeholders = language[lang];
@@ -418,8 +416,6 @@ function translatePlaceholders(lang) {
 function generateCalendar(roomNumber) {
     var calendar = document.getElementById('calendar');
     calendar.innerHTML = '';
-
-      var roomNumber = document.getElementById('roomNumber').value;
 
     var today = new Date();
     today.setHours(0, 0, 0, 0);
