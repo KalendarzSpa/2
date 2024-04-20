@@ -423,13 +423,18 @@ function generateCalendar() {
     var today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    // Ustal bieżącego użytkownika
+    var currentUser = firebase.auth().currentUser;
+    var userId = currentUser ? currentUser.uid : null;
+
+    // Idź przez dwa dni
     for (var dayOffset = 0; dayOffset < 2; dayOffset++) {
         var currentDate = new Date(today);
         currentDate.setDate(currentDate.getDate() + dayOffset);
 
         var dayElement = document.createElement('div');
         dayElement.className = 'day';
-        dayElement.textContent = currentDate.toLocaleDateString(currentLanguage, {
+        dayElement.textContent = currentDate.toLocaleDateString(undefined, {
             weekday: 'long',
             day: 'numeric',
             month: 'numeric',
@@ -439,42 +444,47 @@ function generateCalendar() {
         var timeSlotsContainer = document.createElement('div');
         timeSlotsContainer.className = 'time-slots-container';
 
+        // Pętla przez godziny od 8:00 do 21:00
         for (var i = 8; i <= 21; i++) {
-            var timeSlotId = generateTimeSlotId(currentDate, i);
-            var reservationsForSlot = getReservationsForSlot(timeSlotId);
-            var numReservations = reservationsForSlot.length;
+            var timeSlotId = currentDate.toISOString().split("T")[0] + "-" + i; // Generuj ID slotu czasowego
+            var reservationsForSlot = []; // Pusta tablica rezerwacji dla danego slotu
 
-            var timeSlot = document.createElement('div');
-            timeSlot.className = 'time-slot';
-            timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
+            // Pobierz wszystkie rezerwacje dla tego slotu z Firebase
+            db.collection("reservations").where("timeSlotId", "==", timeSlotId).get()
+                .then(function (querySnapshot) {
+                    querySnapshot.forEach(function (doc) {
+                        reservationsForSlot.push(doc.data());
+                    });
 
-            // Sprawdź liczbę rezerwacji dla danego slotu
-            if (numReservations >= 2) {
-                timeSlot.classList.add('taken'); // Zajęty (czerwony)
-            } else if (numReservations === 1) {
-                timeSlot.classList.add('reserved'); // Zarezerwowany (pomarańczowy)
-            } else {
-                timeSlot.classList.add('available'); // Dostępny
-            }
+                    var currentUserReservation = reservationsForSlot.find(res => res.userId === userId);
+                    var numReservations = reservationsForSlot.length;
 
-            timeSlot.addEventListener('click', function () {
-                selectedTimeSlot = this;
-                if (this.classList.contains('taken')) {
-                    openTakenModal();
-                } else if (this.classList.contains('reserved')) {
-                    openConfirmationModal(); // Można dodać inne akcje dla kliknięcia na rezerwację
-                } else {
-                    openConfirmationModal();
-                }
-            });
+                    var timeSlot = document.createElement('div');
+                    timeSlot.className = 'time-slot';
+                    timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
 
-            timeSlotsContainer.appendChild(timeSlot);
+                    if (currentUserReservation) {
+                        timeSlot.classList.add('own-reservation'); // Kolor niebieski dla własnej rezerwacji
+                    } else if (numReservations >= 2) {
+                        timeSlot.classList.add('taken'); // Kolor czerwony dla pełnych slotów
+                    } else if (numReservations === 1) {
+                        timeSlot.classList.add('reserved'); // Kolor pomarańczowy dla jednej rezerwacji
+                    } else {
+                        timeSlot.classList.add('available'); // Szary dla dostępnych slotów
+                    }
+
+                    timeSlotsContainer.appendChild(timeSlot);
+                })
+                .catch(function (error) {
+                    console.error("Error retrieving reservations: ", error);
+                });
         }
 
         dayElement.appendChild(timeSlotsContainer);
         calendar.appendChild(dayElement);
     }
 }
+
 
 
     function getReservationsForSlot(timeSlotId) {
