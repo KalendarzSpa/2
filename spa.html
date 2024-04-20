@@ -524,13 +524,6 @@ function openCancelConfirmationModal(reservationId) {
     overlay.style.display = 'block';
 }
 
-function isTimeSlotReservedByRoom(timeSlotId) {
-    var roomId = document.getElementById('roomNumber').value;
-    return reservations.some(function (reservation) {
-        return reservation.timeSlotId === timeSlotId && reservation.roomId === roomId;
-    });
-}
-
         function getReservationsForSlot(timeSlotId) {
             // Filtrujemy listę rezerwacji, aby znaleźć te, które odpowiadają podanemu identyfikatorowi slotu czasowego
             var reservationsForSlot = reservations.filter(function (reservation) {
@@ -582,6 +575,7 @@ function isTimeSlotReservedByRoom(timeSlotId) {
         console.error("Błąd podczas usuwania rezerwacji z Firestore: ", error);
     });
 }
+
         function closeConfirmationModal() {
             var confirmationModal = document.getElementById('confirmationModal');
             var overlay = document.getElementById('overlay');
