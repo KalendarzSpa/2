@@ -423,7 +423,7 @@
             translatePlaceholders(lang);
         }
 
-     function generateCalendar(roomId) {
+    function generateCalendar(roomId) {
     var calendar = document.getElementById('calendar');
     calendar.innerHTML = '';
 
@@ -467,7 +467,7 @@
 
             // Dodaj klasę room-reserved, jeśli blok czasowy jest zarezerwowany przez Twój pokój
             if (isTimeSlotReservedByRoom(timeSlotId, roomId)) {
-                timeSlot.classList.add('confirmed');
+                timeSlot.classList.add('confirmed'); // Zawsze oznaczaj rezerwacje w Twoim pokoju kolorem niebieskim
             }
 
             timeSlot.addEventListener('click', function () {
@@ -490,6 +490,7 @@
         calendar.appendChild(dayElement);
     }
 }
+
 
 function isTimeSlotReservedByRoom(timeSlotId, roomId) {
     return reservations.some(function (reservation) {
