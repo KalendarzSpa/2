@@ -412,66 +412,71 @@ function translatePlaceholders(lang) {
 }
 
 function generateCalendar() {
-  var calendar = document.getElementById('calendar');
-  calendar.innerHTML = '';
+    var calendar = document.getElementById('calendar');
+    calendar.innerHTML = '';
 
-  var today = new Date();
-  today.setHours(0, 0, 0, 0);
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-  for (var dayOffset = 0; dayOffset < 2; dayOffset++) {
-      var currentDate = new Date(today);
-      currentDate.setDate(currentDate.getDate() + dayOffset);
+    for (var dayOffset = 0; dayOffset < 2; dayOffset++) {
+        var currentDate = new Date(today);
+        currentDate.setDate(currentDate.getDate() + dayOffset);
 
-      var dayElement = document.createElement('div');
-      dayElement.className = 'day';
-      dayElement.textContent = currentDate.toLocaleDateString();
+        var dayElement = document.createElement('div');
+        dayElement.className = 'day';
+        dayElement.textContent = currentDate.toLocaleDateString(currentLanguage, {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'numeric',
+            year: 'numeric'
+        });
 
-      var timeSlotsContainer = document.createElement('div');
-      timeSlotsContainer.className = 'time-slots-container';
+        var timeSlotsContainer = document.createElement('div');
+        timeSlotsContainer.className = 'time-slots-container';
 
-      for (var i = 8; i <= 21; i++) {
-          var timeSlotId = generateTimeSlotId(currentDate, i);
-          var reservationsForSlot = getReservationsForSlot(timeSlotId);
+      var roomNumber = document.getElementById('roomNumber').value; // numer pokoju użytkownika
+    for (var i = 8; i <= 21; i++) {
+        var timeSlotId = generateTimeSlotId(currentDate, i);
+        var reservationsForSlot = getReservationsForSlot(timeSlotId);
+        var numReservations = reservationsForSlot.length;
 
-          var timeSlot = document.createElement('div');
-          timeSlot.className = 'time-slot';
-          timeSlot.textContent = `${i}:00 - ${(i + 1)}:00`;
+        var timeSlot = document.createElement('div');
+        timeSlot.className = 'time-slot';
+        timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
+        timeSlot.dataset.timeSlotId = timeSlotId;
 
-          if (reservationsForSlot.length >= 2) {
-              timeSlot.classList.add('taken');
-          } else if (reservationsForSlot.length === 1) {
-              var reservation = reservationsForSlot[0];
-              if (reservation.roomNumber === document.getElementById('roomNumber').value) {
-                  timeSlot.classList.add('user-reserved');
-                  timeSlot.style.backgroundColor = 'dodgerblue';
-              } else {
-                  timeSlot.classList.add('reserved');
-                  timeSlot.style.backgroundColor = 'orange';
-              }
-          }
-          timeSlot.addEventListener('click', function () {
-    selectedTimeSlot = this;
+        var userReservation = reservationsForSlot.find(r => r.roomNumber === roomNumber);
 
-    if (this.classList.contains('taken')) {
-        openTakenModal();
-    } else if (this.classList.contains('user-reserved')) {
-        openCancellationModal(); // Dodaj to dla rezerwacji użytkownika
-    } else {
-        openConfirmationModal();
+        if (numReservations >= 2) {
+            timeSlot.classList.add('taken');
+        } else if (userReservation) {
+            timeSlot.classList.add('user-reserved'); // Dodaj klasę, jeśli rezerwacja należy do użytkownika
+            timeSlot.style.backgroundColor = 'dodgerblue'; // Kolor dla użytkownika
+        } else {
+            timeSlot.classList.add('available');
+        }
+
+        timeSlot.addEventListener('click', function () {
+            selectedTimeSlot = this;
+            if (this.classList.contains('taken')) {
+                openTakenModal();
+            } else if (this.classList.contains('user-reserved')) { // Modal dla rezerwacji użytkownika
+                openCancellationModal();
+            } else {
+                openConfirmationModal();
+            }
+        });
+
+        timeSlotsContainer.appendChild(timeSlot);
     }
-});
 
-          timeSlot.dataset.timeSlotId = timeSlotId;
-          timeSlotsContainer.appendChild(timeSlot);
-      }
-
-      dayElement.appendChild(timeSlotsContainer);
-      calendar.appendChild(dayElement);
-  }
+        dayElement.appendChild(timeSlotsContainer);
+        calendar.appendChild(dayElement);
+    }
 }
 
 
-function getReservationsForSlot(timeSlotId) {
+    function getReservationsForSlot(timeSlotId) {
     // Filtrujemy listę rezerwacji, aby znaleźć te, które odpowiadają podanemu identyfikatorowi slotu czasowego
     var reservationsForSlot = reservations.filter(function (reservation) {
         return reservation.timeSlotId === timeSlotId;
@@ -549,6 +554,21 @@ function confirmReservation() {
             timeSlotId: timeSlotId,
             roomNumber: roomNumber,
         };
+
+        var reservationList = document.getElementById('reservationList');
+        var listItem = document.createElement('li');
+        // Dodaj datę i godzinę bloku rezerwacji do elementu listy
+        listItem.textContent = `${reservation.date}, ${timeSlotId.split('-')[3]}:00 - Room ${roomNumber}`;
+        listItem.dataset.reservationId = reservation.id;
+
+        var cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Anuluj';
+        cancelButton.onclick = function() {
+            cancelReservation(reservation);
+        };
+
+        listItem.appendChild(cancelButton);
+        reservationList.appendChild(listItem);
 
         reservations.push(reservation);
 
