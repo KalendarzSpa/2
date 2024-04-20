@@ -387,7 +387,6 @@ function authenticate() {
 
             loadReservations(roomNumber).then(function () {
                 generateCalendar();
-                updateReservationList(roomNumber);
             }).catch(function (error) {
                 console.error("Error loading reservations:", error);
             });
@@ -420,7 +419,6 @@ function translatePlaceholders(lang) {
     document.getElementById('password').placeholder = placeholders['passwordPlaceholder'];
 }
 
-
 function generateCalendar() {
     var calendar = document.getElementById('calendar');
     calendar.innerHTML = '';
@@ -444,7 +442,6 @@ function generateCalendar() {
         var timeSlotsContainer = document.createElement('div');
         timeSlotsContainer.className = 'time-slots-container';
 
-        // Dodaj bloki godzinowe
         for (var i = 8; i <= 21; i++) {
             var timeSlotId = generateTimeSlotId(currentDate, i);
             var reservationsForSlot = getReservationsForSlot(timeSlotId);
@@ -457,8 +454,14 @@ function generateCalendar() {
 
             if (numReservations === 1) {
                 timeSlot.classList.add('reserved');
+                if (reservationsForSlot[0].room === 'Twój pokój') {
+                    timeSlot.style.backgroundColor = '#32CD32'; // Dodaj kolor dla Twojej rezerwacji
+                } else {
+                    timeSlot.style.backgroundColor = '#FFA500'; // Dodaj kolor dla innych rezerwacji
+                }
             } else if (numReservations >= 2) {
                 timeSlot.classList.add('taken');
+                timeSlot.style.backgroundColor = '#DC143C'; // Dodaj kolor dla pełnych slotów
             } else {
                 timeSlot.classList.add('available');
             }
@@ -470,8 +473,10 @@ function generateCalendar() {
                 } else if (selectedTimeSlot.classList.contains('available')) {
                     openConfirmationModal();
                 } else {
-                    // Blok jest już zarezerwowany, ale można dodać tu inne działania w zależności od potrzeb
-                    alert("Ten slot czasowy jest już zajęty.");
+                    var confirmCancel = confirm("Czy chcesz anulować rezerwację?"); // Wyświetl okno dialogowe z pytaniem
+                    if (confirmCancel) {
+                        cancelReservation(reservation); // Anuluj rezerwację po potwierdzeniu
+                    }
                 }
             });
 
@@ -482,6 +487,10 @@ function generateCalendar() {
         calendar.appendChild(dayElement);
     }
 }
+
+
+
+    
 
     function getReservationsForSlot(timeSlotId) {
     // Filtrujemy listę rezerwacji, aby znaleźć te, które odpowiadają podanemu identyfikatorowi slotu czasowego
@@ -629,48 +638,12 @@ function cancelReservation(reservation) {
             .get()
             .then(function (querySnapshot) {
                 reservations = querySnapshot.docs.map(doc => doc.data());
-                updateReservationList();
                 resolve();
             })
             .catch(function (error) {
                 console.error("Error getting reservations: ", error);
                 reject(error);
             });
-    });
-}
-
-function updateReservationList(roomNumber) {
-    var reservationList = document.getElementById('reservationList');
-    reservationList.innerHTML = '';
-
-    var currentDate = new Date(); // Obecna data
-
-    var myReservations = reservations.filter(function (reservation) {
-        var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Data bloku rezerwacji
-        return reservation.roomNumber === roomNumber && (reservationDate >= currentDate || reservationDate.toDateString() === currentDate.toDateString()); // Filtrowanie przyszłych rezerwacji lub dzisiejszych
-    });
-
-    myReservations.forEach(function (reservation) {
-        var listItem = document.createElement('li');
-        var timeSlot = reservation.timeSlotId.split('-')[3]; // Pobierz godzinę bloku
-        var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Data bloku rezerwacji
-        var formattedDate = reservationDate.toLocaleDateString(currentLanguage, { day: 'numeric', month: 'long', year: 'numeric' }); // Sformatuj datę
-
-        listItem.textContent = `${formattedDate}, ${timeSlot}:00 - Room ${reservation.roomNumber} `;
-
-        // Dodaj atrybut dataset z identyfikatorem rezerwacji
-        listItem.dataset.reservationId = reservation.id;
-
-        // Stwórz przycisk Anuluj
-
-        var cancelButton = document.createElement('button');
-        cancelButton.textContent = language[currentLanguage]['cancelButtonLabel']; // Tłumaczenie przycisku "Anuluj"
-        cancelButton.onclick = function () {
-            cancelReservation(reservation); // Przekazanie obiektu rezerwacji do funkcji cancelReservation()
-        };
-
-        listItem.appendChild(cancelButton); // Dodaj przycisk Anuluj do elementu listy
-        reservationList.appendChild(listItem);
     });
 }
 
