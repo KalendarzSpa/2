@@ -371,7 +371,7 @@
         // Set default language
         var currentLanguage = 'pl';
 
-
+var selectedReservationId;
 
         function authenticate() {
             var roomNumber = document.getElementById('roomNumber').value;
@@ -499,7 +499,8 @@ function isTimeSlotReservedByRoom(timeSlotId, roomId) {
 }
 
 
-function openCancelConfirmationModal() {
+function openCancelConfirmationModal(reservationId) {
+    selectedReservationId = reservationId; // Przypisz ID wybranej rezerwacji do zmiennej globalnej
     var confirmationModal = document.getElementById('confirmationModal');
     var overlay = document.getElementById('overlay');
     var confirmationMessage = document.getElementById('confirmationMessage');
@@ -510,7 +511,7 @@ function openCancelConfirmationModal() {
     yesButton.textContent = 'Tak';
     
     yesButton.onclick = function () {
-        cancelReservation(reservation); // Wywołaj funkcję anulowania rezerwacji
+        cancelReservation(selectedReservationId); // Przekazanie ID rezerwacji do funkcji anulowania
         closeConfirmationModal(); // Zamknij okno modalne
     };
     
@@ -522,6 +523,7 @@ function openCancelConfirmationModal() {
     confirmationModal.style.display = 'block';
     overlay.style.display = 'block';
 }
+
 function isTimeSlotReservedByRoom(timeSlotId) {
     var roomId = document.getElementById('roomNumber').value;
     return reservations.some(function (reservation) {
@@ -564,22 +566,22 @@ function isTimeSlotReservedByRoom(timeSlotId) {
                 closeConfirmationModal(); // Zamknij okno modalne
             };
         }
-        function cancelReservation(reservation) {
+      function cancelReservation(reservationId) {
     // Usunięcie rezerwacji z listy "Moje rezerwacje"
-    reservations = reservations.filter(r => r.id !== reservation.id);
+    reservations = reservations.filter(function(reservation) {
+        return reservation.id !== reservationId;
+    });
     var reservationList = document.getElementById('reservationList');
-    var listItem = reservationList.querySelector(`[data-reservation-id="${reservation.id}"]`);
+    var listItem = reservationList.querySelector(`[data-reservation-id="${reservationId}"]`);
     reservationList.removeChild(listItem);
 
     // Usunięcie rezerwacji z bazy danych Firestore
-    db.collection("reservations").doc(reservation.id).delete().then(function() {
+    db.collection("reservations").doc(reservationId).delete().then(function() {
         console.log("Rezerwacja pomyślnie usunięta z Firestore");
-        console.log(reservation.id)
     }).catch(function(error) {
         console.error("Błąd podczas usuwania rezerwacji z Firestore: ", error);
     });
 }
-
         function closeConfirmationModal() {
             var confirmationModal = document.getElementById('confirmationModal');
             var overlay = document.getElementById('overlay');
@@ -611,7 +613,6 @@ function isTimeSlotReservedByRoom(timeSlotId) {
                             roomId: roomId,
                             timeSlotId: timeSlotId
                         });
-                        updateReservationList(roomId);
                     })
                     .catch(function (error) {
                         console.error("Error adding reservation: ", error);
@@ -632,20 +633,6 @@ function isTimeSlotReservedByRoom(timeSlotId) {
                 querySnapshot.forEach(function (doc) {
                     reservations.push(doc.data());
                 });
-            });
-        }
-
-        // Aktualizuj listę rezerwacji na stronie
-        function updateReservationList(roomId) {
-            var reservationList = document.getElementById('reservationList');
-            reservationList.innerHTML = '';
-            var roomReservations = reservations.filter(function (reservation) {
-                return reservation.roomId === roomId;
-            });
-            roomReservations.forEach(function (reservation) {
-                var listItem = document.createElement('li');
-                listItem.textContent = reservation.timeSlotId;
-                reservationList.appendChild(listItem);
             });
         }
 
