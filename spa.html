@@ -389,7 +389,6 @@ function authenticate() {
 
             loadReservations(roomNumber).then(function () {
                 generateCalendar();
-                updateReservationList(roomNumber);
             }).catch(function (error) {
                 console.error("Error loading reservations:", error);
             });
@@ -624,7 +623,6 @@ function cancelReservation(reservation) {
             .get()
             .then(function (querySnapshot) {
                 reservations = querySnapshot.docs.map(doc => doc.data());
-                updateReservationList();
                 resolve();
             })
             .catch(function (error) {
@@ -633,43 +631,6 @@ function cancelReservation(reservation) {
             });
     });
 }
-
-function updateReservationList(roomNumber) {
-    var reservationList = document.getElementById('reservationList');
-    reservationList.innerHTML = '';
-
-    var currentDate = new Date(); // Obecna data
-
-    var myReservations = reservations.filter(function (reservation) {
-        var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Data bloku rezerwacji
-        return reservation.roomNumber === roomNumber && (reservationDate >= currentDate || reservationDate.toDateString() === currentDate.toDateString()); // Filtrowanie przyszłych rezerwacji lub dzisiejszych
-    });
-
-    myReservations.forEach(function (reservation) {
-        var listItem = document.createElement('li');
-        var timeSlot = reservation.timeSlotId.split('-')[3]; // Pobierz godzinę bloku
-        var reservationDate = new Date(reservation.timeSlotId.split('-').slice(0, 3).join('-')); // Data bloku rezerwacji
-        var formattedDate = reservationDate.toLocaleDateString(currentLanguage, { day: 'numeric', month: 'long', year: 'numeric' }); // Sformatuj datę
-
-        listItem.textContent = `${formattedDate}, ${timeSlot}:00 - Room ${reservation.roomNumber} `;
-
-        // Dodaj atrybut dataset z identyfikatorem rezerwacji
-        listItem.dataset.reservationId = reservation.id;
-
-        // Stwórz przycisk Anuluj
-
-        var cancelButton = document.createElement('button');
-        cancelButton.textContent = language[currentLanguage]['cancelButtonLabel']; // Tłumaczenie przycisku "Anuluj"
-        cancelButton.onclick = function () {
-            cancelReservation(reservation); // Przekazanie obiektu rezerwacji do funkcji cancelReservation()
-        };
-
-        listItem.appendChild(cancelButton); // Dodaj przycisk Anuluj do elementu listy
-        reservationList.appendChild(listItem);
-    });
-}
-
-
 
 
     function saveReservationToFirestore(reservation) {
