@@ -445,38 +445,41 @@ function generateCalendar() {
         var timeSlotsContainer = document.createElement('div');
         timeSlotsContainer.className = 'time-slots-container';
 
-        // Dodaj bloki godzinowe
-        for (var i = 8; i <= 21; i++) {
-            var timeSlotId = generateTimeSlotId(currentDate, i);
-            var reservationsForSlot = getReservationsForSlot(timeSlotId);
-            var numReservations = reservationsForSlot.length;
+      var roomNumber = document.getElementById('roomNumber').value; // numer pokoju użytkownika
+    for (var i = 8; i <= 21; i++) {
+        var timeSlotId = generateTimeSlotId(currentDate, i);
+        var reservationsForSlot = getReservationsForSlot(timeSlotId);
+        var numReservations = reservationsForSlot.length;
 
-            var timeSlot = document.createElement('div');
-            timeSlot.className = 'time-slot';
-            timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
-            timeSlot.dataset.timeSlotId = timeSlotId;
+        var timeSlot = document.createElement('div');
+        timeSlot.className = 'time-slot';
+        timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
+        timeSlot.dataset.timeSlotId = timeSlotId;
 
-            if (numReservations === 1) {
-                timeSlot.classList.add('reserved');
-            } else if (numReservations >= 2) {
-                timeSlot.classList.add('taken');
-            } else {
-                timeSlot.classList.add('available'); 
-            }
+        var userReservation = reservationsForSlot.find(r => r.roomNumber === roomNumber);
 
-            timeSlot.addEventListener('click', function () {
-                selectedTimeSlot = this;
-                if (selectedTimeSlot.classList.contains('taken')) {
-                    openTakenModal();
-                } else if (selectedTimeSlot.classList.contains('reserved')) {
-                    openConfirmationModal();
-                } else  {
-                    openConfirmationModal();
-                }
-            });
-
-            timeSlotsContainer.appendChild(timeSlot);
+        if (numReservations >= 2) {
+            timeSlot.classList.add('taken');
+        } else if (userReservation) {
+            timeSlot.classList.add('user-reserved'); // Dodaj klasę, jeśli rezerwacja należy do użytkownika
+            timeSlot.style.backgroundColor = 'dodgerblue'; // Kolor dla użytkownika
+        } else {
+            timeSlot.classList.add('available');
         }
+
+        timeSlot.addEventListener('click', function () {
+            selectedTimeSlot = this;
+            if (this.classList.contains('taken')) {
+                openTakenModal();
+            } else if (this.classList.contains('user-reserved')) { // Modal dla rezerwacji użytkownika
+                openCancellationModal();
+            } else {
+                openConfirmationModal();
+            }
+        });
+
+        timeSlotsContainer.appendChild(timeSlot);
+    }
 
         dayElement.appendChild(timeSlotsContainer);
         calendar.appendChild(dayElement);
@@ -525,6 +528,23 @@ function openConfirmationModal() {
     var overlay = document.getElementById('overlay');
     confirmationModal.style.display = 'none';
     overlay.style.display = 'none';
+}
+
+    function openCancellationModal() {
+    var confirmationModal = document.getElementById('confirmationModal');
+    var overlay = document.getElementById('overlay');
+    confirmationModal.style.display = 'block';
+    overlay.style.display = 'block';
+
+    document.getElementById('confirmationMessage').textContent = 'Czy chcesz anulować tę rezerwację?'; // Zmieniony komunikat
+    document.getElementById('yesButton').onclick = function() {
+        var roomNumber = document.getElementById('roomNumber').value;
+        cancelReservation(getReservationsForSlot(selectedTimeSlot.dataset.timeSlotId).find(r => r.roomNumber === roomNumber));
+        closeConfirmationModal();
+    };
+    document.getElementById('noButton').onclick = function() {
+        closeConfirmationModal();
+    };
 }
 
 function confirmReservation() {
