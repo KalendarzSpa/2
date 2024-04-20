@@ -112,12 +112,6 @@
             border-radius: 15px;
         }
 
-        @media screen and (max-width: 600px) {
-            #reservationList li {
-                font-size: 14px;
-            }
-        }
-
         .day-header {
             background-color: #007bff;
             color: #fff;
@@ -445,41 +439,37 @@ function generateCalendar() {
         var timeSlotsContainer = document.createElement('div');
         timeSlotsContainer.className = 'time-slots-container';
 
-      var roomNumber = document.getElementById('roomNumber').value; // numer pokoju użytkownika
-    for (var i = 8; i <= 21; i++) {
-        var timeSlotId = generateTimeSlotId(currentDate, i);
-        var reservationsForSlot = getReservationsForSlot(timeSlotId);
-        var numReservations = reservationsForSlot.length;
+        for (var i = 8; i <= 21; i++) {
+            var timeSlotId = generateTimeSlotId(currentDate, i);
+            var reservationsForSlot = getReservationsForSlot(timeSlotId);
+            var numReservations = reservationsForSlot.length;
 
-        var timeSlot = document.createElement('div');
-        timeSlot.className = 'time-slot';
-        timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
-        timeSlot.dataset.timeSlotId = timeSlotId;
+            var timeSlot = document.createElement('div');
+            timeSlot.className = 'time-slot';
+            timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
 
-        var userReservation = reservationsForSlot.find(r => r.roomNumber === roomNumber);
-
-        if (numReservations >= 2) {
-            timeSlot.classList.add('taken');
-        } else if (userReservation) {
-            timeSlot.classList.add('user-reserved'); // Dodaj klasę, jeśli rezerwacja należy do użytkownika
-            timeSlot.style.backgroundColor = 'dodgerblue'; // Kolor dla użytkownika
-        } else {
-            timeSlot.classList.add('available');
-        }
-
-        timeSlot.addEventListener('click', function () {
-            selectedTimeSlot = this;
-            if (this.classList.contains('taken')) {
-                openTakenModal();
-            } else if (this.classList.contains('user-reserved')) { // Modal dla rezerwacji użytkownika
-                openCancellationModal();
+            // Sprawdź liczbę rezerwacji dla danego slotu
+            if (numReservations >= 2) {
+                timeSlot.classList.add('taken'); // Zajęty (czerwony)
+            } else if (numReservations === 1) {
+                timeSlot.classList.add('reserved'); // Zarezerwowany (pomarańczowy)
             } else {
-                openConfirmationModal();
+                timeSlot.classList.add('available'); // Dostępny
             }
-        });
 
-        timeSlotsContainer.appendChild(timeSlot);
-    }
+            timeSlot.addEventListener('click', function () {
+                selectedTimeSlot = this;
+                if (this.classList.contains('taken')) {
+                    openTakenModal();
+                } else if (this.classList.contains('reserved')) {
+                    openConfirmationModal(); // Można dodać inne akcje dla kliknięcia na rezerwację
+                } else {
+                    openConfirmationModal();
+                }
+            });
+
+            timeSlotsContainer.appendChild(timeSlot);
+        }
 
         dayElement.appendChild(timeSlotsContainer);
         calendar.appendChild(dayElement);
