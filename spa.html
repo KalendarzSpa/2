@@ -559,16 +559,20 @@ function openCancelConfirmationModal(reservationId) {
                 closeConfirmationModal(); // Zamknij okno modalne
             };
         }
-      function cancelReservation(reservationId) {
-    // Usunięcie rezerwacji z listy "Moje rezerwacje"
+     
+function cancelReservation(reservationId) {
+    // Usuń rezerwację z listy "Moje rezerwacje"
     reservations = reservations.filter(function(reservation) {
         return reservation.id !== reservationId;
     });
     var reservationList = document.getElementById('reservationList');
-   var listItem = reservationList.querySelector('[data-reservation-id="' + reservationId + '"]');
-    reservationList.removeChild(listItem);
+    var listItem = reservationList.querySelector('[data-reservation-id="' + reservationId + '"]');
+    // Sprawdź, czy element został znaleziony przed próbą usunięcia
+    if (listItem) {
+        reservationList.removeChild(listItem);
+    }
 
-    // Usunięcie rezerwacji z bazy danych Firestore
+    // Usuń rezerwację z bazy danych Firestore
     db.collection("reservations").doc(reservationId).delete().then(function() {
         console.log("Rezerwacja pomyślnie usunięta z Firestore");
     }).catch(function(error) {
