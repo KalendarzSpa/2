@@ -136,9 +136,6 @@
         .day .day-header {
             font-weight: bold;
         }
-        .time-slot.my-reservation {
-        background-color: #0000FF; /* Niebieski kolor */
-    }
 
         .day .day-content > .time-slot:first-child {
             font-weight: bold;
@@ -459,12 +456,8 @@ function generateCalendar() {
             timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
             timeSlot.dataset.timeSlotId = timeSlotId;
 
-          if (numReservations === 1) {
+            if (numReservations === 1) {
                 timeSlot.classList.add('reserved');
-                // Jeśli rezerwacja należy do użytkownika, dodajemy klasę 'my-reservation'
-                if (isMyReservation(timeSlotId)) {
-                    timeSlot.classList.add('my-reservation');
-                }
             } else if (numReservations >= 2) {
                 timeSlot.classList.add('taken');
             } else {
@@ -514,32 +507,19 @@ function generateCalendar() {
         }
 
     // Funkcja otwierająca modal potwierdzenia rezerwacji
+function openConfirmationModal() {
+    var confirmationModal = document.getElementById('confirmationModal');
+    var overlay = document.getElementById('overlay');
+    confirmationModal.style.display = 'block';
+    overlay.style.display = 'block';
 
-    function openConfirmationModal() {
-        var confirmationModal = document.getElementById('confirmationModal');
-        var overlay = document.getElementById('overlay');
-        confirmationModal.style.display = 'block';
-        overlay.style.display = 'block';
-
-        // Zmieniamy wiadomość w oknie modalnym na pytanie o anulowanie rezerwacji
-        var confirmationMessage = document.getElementById('confirmationMessage');
-        if (selectedTimeSlot.classList.contains('my-reservation')) {
-            confirmationMessage.textContent = 'Czy na pewno chcesz anulować rezerwację?';
-        } else {
-            confirmationMessage.textContent = 'Czy na pewno chcesz potwierdzić rezerwację?';
-        }
-    
     // Dodaj obsługę kliknięcia na przycisk "Nie"
     var noButton = document.getElementById('noButton');
     noButton.onclick = function () {
         closeConfirmationModal(); // Zamknij okno modalne
     };
 }
-function isMyReservation(timeSlotId) {
-    // Tutaj powinieneś zwrócić prawdę, jeśli dany slot czasowy jest zarezerwowany przez użytkownika
-    // Na przykład, jeśli masz identyfikator użytkownika zapisany w zmiennej 'userId':
-    return reservations.some(reservation => reservation.timeSlotId === timeSlotId && reservation.userId === userId);
-}
+
      function closeConfirmationModal() {
     var confirmationModal = document.getElementById('confirmationModal');
     var overlay = document.getElementById('overlay');
