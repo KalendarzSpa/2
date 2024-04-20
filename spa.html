@@ -112,6 +112,12 @@
             border-radius: 15px;
         }
 
+        @media screen and (max-width: 600px) {
+            #reservationList li {
+                font-size: 14px;
+            }
+        }
+
         .day-header {
             background-color: #007bff;
             color: #fff;
@@ -423,18 +429,13 @@ function generateCalendar() {
     var today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Ustal bieżącego użytkownika
-    var currentUser = firebase.auth().currentUser;
-    var userId = currentUser ? currentUser.uid : null;
-
-    // Idź przez dwa dni
     for (var dayOffset = 0; dayOffset < 2; dayOffset++) {
         var currentDate = new Date(today);
         currentDate.setDate(currentDate.getDate() + dayOffset);
 
         var dayElement = document.createElement('div');
         dayElement.className = 'day';
-        dayElement.textContent = currentDate.toLocaleDateString(undefined, {
+        dayElement.textContent = currentDate.toLocaleDateString(currentLanguage, {
             weekday: 'long',
             day: 'numeric',
             month: 'numeric',
@@ -444,47 +445,43 @@ function generateCalendar() {
         var timeSlotsContainer = document.createElement('div');
         timeSlotsContainer.className = 'time-slots-container';
 
-        // Pętla przez godziny od 8:00 do 21:00
+        // Dodaj bloki godzinowe
         for (var i = 8; i <= 21; i++) {
-            var timeSlotId = currentDate.toISOString().split("T")[0] + "-" + i; // Generuj ID slotu czasowego
-            var reservationsForSlot = []; // Pusta tablica rezerwacji dla danego slotu
+            var timeSlotId = generateTimeSlotId(currentDate, i);
+            var reservationsForSlot = getReservationsForSlot(timeSlotId);
+            var numReservations = reservationsForSlot.length;
 
-            // Pobierz wszystkie rezerwacje dla tego slotu z Firebase
-            db.collection("reservations").where("timeSlotId", "==", timeSlotId).get()
-                .then(function (querySnapshot) {
-                    querySnapshot.forEach(function (doc) {
-                        reservationsForSlot.push(doc.data());
-                    });
+            var timeSlot = document.createElement('div');
+            timeSlot.className = 'time-slot';
+            timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
+            timeSlot.dataset.timeSlotId = timeSlotId;
 
-                    var currentUserReservation = reservationsForSlot.find(res => res.userId === userId);
-                    var numReservations = reservationsForSlot.length;
+            if (numReservations === 1) {
+                timeSlot.classList.add('reserved');
+            } else if (numReservations >= 2) {
+                timeSlot.classList.add('taken');
+            } else {
+                timeSlot.classList.add('available'); 
+            }
 
-                    var timeSlot = document.createElement('div');
-                    timeSlot.className = 'time-slot';
-                    timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
+            timeSlot.addEventListener('click', function () {
+                selectedTimeSlot = this;
+                if (selectedTimeSlot.classList.contains('taken')) {
+                    openTakenModal();
+                } else if (selectedTimeSlot.classList.contains('reserved')) {
+                    openConfirmationModal();
+                } else  {
+                    openConfirmationModal();
+                }
+            });
 
-                    if (currentUserReservation) {
-                        timeSlot.classList.add('own-reservation'); // Kolor niebieski dla własnej rezerwacji
-                    } else if (numReservations >= 2) {
-                        timeSlot.classList.add('taken'); // Kolor czerwony dla pełnych slotów
-                    } else if (numReservations === 1) {
-                        timeSlot.classList.add('reserved'); // Kolor pomarańczowy dla jednej rezerwacji
-                    } else {
-                        timeSlot.classList.add('available'); // Szary dla dostępnych slotów
-                    }
-
-                    timeSlotsContainer.appendChild(timeSlot);
-                })
-                .catch(function (error) {
-                    console.error("Error retrieving reservations: ", error);
-                });
+            timeSlotsContainer.appendChild(timeSlot);
         }
 
         dayElement.appendChild(timeSlotsContainer);
         calendar.appendChild(dayElement);
     }
 }
-
 
 
     function getReservationsForSlot(timeSlotId) {
@@ -528,23 +525,6 @@ function openConfirmationModal() {
     var overlay = document.getElementById('overlay');
     confirmationModal.style.display = 'none';
     overlay.style.display = 'none';
-}
-
-    function openCancellationModal() {
-    var confirmationModal = document.getElementById('confirmationModal');
-    var overlay = document.getElementById('overlay');
-    confirmationModal.style.display = 'block';
-    overlay.style.display = 'block';
-
-    document.getElementById('confirmationMessage').textContent = 'Czy chcesz anulować tę rezerwację?'; // Zmieniony komunikat
-    document.getElementById('yesButton').onclick = function() {
-        var roomNumber = document.getElementById('roomNumber').value;
-        cancelReservation(getReservationsForSlot(selectedTimeSlot.dataset.timeSlotId).find(r => r.roomNumber === roomNumber));
-        closeConfirmationModal();
-    };
-    document.getElementById('noButton').onclick = function() {
-        closeConfirmationModal();
-    };
 }
 
 function confirmReservation() {
