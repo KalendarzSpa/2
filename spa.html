@@ -477,7 +477,7 @@ var selectedReservationId;
                 } else if (selectedTimeSlot.classList.contains('reserved')) {
                     openConfirmationModal();
                 } else if (selectedTimeSlot.classList.contains('confirmed')) {
-                    openCancelConfirmationModal();
+                    openCancelConfirmationModal(reservationId);
                 } else {
                     openConfirmationModal();
                 }
