@@ -449,6 +449,17 @@ function generateCalendar() {
                   timeSlot.style.backgroundColor = 'orange';
               }
           }
+          timeSlot.addEventListener('click', function () {
+    selectedTimeSlot = this;
+
+    if (this.classList.contains('taken')) {
+        openTakenModal();
+    } else if (this.classList.contains('user-reserved')) {
+        openCancellationModal(); // Dodaj to dla rezerwacji użytkownika
+    } else {
+        openConfirmationModal();
+    }
+});
 
           timeSlot.dataset.timeSlotId = timeSlotId;
           timeSlotsContainer.appendChild(timeSlot);
