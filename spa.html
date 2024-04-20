@@ -565,7 +565,7 @@ function openCancelConfirmationModal(reservationId) {
         return reservation.id !== reservationId;
     });
     var reservationList = document.getElementById('reservationList');
-    var listItem = reservationList.querySelector(`[data-reservation-id="${reservationId}"]`);
+   var listItem = reservationList.querySelector('[data-reservation-id="' + reservationId + '"]');
     reservationList.removeChild(listItem);
 
     // Usunięcie rezerwacji z bazy danych Firestore
