@@ -500,24 +500,24 @@ function isTimeSlotReservedByRoom(timeSlotId, roomId) {
 
 
 function openCancelConfirmationModal(reservationId) {
-    selectedReservationId = reservationId; // Przypisz ID wybranej rezerwacji do zmiennej globalnej
+    selectedReservationId = reservationId;
     var confirmationModal = document.getElementById('confirmationModal');
     var overlay = document.getElementById('overlay');
     var confirmationMessage = document.getElementById('confirmationMessage');
     var yesButton = document.getElementById('yesButton');
     var noButton = document.getElementById('noButton');
-    
+
     confirmationMessage.textContent = 'Czy na pewno chcesz anulować rezerwację?';
     yesButton.textContent = 'Tak';
-    
+
     yesButton.onclick = function () {
-        cancelReservation(selectedReservationId); // Przekazanie ID rezerwacji do funkcji anulowania
-        closeConfirmationModal(); // Zamknij okno modalne
+        cancelReservation(selectedReservationId);
+        closeConfirmationModal();
     };
-    
+
     noButton.textContent = 'Nie';
     noButton.onclick = function () {
-        closeConfirmationModal(); // Zamknij okno modalne
+        closeConfirmationModal();
     };
 
     confirmationModal.style.display = 'block';
@@ -584,35 +584,34 @@ function openCancelConfirmationModal(reservationId) {
         }
 
         // Funkcja potwierdzająca rezerwację
-        function confirmReservation() {
-            if (selectedTimeSlot) {
-                selectedTimeSlot.classList.remove('available');
-                selectedTimeSlot.classList.add('confirmed');
-                selectedTimeSlot.style.backgroundColor = 'blue'; // Dodaj tę linię, aby zmienić kolor na niebieski
+     function confirmReservation() {
+    if (selectedTimeSlot) {
+        selectedTimeSlot.classList.remove('available');
+        selectedTimeSlot.classList.add('confirmed');
+        selectedTimeSlot.style.backgroundColor = 'blue';
 
-                closeConfirmationModal();
-                var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
-                var roomId = document.getElementById('roomNumber').value;
+        closeConfirmationModal();
+        var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
+        var roomId = document.getElementById('roomNumber').value;
 
-                // Dodaj rezerwację do bazy danych
-                db.collection("reservations").add({
-                        roomId: roomId,
-                        timeSlotId: timeSlotId
-                    })
-                    .then(function (docRef) {
-                        console.log("Reservation confirmed with ID: ", docRef.id);
-                        // Dodaj rezerwację do lokalnej listy rezerwacji
-                        reservations.push({
-                            id: docRef.id,
-                            roomId: roomId,
-                            timeSlotId: timeSlotId
-                        });
-                    })
-                    .catch(function (error) {
-                        console.error("Error adding reservation: ", error);
-                    });
-            }
-        }
+        db.collection("reservations").add({
+                roomId: roomId,
+                timeSlotId: timeSlotId
+            })
+            .then(function (docRef) {
+                console.log("Reservation confirmed with ID: ", docRef.id);
+                reservations.push({
+                    id: docRef.id,
+                    roomId: roomId,
+                    timeSlotId: timeSlotId
+                });
+                openCancelConfirmationModal(docRef.id); // Dodaj to wywołanie z przekazaniem identyfikatora rezerwacji
+            })
+            .catch(function (error) {
+                console.error("Error adding reservation: ", error);
+            });
+    }
+}
 
         function openTakenModal() {
             var takenModal = document.getElementById('takenModal');
