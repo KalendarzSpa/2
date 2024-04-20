@@ -475,7 +475,7 @@ function generateCalendar() {
                 } else {
                     var confirmCancel = confirm("Czy chcesz anulować rezerwację?"); // Wyświetl okno dialogowe z pytaniem
                     if (confirmCancel) {
-                        cancelReservation(reservation); // Anuluj rezerwację po potwierdzeniu
+                        cancelReservation(); // Anuluj rezerwację po potwierdzeniu
                     }
                 }
             });
@@ -488,9 +488,12 @@ function generateCalendar() {
     }
 }
 
-
-
-    
+    var reservation = {
+                id: generateReservationId(),
+                date: currentDate.toLocaleDateString(),
+                timeSlotId: timeSlotId,
+                roomNumber: roomNumber,
+            };    
 
     function getReservationsForSlot(timeSlotId) {
     // Filtrujemy listę rezerwacji, aby znaleźć te, które odpowiadają podanemu identyfikatorowi slotu czasowego
@@ -569,14 +572,7 @@ function confirmReservation() {
             selectedTimeSlot.classList.add('reserved');
             selectedTimeSlot.style.backgroundColor = '#ff6666';
 
-            var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
-
-            var reservation = {
-                id: generateReservationId(),
-                date: currentDate.toLocaleDateString(),
-                timeSlotId: timeSlotId,
-                roomNumber: roomNumber,
-            };
+            var timeSlotId = selectedTimeSlot.dataset.timeSlotId
 
             var reservationList = document.getElementById('reservationList');
             var listItem = document.createElement('li');
@@ -586,7 +582,7 @@ function confirmReservation() {
             var cancelButton = document.createElement('button');
             cancelButton.textContent = 'Anuluj';
             cancelButton.onclick = function () {
-                cancelReservation(reservation);
+                cancelReservation();
             };
 
             listItem.appendChild(cancelButton);
