@@ -499,8 +499,8 @@ function isTimeSlotReservedByRoom(timeSlotId, roomId) {
 }
 
 
-function openCancelConfirmationModal(reservation) {
-    selectedReservationId = reservation.id; // Przypisz ID wybranej rezerwacji do zmiennej globalnej
+function openCancelConfirmationModal(reservationId) {
+    selectedReservationId = reservationId; // Przypisz ID wybranej rezerwacji do zmiennej globalnej
     var confirmationModal = document.getElementById('confirmationModal');
     var overlay = document.getElementById('overlay');
     var confirmationMessage = document.getElementById('confirmationMessage');
