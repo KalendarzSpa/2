@@ -478,7 +478,7 @@ function generateCalendar() {
             timeSlot.addEventListener("click", function () {
     selectedTimeSlot = this;
     if (selectedTimeSlot.classList.contains("my-reserved")) {
-        openCancelReservationModal(); // Otwórz modal do anulowania rezerwacji
+        openCancelReservationModal(reservation); // Otwórz modal do anulowania rezerwacji
     } else if (selectedTimeSlot.classList.contains("taken")) {
         openTakenModal(); // Jeśli zajęte, pokaż modal informacyjny
     } else {
