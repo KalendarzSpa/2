@@ -296,15 +296,15 @@
 <div class="calendar-legend" id="calendarLegend">
     <div class="legend-item">
         <div class="color-box available"></div>
-        <span id="legendAvailable">Dostępne, brak istniejących rezerwacji na daną godzinę</span>
+        <span id="legendAvailable">Dostępne, brak istniejących rezerwacji na daną godzinę.</span>
     </div>
     <div class="legend-item">
         <div class="color-box reserved"></div>
-        <span id="legendReserved">Na tę godzinę istnieje już jedna rezerwacja</span>
+        <span id="legendReserved">Dostępne jedno miejsce, na tę godzinę istnieje już jedna rezerwacja.</span>
     </div>
     <div class="legend-item">
         <div class="color-box taken"></div>
-        <span id="legendTaken">Na tę godzinę istnieją już dwie rezerwacje, brak możliwości dalszego rezerwowania</span>
+        <span id="legendTaken">Brak możliwości dalszego rezerwowania, na tę godzinę istnieją już dwie rezerwacje.</span>
     </div>
     <div class="legend-item">
         <div class="color-box my-reserved"></div>
@@ -412,9 +412,9 @@
             'roomNumber':'Wprowadź numer apartamentu',
             'password':'Wprowadź hasło',
             'legendMyReserved': 'Twoja rezerwacja',
-            'legendReserved': 'Na tę godzinę istnieje już jedna rezerwacja',
-            'legendTaken': 'Na tę godzinę istnieją już dwie rezerwacje, brak możliwości dalszego rezerwowania',
-            'legendAvailable': 'Dostępne, brak istniejących rezerwacji na daną godzinę'
+            'legendReserved': 'Dostępne jedno miejsce, na tę godzinę istnieje już jedna rezerwacja.',
+            'legendTaken': 'Brak możliwości dalszego rezerwowania, na tę godzinę istnieją już dwie rezerwacje.',
+            'legendAvailable': 'Dostępne, brak istniejących rezerwacji na daną godzinę.',
         },
         'de': {
             'headerTitle': 'Spa Zone Reservierungskalender',
@@ -438,9 +438,9 @@
             'roomNumber':'Geben Sie die Wohnungsnummer ein',
             'password':'Geben Sie das Passwort ein',
             'legendMyReserved': 'Ihre Reservierung',
-            'legendReserved': 'Es gibt bereits eine Reservierung für diese Stunde',
-            'legendTaken': 'Es gibt bereits zwei Reservierungen für diese Stunde, keine weiteren Buchungen sind möglich',
-            'legendAvailable': 'Verfügbar, keine vorhandenen Reservierungen für die angegebene Uhrzeit',
+            'legendReserved': 'Ein Platz verfügbar, es gibt bereits eine Reservierung für diese Stunde.',
+            'legendTaken': 'Keine weiteren Buchungen möglich, es gibt bereits zwei Reservierungen für diese Stunde.',
+            'legendAvailable': 'Verfügbar, keine bestehenden Reservierungen für diese Stunde.',
             
         },
         'en': {
@@ -464,10 +464,10 @@
             'canc':'Cancel',
             'roomNumber':'Enter the apartament number',
             'password':'Enter the password',
-             'legendMyReserved': 'Your reservation',
-            'legendReserved': 'There is already one reservation for this hour',
-            'legendTaken': 'There are already two reservations for this hour, no further booking is possible',
-            'legendAvailable': 'Available, no existing reservations for the specified time',
+            'legendMyReserved': 'Your reservation',
+            'legendReserved': 'One spot available, there is already one reservation for this hour.',
+            'legendTaken': 'No further booking possible, there are already two reservations for this hour.',
+            'legendAvailable': 'Available, no existing reservations for this hour.',
         }
     };
 
@@ -556,7 +556,7 @@ function generateCalendar() {
         var timeSlotsContainer = document.createElement('div');
         timeSlotsContainer.className = 'time-slots-container';
 
-        for (var i = 8; i <= 21; i++) {
+        for (var i = 8; i <= 20; i++) {
             var timeSlotId = generateTimeSlotId(currentDate, i);
             var reservationsForSlot = getReservationsForSlot(timeSlotId);
             var numReservations = reservationsForSlot.length;
