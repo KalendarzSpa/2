@@ -506,7 +506,14 @@ function openCancelReservationModal(reservation) {
     var modal = document.getElementById("cancelReservationModal");
     selectedReservation = reservation; // Ustawienie wybranej rezerwacji
     modal.style.display = "block";
+
+    var cancelButton = modal.querySelector("button"); // Pobierz przycisk "Anuluj"
+    cancelButton.onclick = function() {
+        cancelReservation(selectedReservation); // Anuluj wybraną rezerwację
+        closeCancelReservationModal(); // Zamknij modal
+    };
 }
+
 
 function closeCancelReservationModal() {
     var modal = document.getElementById("cancelReservationModal");
