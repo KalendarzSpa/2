@@ -538,7 +538,7 @@ function generateCalendar() {
     calendar.innerHTML = '';
 
     var today = new Date();
-    today.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0); // Reset time for comparison with calendar dates
 
     for (var dayOffset = 0; dayOffset < 2; dayOffset++) {
         var currentDate = new Date(today);
@@ -566,32 +566,37 @@ function generateCalendar() {
             timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
             timeSlot.dataset.timeSlotId = timeSlotId;
 
-            if (reservationsForSlot.some(res => res.roomNumber === document.getElementById('roomNumber').value)) {
-                timeSlot.classList.add('my-reserved');
-            } else if (numReservations === 1) {
-                timeSlot.classList.add('reserved');
-            } else if (numReservations >= 2) {
-                timeSlot.classList.add('taken');
+            // Check if the slot is in the past
+            var isPast = currentDate < today || (currentDate.getTime() === today.getTime() && i < new Date().getHours());
+
+            if (isPast) {
+                // Apply a style to indicate it's a past slot
+                timeSlot.style.opacity = 0.5;
+                timeSlot.style.pointerEvents = 'none'; // Prevent any interaction
             } else {
-                timeSlot.classList.add('available');
-            }
-
-          timeSlot.addEventListener("click", function () {
-                selectedTimeSlot = this;
-
-                if (this.classList.contains("my-reserved")) {
-                    // Jeśli blok jest zarezerwowany przez bieżącego użytkownika, wyświetl modal potwierdzający anulowanie rezerwacji
-                    var reservation = reservations.find(res => res.timeSlotId === this.dataset.timeSlotId && res.roomNumber === document.getElementById('roomNumber').value);
-                    openCancelReservationModal(reservation);
-                } else if (this.classList.contains("taken")) {
-                    // Jeśli blok jest zajęty, wyświetl modal informujący o tym
-                    openTakenModal();
+                if (reservationsForSlot.some(res => res.roomNumber === document.getElementById('roomNumber').value)) {
+                    timeSlot.classList.add('my-reserved');
+                } else if (numReservations === 1) {
+                    timeSlot.classList.add('reserved');
+                } else if (numReservations >= 2) {
+                    timeSlot.classList.add('taken');
                 } else {
-                    // Jeśli blok jest dostępny, wyświetl modal potwierdzający rezerwację
-                    openConfirmationModal();
+                    timeSlot.classList.add('available');
                 }
-            });
 
+                timeSlot.addEventListener("click", function () {
+                    selectedTimeSlot = this;
+
+                    if (this.classList.contains("my-reserved")) {
+                        var reservation = reservations.find(res => res.timeSlotId === this.dataset.timeSlotId && res.roomNumber === document.getElementById('roomNumber').value);
+                        openCancelReservationModal(reservation);
+                    } else if (this.classList.contains("taken")) {
+                        openTakenModal();
+                    } else {
+                        openConfirmationModal();
+                    }
+                });
+            }
 
             timeSlotsContainer.appendChild(timeSlot);
         }
