@@ -470,22 +470,35 @@ function generateCalendar() {
                 timeSlot.classList.add('available');
             }
 
-          timeSlot.addEventListener("click", function () {
+            timeSlot.addEventListener("click", function () {
                 selectedTimeSlot = this;
 
+                var timeSlotId = this.dataset.timeSlotId;
+                var reservationDate = new Date(timeSlotId.split('-').slice(0, 3).join('-').replace(/-/g, '/'));
+                var reservationDateStr = new Intl.DateTimeFormat('en-CA').format(reservationDate); // format YYYY-MM-DD
+                var roomNumber = document.getElementById('roomNumber').value;
+                var existingReservation = reservations.find(function (reservation) {
+                    var parts = reservation.timeSlotId.split('-');
+                    var isoDateStr = `${parts[0]}-${parts[1]}-${parts[2]}`; // format YYYY-MM-DD
+                    var existingDate = new Date(isoDateStr);
+                    
+                    return reservation.roomNumber === roomNumber && new Intl.DateTimeFormat('en-CA').format(existingDate) === reservationDateStr;
+                });
+
+                if (existingReservation) {
+                    alert("Ten pokój ma już rezerwację na ten dzień.");
+                    return; // Anuluj proces rezerwacji
+                }
+
                 if (this.classList.contains("my-reserved")) {
-                    // Jeśli blok jest zarezerwowany przez bieżącego użytkownika, wyświetl modal potwierdzający anulowanie rezerwacji
                     var reservation = reservations.find(res => res.timeSlotId === this.dataset.timeSlotId && res.roomNumber === document.getElementById('roomNumber').value);
                     openCancelReservationModal(reservation);
                 } else if (this.classList.contains("taken")) {
-                    // Jeśli blok jest zajęty, wyświetl modal informujący o tym
                     openTakenModal();
                 } else {
-                    // Jeśli blok jest dostępny, wyświetl modal potwierdzający rezerwację
                     openConfirmationModal();
                 }
             });
-
 
             timeSlotsContainer.appendChild(timeSlot);
         }
@@ -494,6 +507,7 @@ function generateCalendar() {
         calendar.appendChild(dayElement);
     }
 }
+
 
    var selectedReservation = null; // Przechowywanie wybranej rezerwacji do anulowania
 
@@ -563,27 +577,6 @@ function openConfirmationModal() {
 function confirmReservation() {
     if (selectedTimeSlot) {
         var roomNumber = document.getElementById('roomNumber').value;
-
-        // Pobierz datę rezerwacji z klikniętego bloku czasowego
-        var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
-        var reservationDate = new Date(timeSlotId.split('-').slice(0, 3).join('-').replace(/-/g, '/'));
-
-      var reservationDateStr = reservationDate.toISOString().split('T')[0]; // format YYYY-MM-DD
-var existingReservation = reservations.find(function (reservation) {
-    var parts = reservation.timeSlotId.split('-');
-    var isoDateStr = `${parts[0]}-${parts[1]}-${parts[2]}`; // format YYYY-MM-DD
-    var existingDate = new Date(isoDateStr);
-    
-    return reservation.roomNumber === roomNumber && existingDate.toISOString().split('T')[0] === reservationDateStr;
-});
-
-
-
-        if (existingReservation) {
-            alert("Ten pokój ma już rezerwację na ten dzień.");
-            closeConfirmationModal();
-            return; // Anuluj proces rezerwacji
-        }
 
         // Reszta procesu dodawania rezerwacji
         selectedTimeSlot.classList.remove('available');
