@@ -566,7 +566,7 @@ function confirmReservation() {
 
         // Pobierz datę rezerwacji z klikniętego bloku czasowego
         var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
-        var reservationDate = new Date(timeSlotId.split('-').slice(0, 3).join('-').replace(/-/g, '/')));
+        var reservationDate = new Date(timeSlotId.split('-').slice(0, 3).join('-').replace(/-/g, '/'));
 
         // Sprawdź, czy istnieje już rezerwacja dla tego pokoju w danym dniu
      var existingReservation = reservations.find(function (reservation) {
