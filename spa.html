@@ -621,32 +621,46 @@ function generateReservationId() {
 function cancelReservation(reservation) {
     if (reservation) {
         var reservationId = reservation.id;
+        var timeSlotId = reservation.timeSlotId; // Zapisz identyfikator slotu
+        var slot = document.querySelector(`[data-time-slot-id='${timeSlotId}']`); // Znajdź element kalendarza o tym identyfikatorze
+
         db.collection("reservations").doc(reservationId).delete()
-            .then(function() {
+            .then(function () {
                 console.log("Rezerwacja pomyślnie usunięta z Firestore.");
-                
-                // Usuń element z interfejsu
+
+                // Usuń rezerwację z listy lokalnej
+                reservations = reservations.filter(function (res) {
+                    return res.id !== reservationId;
+                });
+
+                // Jeśli slot istnieje, zaktualizuj jego wygląd w zależności od tego, czy istnieją inne rezerwacje
+                if (slot) {
+                    slot.classList.remove('my-reserved');  // Usuń zielony kolor
+
+                    var remainingReservations = reservations.filter(function (res) {
+                        return res.timeSlotId === timeSlotId; // Sprawdź, czy istnieją inne rezerwacje dla tego slotu
+                    });
+
+                    if (remainingReservations.length > 0) {
+                        slot.classList.add('reserved'); // Jeśli istnieją inne rezerwacje, ustaw pomarańczowy kolor
+                    } else {
+                        slot.classList.add('available');  // Przywróć kolor wolnego slotu
+                    }
+                }
+
+                // Usuń element z listy rezerwacji
                 var reservationList = document.getElementById("reservationList");
                 var listItem = reservationList.querySelector(`[data-reservation-id="${reservationId}"]`);
                 if (listItem) {
                     reservationList.removeChild(listItem);
                 }
-
-                // Aktualizacja kalendarza
-                var slot = document.querySelector(`[data-timeSlotId="${reservation.timeSlotId}"]`);
-                if (slot) {
-                    slot.classList.remove('my-reserved');  // Usuń kolor rezerwacji
-                    slot.classList.remove('reserved');  // Jeśli jest zarezerwowany przez kogoś innego, usuń kolor rezerwacji
-                    slot.classList.add('available');  // Przywróć kolor wolnego slotu
-                }
-
-                closeCancelReservationModal(); // Zamknij modal anulowania rezerwacji
             })
-            .catch(function(error) {
+            .catch(function (error) {
                 console.error("Błąd podczas usuwania rezerwacji z Firestore:", error);
             });
     }
 }
+
 
 
     function loadReservations(roomNumber) {
