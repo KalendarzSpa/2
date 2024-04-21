@@ -223,18 +223,18 @@
 <body>
 <div class="container">
     <header>
-        <h1 id="headerTitle">Kalendarz Strefy Spa</h1>
+        <h1 id="headerTitle">Kalendarz rezerwacji Strefy Spa</h1>
         <select onchange="changeLanguage(this.value)">
-            <option value="en">English</option>
             <option value="pl">Polski</option>
+            <option value="en">English</option>
             <option value="de">Deutsch</option>
         </select>
     </header>
     <section class="login-section">
         <div class="login-form">
             <form id="loginForm" onsubmit="event.preventDefault(); authenticate();">
-                <label for="roomNumber" id="roomNumberLabel">Numer Apartamentu</label>
-                <input type="text" id="roomNumber" placeholder="Wpisz numer apartamentu">
+                <label for="roomNumber" id="roomNumberLabel">Numer apartamentu</label>
+                <input type="text" id="roomNumber" placeholder="Wprowadź numer apartamentu">
                 <label for="password" id="passwordLabel">Hasło</label>
                 <input type="password" id="password" placeholder="Wprowadź hasło">
                 <div class="accept-checkbox">
@@ -267,7 +267,7 @@
     </div>
 </div>
     <div class="modal" id="takenModal">
-        <span id="takenMessage"></span>
+        <span id="takenMessage">Ten slot czasowy jest już zajęty.</span>
     </div>
     <div class="overlay" id="overlay"></div>
 </div>
@@ -347,6 +347,8 @@
             'cancelTitle': 'Anulowanie rezerwacji',
             'cancelMessage': 'Czy chcesz anulować rezerwację?',
             'canc':'Anuluj',
+            'roomNumber':'Wprowadź numer apartamentu',
+            'password':'Wprowadź hasło',
         },
         'de': {
             'headerTitle': 'Spa Zone Reservierungskalender',
@@ -367,6 +369,8 @@
             'cancelTitle': 'Stornierung der Reservierung',
             'cancelMessage': 'Möchten Sie Ihre Reservierung stornieren',
             'canc':'Abbrechen',
+            'roomNumber':'Geben Sie die Wohnungsnummer ein',
+            'password':'Geben Sie das Passwort ein',
         },
         'en': {
             'headerTitle': 'Spa Zone Reservation Calendar',
@@ -387,12 +391,20 @@
             'cancelTitle': 'Cancellation of the reservation',
             'cancelMessage': 'Do you want to cancel your reservation?',
             'canc':'Cancel',
+            'roomNumber':'Enter the apartament number',
+            'password':'Enter the password',
         }
     };
 
+    var alertMessages1 = {
+    'pl': 'Ten pokój ma już rezerwację na ten dzień.',
+    'en': 'This room is already booked for this day.',
+    'de': 'Dieses Zimmer ist bereits für diesen Tag gebucht.',
+    };
+
+
     // Set default language
     var currentLanguage = 'pl';
- 
 
     
 function authenticate() {
@@ -595,7 +607,8 @@ function confirmReservation() {
         });
 
         if (existingReservation) {
-            alert("Ten pokój ma już rezerwację na ten dzień.");
+            var message = alertMessages[currentLanguage]; // Wybierz tłumaczenie
+            alert(message);
             closeConfirmationModal();
             return; // Anuluj proces rezerwacji
         }
