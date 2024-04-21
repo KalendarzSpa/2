@@ -578,6 +578,8 @@ function confirmReservation() {
     if (selectedTimeSlot) {
         var roomNumber = document.getElementById('roomNumber').value;
 
+          var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
+        var reservationDate = new Date(timeSlotId.split('-').slice(0, 3).join('-'));
         // Reszta procesu dodawania rezerwacji
         selectedTimeSlot.classList.remove('available');
         selectedTimeSlot.classList.remove('reserved');
