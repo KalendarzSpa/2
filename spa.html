@@ -478,7 +478,7 @@ function generateCalendar() {
             timeSlot.addEventListener("click", function () {
     selectedTimeSlot = this;
     if (selectedTimeSlot.classList.contains("my-reserved")) {
-        openCancelReservationModal(reservation); // Otwórz modal do anulowania rezerwacji
+        openCancelReservationModal(); // Otwórz modal do anulowania rezerwacji
     } else if (selectedTimeSlot.classList.contains("taken")) {
         openTakenModal(); // Jeśli zajęte, pokaż modal informacyjny
     } else {
@@ -608,30 +608,26 @@ function generateReservationId() {
 }
 
 
-function cancelReservation() {
-    if (selectedReservation) {
-        var reservation = selectedReservation;
-
-        // Usunięcie rezerwacji z lokalnej listy
-        reservations = reservations.filter(r => r.id !== reservation.id);
-        
-        // Usunięcie elementu z interfejsu użytkownika
-        var reservationList = document.getElementById("reservationList");
-        var listItem = reservationList.querySelector(`[data-reservation-id="${reservation.id}"]`);
-        if (listItem) {
-            reservationList.removeChild(listItem);
-        }
-
-        // Usunięcie rezerwacji z Firestore
-        db.collection("reservations").doc(reservation.id).delete().then(function() {
-            console.log("Rezerwacja pomyślnie usunięta z Firestore");
-        }).catch(function(error) {
-            console.error("Błąd podczas usuwania rezerwacji z Firestore: ", error);
-        });
-
-        closeCancelReservationModal(); // Zamknięcie modalu po usunięciu rezerwacji
+function cancelReservation(reservation) {
+    if (reservation) {
+        var reservationId = reservation.id;
+        db.collection("reservations").doc(reservationId).delete()
+            .then(function() {
+                console.log("Rezerwacja pomyślnie usunięta z Firestore.");
+                
+                // Usuń element z interfejsu
+                var reservationList = document.getElementById("reservationList");
+                var listItem = reservationList.querySelector(`[data-reservation-id="${reservationId}"]`);
+                if (listItem) {
+                    reservationList.removeChild(listItem);
+                }
+            })
+            .catch(function(error) {
+                console.error("Błąd podczas usuwania rezerwacji z Firestore:", error);
+            });
     }
 }
+
     function loadReservations(roomNumber) {
     return new Promise(function (resolve, reject) {
         db.collection("reservations")
