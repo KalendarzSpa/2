@@ -296,7 +296,7 @@
 <div class="calendar-legend" id="calendarLegend">
     <div class="legend-item">
         <div class="color-box available"></div>
-        <span id="legendAvailable">Brak istniejących rezerwacji na daną godzinę</span>
+        <span id="legendAvailable">Dostępne, brak istniejących rezerwacji na daną godzinę</span>
     </div>
     <div class="legend-item">
         <div class="color-box reserved"></div>
@@ -415,7 +415,7 @@
             'legendMyReserved': 'Twoja rezerwacja',
             'legendReserved': 'Na tę godzinę istnieje już jedna rezerwacja',
             'legendTaken': 'Na tę godzinę istnieją już dwie rezerwacje, brak możliwości dalszego rezerwowania',
-            'legendAvailable': 'Brak istniejących rezerwacji na daną godzinę'
+            'legendAvailable': 'Dostępne, brak istniejących rezerwacji na daną godzinę'
         },
         'de': {
             'headerTitle': 'Spa Zone Reservierungskalender',
@@ -440,8 +440,8 @@
             'password':'Geben Sie das Passwort ein',
             'legendMyReserved': 'Ihre Reservierung',
             'legendReserved': 'Es gibt bereits eine Reservierung für diese Stunde',
-            'legendTaken': 'Es gibt bereits zwei Reservierungen für diese Stunde und keine weiteren Buchungen sind möglich',
-            'legendAvailable': 'Keine bestehenden Reservierungen für diese Stunde',
+            'legendTaken': 'Es gibt bereits zwei Reservierungen für diese Stunde, keine weiteren Buchungen sind möglich',
+            'legendAvailable': 'Verfügbar, keine vorhandenen Reservierungen für die angegebene Uhrzeit',
             
         },
         'en': {
@@ -467,8 +467,8 @@
             'password':'Enter the password',
              'legendMyReserved': 'Your reservation',
             'legendReserved': 'There is already one reservation for this hour',
-            'legendTaken': 'There are already two reservations for this hour and no further booking is possible',
-            'legendAvailable': 'No existing reservations for this hour',
+            'legendTaken': 'There are already two reservations for this hour, no further booking is possible',
+            'legendAvailable': 'Available, no existing reservations for the specified time',
         }
     };
 
@@ -531,6 +531,7 @@ function translatePlaceholders(lang) {
     }
     // Dodaj wywołanie funkcji translatePlaceholders
     translatePlaceholders(lang);
+    generateCalendar();
 }
 
 function generateCalendar() {
