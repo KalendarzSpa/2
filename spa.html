@@ -573,6 +573,8 @@ function confirmReservation() {
         var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
         var reservationDate = new Date(timeSlotId.split('-').slice(0, 3).join('-'));
 
+        selectedTimeSlot.classList.remove('available');
+        selectedTimeSlot.classList.remove('reserved');
         selectedTimeSlot.classList.add('my-reserved');
 
         var reservation = {
