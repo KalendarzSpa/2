@@ -631,13 +631,23 @@ function cancelReservation(reservation) {
                 if (listItem) {
                     reservationList.removeChild(listItem);
                 }
+
+                // Aktualizacja kalendarza
+                var slot = document.querySelector(`[data-timeSlotId="${reservation.timeSlotId}"]`);
+                if (slot) {
+                    slot.classList.remove('my-reserved');  // Usuń kolor rezerwacji
+                    slot.classList.remove('reserved');  // Jeśli jest zarezerwowany przez kogoś innego, usuń kolor rezerwacji
+                    slot.classList.add('available');  // Przywróć kolor wolnego slotu
+                }
+
+                closeCancelReservationModal(); // Zamknij modal anulowania rezerwacji
             })
             .catch(function(error) {
                 console.error("Błąd podczas usuwania rezerwacji z Firestore:", error);
             });
-        generateCalendar()
     }
 }
+
 
     function loadReservations(roomNumber) {
     return new Promise(function (resolve, reject) {
