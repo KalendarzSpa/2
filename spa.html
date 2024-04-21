@@ -792,6 +792,18 @@ function cancelReservation(reservation) {
             console.error("Błąd podczas zapisywania rezerwacji do Firestore: ", error);
         });
 }
+
+    const translations = {
+    'pl': {
+        takenMessage: 'Ten slot czasowy jest już zajęty',
+    },
+    'en': {
+        takenMessage: 'This time slot is already taken',
+    },
+    'de': {
+        takenMessage: 'Dieses Zeitfenster ist bereits belegt',
+    }
+};
   function openTakenModal() {
     // Znajdź elementy DOM
     var takenMessageElement = document.getElementById('takenMessage');
