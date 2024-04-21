@@ -566,11 +566,10 @@ function confirmReservation() {
 
         // Pobierz datę rezerwacji z klikniętego bloku czasowego
         var timeSlotId = selectedTimeSlot.dataset.timeSlotId;
-        var reservationDate = new Date(timeSlotId.split('-').slice(0, 3).join('-'));
+        var reservationDate = new Date(timeSlotId.split('-').slice(0, 3).join('-').replace(/-/g, '/')));
 
         // Sprawdź, czy istnieje już rezerwacja dla tego pokoju w danym dniu
-     var reservationDateStr = reservationDate.toISOString().split('T')[0]; // format YYYY-MM-DD
-var existingReservation = reservations.find(function (reservation) {
+     var existingReservation = reservations.find(function (reservation) {
     var parts = reservation.timeSlotId.split('-');
     var isoDateStr = `${parts[0]}-${parts[1]}-${parts[2]}`; // format YYYY-MM-DD
     var existingDate = new Date(isoDateStr);
