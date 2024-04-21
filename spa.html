@@ -475,16 +475,21 @@ function generateCalendar() {
                 timeSlot.classList.add('available');
             }
 
-            timeSlot.addEventListener("click", function () {
-    selectedTimeSlot = this;
-    if (selectedTimeSlot.classList.contains("my-reserved")) {
-        openCancelReservationModal(); // Otwórz modal do anulowania rezerwacji
-    } else if (selectedTimeSlot.classList.contains("taken")) {
-        openTakenModal(); // Jeśli zajęte, pokaż modal informacyjny
-    } else {
-        openConfirmationModal(); // Jeśli dostępne, pokaż modal do rezerwacji
-    }
-});
+          timeSlot.addEventListener("click", function () {
+                selectedTimeSlot = this;
+
+                if (this.classList.contains("my-reserved")) {
+                    // Jeśli blok jest zarezerwowany przez bieżącego użytkownika, wyświetl modal potwierdzający anulowanie rezerwacji
+                    var reservation = reservations.find(res => res.timeSlotId === this.dataset.timeSlotId && res.roomNumber === document.getElementById('roomNumber').value);
+                    openCancelReservationModal(reservation);
+                } else if (this.classList.contains("taken")) {
+                    // Jeśli blok jest zajęty, wyświetl modal informujący o tym
+                    openTakenModal();
+                } else {
+                    // Jeśli blok jest dostępny, wyświetl modal potwierdzający rezerwację
+                    openConfirmationModal();
+                }
+            });
 
 
             timeSlotsContainer.appendChild(timeSlot);
