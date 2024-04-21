@@ -793,34 +793,16 @@ function cancelReservation(reservation) {
         });
 }
 
-    const translations = {
-    'pl': {
-        takenMessage: 'Ten slot czasowy jest już zajęty',
-    },
-    'en': {
-        takenMessage: 'This time slot is already taken',
-    },
-    'de': {
-        takenMessage: 'Dieses Zeitfenster ist bereits belegt',
-    }
-};
+      
+var redMessages = {
+    'pl': 'Ten slot czasowy jest już zajęty',
+    'en': 'This time slot is already taken',
+    'de': 'Dieses Zeitfenster ist bereits belegt',
+    };
+    
   function openTakenModal() {
-    // Znajdź elementy DOM
-    var takenMessageElement = document.getElementById('takenMessage');
-    var takenModal = document.getElementById('takenModal');
-    var overlay = document.getElementById('overlay');
-
-    if (takenMessageElement) {
-        // Ustaw komunikat na podstawie bieżącego języka
-        takenMessageElement.textContent = translations[language].takenMessage;
-    } else {
-        console.error("Nie znaleziono elementu 'takenMessage'.");
-    }
-
-    if (takenModal && overlay) {
-        // Pokaż modal i overlay
-        takenModal.style.display = 'block';
-        overlay.style.display = 'block';
+   var redmessage = redMessages[currentLanguage]; // Wybierz tłumaczenie
+            alert(redmessage);
 
         // Ukryj po 2 sekundach
         setTimeout(function () {
