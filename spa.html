@@ -803,14 +803,20 @@ var redMessages = {
   function openTakenModal() {
    var redmessage = redMessages[currentLanguage]; // Wybierz tłumaczenie
             alert(redmessage);
+var takenModal = document.getElementById('takenModal');
+    var overlay = document.getElementById('overlay');
+
+    if (takenModal && overlay) {
+        // Pokaż modalne okno i overlay
+        takenModal.style.display = 'block';
+        overlay.style.display = 'block';
 
         // Ukryj po 2 sekundach
         setTimeout(function () {
             takenModal.style.display = 'none';
             overlay.style.display = 'none';
         }, 2000);
-    } 
-}
+    }}
 </script>
 </body>
 </html>
