@@ -574,7 +574,7 @@ function confirmReservation() {
     var isoDateStr = `${parts[0]}-${parts[1]}-${parts[2]}`; // format YYYY-MM-DD
     var existingDate = new Date(isoDateStr);
     
-    return reservation.roomNumber === roomNumber && existingDate.toISOString().split('T')[0] === reservationDateStr;
+    return reservation.roomNumber === roomNumber && existingDate.toISOString().split('T')[0] === reservationDate;
 });
 
 
