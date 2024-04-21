@@ -672,6 +672,7 @@ function cancelReservation(reservation) {
                 reject(error);
             });
     });
+    }
 
     function saveReservationToFirestore(reservation) {
     db.collection("reservations").doc(reservation.id).set(reservation)
