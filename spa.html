@@ -218,6 +218,43 @@
             background-color: rgba(0, 0, 0, 0.5);
             z-index: 999;
         }
+            .calendar-legend {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.color-box {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+}
+
+.available {
+    background-color: #fff;
+}
+
+.reserved {
+    background-color: #ffc107;
+}
+
+.my-reserved {
+    background-color: #4CAF50;
+}
+
+.taken {
+    background-color: #dc3545;
+}
+    
     </style>
 </head>
 <body>
@@ -251,6 +288,26 @@
             <div class="calendar" id="calendar">
                 <!-- Calendar content will be generated here -->
             </div>
+            <div class="calendar-legend" id="calendarLegend">
+    <div class="legend-item">
+        <div class="color-box available"></div>
+        <span id="legendAvailable">Brak istniejących rezerwacji na daną godzinę</span>
+    </div>
+    <div class="legend-item">
+        <div class="color-box reserved"></div>
+        <span id="legendReserved">Na tą godzinę istnieje już jedna rezerwacja</span>
+    </div>
+     <div class="legend-item">
+        <div class="color-box taken"></div>
+        <span id="legendTaken">Na tą godzinę istnieją już dwie rezerwacje i nie ma możliwości dalszego rezerwowania</span>
+    </div>
+    <div class="legend-item">
+        <div class="color-box my-reserved"></div>
+        <span id="legendMyReserved">Twoja rezerwacja</span>
+    </div>
+</div>
+
+
         </div>
     </section>
     <div class="modal" id="confirmationModal">
@@ -349,6 +406,10 @@
             'canc':'Anuluj',
             'roomNumber':'Wprowadź numer apartamentu',
             'password':'Wprowadź hasło',
+            'yourReservation': 'Twoja rezerwacja',
+            'oneBooking': 'Na tą godzinę istnieje już jedna rezerwacja',
+            'twoBookings': 'Na tą godzinę istnieją już dwie rezerwacje i nie ma możliwości dalszego rezerwowania',
+            'noBooking': 'Brak istniejących rezerwacji na daną godzinę'
         },
         'de': {
             'headerTitle': 'Spa Zone Reservierungskalender',
@@ -371,6 +432,10 @@
             'canc':'Abbrechen',
             'roomNumber':'Geben Sie die Wohnungsnummer ein',
             'password':'Geben Sie das Passwort ein',
+             'yourReservation': 'Your reservation',
+            'oneBooking': 'There is already one reservation for this hour',
+            'twoBookings': 'There are already two reservations for this hour and no further booking is possible',
+            'noBooking': 'No existing reservations for this hour',
         },
         'en': {
             'headerTitle': 'Spa Zone Reservation Calendar',
@@ -393,6 +458,10 @@
             'canc':'Cancel',
             'roomNumber':'Enter the apartament number',
             'password':'Enter the password',
+            'yourReservation': 'Ihre Reservierung',
+            'oneBooking': 'Es gibt bereits eine Reservierung für diese Stunde',
+            'twoBookings': 'Es gibt bereits zwei Reservierungen für diese Stunde und keine weiteren Buchungen sind möglich',
+            'noBooking': 'Keine bestehenden Reservierungen für diese Stunde'
         }
     };
 
