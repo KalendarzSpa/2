@@ -577,7 +577,7 @@ function generateCalendar() {
             } else if (currentDate.getTime() === today.getTime()) {
                 if (i < currentHour) {
                     isPast = true; // Przeszła godzina
-                } else if (i === currentHour && currentMinute >= 0) {
+                } else if (i === currentHour && currentMinute >= 10) {
                     isPast = true; // Aktualna godzina, ale już rozpoczęta
                 }
             }
