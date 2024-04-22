@@ -538,7 +538,10 @@ function generateCalendar() {
     calendar.innerHTML = '';
 
     var today = new Date();
-    today.setHours(0, 0, 0, 0); // Reset time for comparison with calendar dates
+    today.setHours(0, 0, 0, 0); // Resetuj czas, aby porównać tylko daty
+
+    var currentHour = new Date().getHours(); // Pobierz bieżącą godzinę
+    var currentMinute = new Date().getMinutes(); // Pobierz bieżące minuty
 
     for (var dayOffset = 0; dayOffset < 2; dayOffset++) {
         var currentDate = new Date(today);
@@ -566,14 +569,25 @@ function generateCalendar() {
             timeSlot.textContent = i + ':00 - ' + (i + 1) + ':00';
             timeSlot.dataset.timeSlotId = timeSlotId;
 
-            // Check if the slot is in the past
-            var isPast = currentDate < today || (currentDate.getTime() === today.getTime() && i < new Date().getHours());
+            // Sprawdź, czy slot jest w przeszłości lub aktualny, ale po rozpoczęciu
+            var isPast = false;
+
+            if (currentDate < today) {
+                isPast = true; // Wczorajszy dzień lub starsze
+            } else if (currentDate.getTime() === today.getTime()) {
+                if (i < currentHour) {
+                    isPast = true; // Przeszła godzina
+                } else if (i === currentHour && currentMinute >= 0) {
+                    isPast = true; // Aktualna godzina, ale już rozpoczęta
+                }
+            }
 
             if (isPast) {
-                // Apply a style to indicate it's a past slot
+                // Oznacz przedział jako niedostępny
                 timeSlot.style.opacity = 0.5;
-                timeSlot.style.pointerEvents = 'none'; // Prevent any interaction
+                timeSlot.style.pointerEvents = 'none'; // Brak interakcji
             } else {
+                // Reszta Twojej logiki do rezerwacji...
                 if (reservationsForSlot.some(res => res.roomNumber === document.getElementById('roomNumber').value)) {
                     timeSlot.classList.add('my-reserved');
                 } else if (numReservations === 1) {
