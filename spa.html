@@ -560,7 +560,7 @@ function generateCalendar() {
         var timeSlotsContainer = document.createElement('div');
         timeSlotsContainer.className = 'time-slots-container';
 
-        for (var i = 8; i <= 20; i++) {
+        for (var i = 9; i <= 20; i++) {
             var timeSlotId = generateTimeSlotId(currentDate, i);
             var reservationsForSlot = getReservationsForSlot(timeSlotId);
             var numReservations = reservationsForSlot.length;
